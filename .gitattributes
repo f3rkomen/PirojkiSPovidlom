@@ -1,2 +1,3 @@
 # ArzMarket source is Windows-1251; Git must not normalize, transcode or diff it as text.
 release/ArzMarket.lua binary
+release/ArzMarket_Loader.lua binary
