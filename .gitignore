@@ -1,6 +1,7 @@
 # Local watcher data and unpublished upstream candidates.
 incoming/
 watcher/state.json
+watcher/alert.json
 watcher/watcher-config.json
 
 __pycache__/

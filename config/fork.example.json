@@ -1,5 +1,7 @@
 {
   "manifest_url": "https://raw.githubusercontent.com/YOUR_GITHUB_LOGIN/YOUR_REPOSITORY/main/release/updateArzMarket.js",
   "release_url": "https://raw.githubusercontent.com/YOUR_GITHUB_LOGIN/YOUR_REPOSITORY/main/release/ArzMarket.lua",
-  "items_update": 31
+  "items_update": 31,
+  "loader_latest": "1.2.2",
+  "loader_url": "https://raw.githubusercontent.com/YOUR_GITHUB_LOGIN/YOUR_REPOSITORY/main/release/ArzMarket_Loader.lua"
 }

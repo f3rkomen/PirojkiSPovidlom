@@ -124,6 +124,14 @@ def stage_candidate(config: dict[str, Any], state: dict[str, Any]) -> bool:
         "latest": manifest["latest"],
         "sha256": metadata["sha256"]
     })
+    atomic_json(ROOT / config.get("alert_file", "alert.json"), {
+        "kind": "upstream-update",
+        "created_at": timestamp(),
+        "latest": manifest["latest"],
+        "sha256": metadata["sha256"],
+        "candidate_directory": str(destination),
+        "status": "review-required"
+    })
     print(f"[{timestamp()}] Staged upstream {manifest['latest']} ({len(payload)} bytes). Review required: {destination}")
     return True
 

@@ -2191,7 +2191,7 @@ function main()
 
 		if var_0_115.autoUpdateCheck[2] then
 			var_0_115.autoUpdateCheck[2] = false
-			-- Updates are handled by PirojkiSPovidlom_Loader.lua.
+			-- Updates are handled by ArzMarket_Loader.lua.
 		end
 
 		if var_0_115.getAllItemsFromStorage[1] and var_0_56[29][1] + 0.85 <= os.clock() then
@@ -8695,6 +8695,26 @@ function var_0_1.CustomOnlyBorderButton(...)
 	return var_193_2
 end
 
+-- PirojkiSPovidlom trusted reinstall control
+local function pirojki_request_market_reinstall()
+	local pirojki_loader_directory = getWorkingDirectory() .. "\\ArzMarketLoader"
+
+	if not doesDirectoryExist(pirojki_loader_directory) then
+		createDirectory(pirojki_loader_directory)
+	end
+
+	local pirojki_request = io.open(pirojki_loader_directory .. "\\force-reinstall.request", "wb")
+
+	if not pirojki_request then
+		AFKMessage("Fork: could not queue the GitHub reinstall.")
+		return
+	end
+
+	pirojki_request:write(tostring(os.time()))
+	pirojki_request:close()
+	AFKMessage("Fork: GitHub reinstall queued.")
+end
+
 function cfg_menu(arg_194_0)
 	var_0_1.PushFont(fonts[18])
 	var_0_1.SameLine(var_0_106.cfg.menuSize == 1 and 555 or var_0_106.cfg.menuSize == 2 and 580 or 0)
@@ -8729,6 +8749,13 @@ function cfg_menu(arg_194_0)
 	var_0_1.PushFont(fonts[18])
 	var_0_1.CenterText(var_0_5("Настройки"))
 	var_0_1.PushItemWidth(150)
+	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
+
+	if var_0_1.Button(var_0_5("\xCF\xE5\xF0\xE5\xE7\xE0\xE3\xF0\xF3\xE7\xE8\xF2\xFC Market \xF1 GitHub") .. "##PirojkiForceReinstall", var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
+		pirojki_request_market_reinstall()
+	end
+
+	var_0_1.GetStyle().FrameBorderSize = 0
 
 	if var_0_1.ToggleButton(var_0_5("Всегда конвертировать [VC$/SA$]"), var_0_159) then
 		var_0_106.cfg.Always_convert = var_0_159[0]

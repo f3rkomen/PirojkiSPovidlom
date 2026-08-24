@@ -3,6 +3,7 @@
   "poll_seconds": 600,
   "staging_directory": "../incoming",
   "state_file": "state.json",
+  "alert_file": "alert.json",
   "allowed_update_hosts": [
     "raw.githubusercontent.com"
   ],
