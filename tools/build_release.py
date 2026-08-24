@@ -106,7 +106,7 @@ def main() -> int:
         "itemsUpdate": int(config["items_update"]),
         "sha256": hashlib.sha256(release_data).hexdigest(),
         "channel": "manual-review",
-        "loaderLatest": "1.0.0",
+        "loaderLatest": "1.0.1",
         "loaderUpdateUrl": "https://raw.githubusercontent.com/f3rkomen/PirojkiSPovidlom/main/release/PirojkiSPovidlom_Loader.lua"
     }
     manifest_path = output / "updateArzMarket.js"

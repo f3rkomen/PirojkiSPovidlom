@@ -1,10 +1,10 @@
 -- File encoding: ASCII
 script_name("PirojkiSPovidlom Loader")
 script_author("f3rkomen")
-script_version("1.0.0")
+script_version("1.0.1")
 script_properties("work-in-pause")
 
-local LOADER_VERSION = "1.0.0"
+local LOADER_VERSION = "1.0.1"
 local MANIFEST_URL = "https://raw.githubusercontent.com/f3rkomen/PirojkiSPovidlom/main/release/updateArzMarket.js"
 local TRUSTED_PREFIX = "https://raw.githubusercontent.com/f3rkomen/PirojkiSPovidlom/main/release/"
 
@@ -69,14 +69,42 @@ end
 
 local function download_to(url, path, on_success, on_error)
     local request_id
+    local finished = false
+
+    local function finish_success()
+        if finished then
+            return
+        end
+        finished = true
+        lua_thread.create(function()
+            -- MoonLoader signals data reception before the file handle is always
+            -- observable to Lua. Wait a frame before reading/replacing it.
+            wait(75)
+            if doesFileExist(path) then
+                on_success()
+            else
+                on_error("download data was not written")
+            end
+        end)
+    end
+
     request_id = downloadUrlToFile(url, path, function(id, status)
         if id ~= request_id then
             return
         end
         if status == download_status.STATUS_ENDDOWNLOADDATA then
-            on_success()
+            finish_success()
         elseif status == download_status.STATUSEX_ENDDOWNLOAD then
-            on_error("download failed")
+            -- The final event follows STATUS_ENDDOWNLOADDATA on a successful
+            -- download. It is an error only when no payload arrived.
+            if not finished then
+                if doesFileExist(path) then
+                    finish_success()
+                else
+                    finished = true
+                    on_error("download failed")
+                end
+            end
         end
     end)
 end
@@ -144,8 +172,12 @@ local function process_manifest()
     if doesFileExist(manifest_path) then
         os.remove(manifest_path)
     end
-    if not raw or not json_ok then
-        log("Manifest cannot be read (cjson is required)")
+    if not json_ok then
+        log("cjson library is unavailable")
+        return
+    end
+    if not raw then
+        log("Manifest file was not written")
         return
     end
     local ok, manifest = pcall(json.decode, raw)

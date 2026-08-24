@@ -4,6 +4,6 @@
   "itemsUpdate": 31,
   "sha256": "2f3e85e1719415f4b99a16803c6e80edc32ae1fb6d766841219737fc8fa9605e",
   "channel": "manual-review",
-  "loaderLatest": "1.0.0",
+  "loaderLatest": "1.0.1",
   "loaderUpdateUrl": "https://raw.githubusercontent.com/f3rkomen/PirojkiSPovidlom/main/release/PirojkiSPovidlom_Loader.lua"
 }
