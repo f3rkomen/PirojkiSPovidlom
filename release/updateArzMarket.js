@@ -6,5 +6,5 @@
   "channel": "manual-review",
   "loaderLatest": "1.2.2",
   "loaderUpdateUrl": "https://raw.githubusercontent.com/f3rkomen/PirojkiSPovidlom/main/release/ArzMarket_Loader.lua",
-  "loaderSha256": "9a5ed03c9b7147056bb182bd3821efec4eb6b6aacba492576f04327f3efab4cb"
+  "loaderSha256": "a68afae2dfc13ba130af7d9bd41cd99b07572a361d4daed80b6f56c63300ee6d"
 }
