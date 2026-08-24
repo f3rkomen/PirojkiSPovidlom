@@ -278,30 +278,30 @@ local var_0_36 = {
 	{
 		color = -1347440641,
 		key = 2,
-		text = "^%s*(.+) купил у вас (.+), вы получили (.+) от продажи %(комиссия %d+ процент%(а%)%)$"
+		text = "^%s*(.+) РєСѓРїРёР» Сѓ РІР°СЃ (.+), РІС‹ РїРѕР»СѓС‡РёР»Рё (.+) РѕС‚ РїСЂРѕРґР°Р¶Рё %(РєРѕРјРёСЃСЃРёСЏ %d+ РїСЂРѕС†РµРЅС‚%(Р°%)%)$"
 	},
 	{
 		color = -65281,
 		key = 2,
-		text = "^%s*Вы успешно продали (.+) торговцу (.+), с продажи получили (.+) %(комиссия %d+ процент%(а%)%)$"
+		text = "^%s*Р’С‹ СѓСЃРїРµС€РЅРѕ РїСЂРѕРґР°Р»Рё (.+) С‚РѕСЂРіРѕРІС†Сѓ (.+), СЃ РїСЂРѕРґР°Р¶Рё РїРѕР»СѓС‡РёР»Рё (.+) %(РєРѕРјРёСЃСЃРёСЏ %d+ РїСЂРѕС†РµРЅС‚%(Р°%)%)$"
 	},
 	{
 		color = -1347440641,
 		key = 3,
-		text = "^%s*Вы купили (.+) у игрока (.+) за (.+)$"
+		text = "^%s*Р’С‹ РєСѓРїРёР»Рё (.+) Сѓ РёРіСЂРѕРєР° (.+) Р·Р° (.+)$"
 	},
 	{
 		color = -65281,
 		key = 3,
-		text = "^%s*Вы успешно купили (.+) у (.+) за (.+)$"
+		text = "^%s*Р’С‹ СѓСЃРїРµС€РЅРѕ РєСѓРїРёР»Рё (.+) Сѓ (.+) Р·Р° (.+)$"
 	}
 }
 local var_0_37 = {}
 local var_0_38 = "{E94E4E}|||||||||||||||||||\n{E94EC0}|||||||||||||||||||\n{B64EE9}|||||||||||||||||||\n{664EE9}|||||||||||||||||||\n{4E9EE9}|||||||||||||||||||\n{4ED7E9}|||||||||||||||||||\n{4EE9A4}|||||||||||||||||||\n{4EE960}|||||||||||||||||||\n{9EE94E}|||||||||||||||||||\n{D2E94E}|||||||||||||||||||\n{E9BD4E}|||||||||||||||||||\n{E9854E}|||||||||||||||||||\n{A63030}|||||||||||||||||||\n{303FA6}|||||||||||||||||||\n{30A641}|||||||||||||||||||\n{FFFFFF}|||||||||||||||||||\n"
 local var_0_39 = {
-	"^%s*%[Информация%] {FFFFFF}Вы отказались от аренды лавки!",
-	"^%s*%[Информация%] {FFFFFF}Вы сняли лавку!",
-	"^%s*%[Информация%] {FFFFFF}Ваша лавка была закрыта, из%-за того что вы её покинули!"
+	"^%s*%[РРЅС„РѕСЂРјР°С†РёСЏ%] {FFFFFF}Р’С‹ РѕС‚РєР°Р·Р°Р»РёСЃСЊ РѕС‚ Р°СЂРµРЅРґС‹ Р»Р°РІРєРё!",
+	"^%s*%[РРЅС„РѕСЂРјР°С†РёСЏ%] {FFFFFF}Р’С‹ СЃРЅСЏР»Рё Р»Р°РІРєСѓ!",
+	"^%s*%[РРЅС„РѕСЂРјР°С†РёСЏ%] {FFFFFF}Р’Р°С€Р° Р»Р°РІРєР° Р±С‹Р»Р° Р·Р°РєСЂС‹С‚Р°, РёР·%-Р·Р° С‚РѕРіРѕ С‡С‚Рѕ РІС‹ РµС‘ РїРѕРєРёРЅСѓР»Рё!"
 }
 local var_0_40 = {}
 local var_0_41 = {}
@@ -501,6 +501,33 @@ end
 
 local var_0_52 = "moonloader/ArzMarket/buy.json"
 local var_0_53 = "moonloader/ArzMarket/sell.json"
+AMBridge = AMBridge or {}
+AMBridge.directory = (os.getenv("TEMP") or getWorkingDirectory()) .. "\\ArzMarketBridge"
+AMBridge.dataPath = AMBridge.directory .. "\\marketplace_data.json"
+AMBridge.settingsPath = AMBridge.directory .. "\\marketplace_bridge.json"
+AMBridge.requestPath = AMBridge.directory .. "\\marketplace_request.json"
+
+function marketplaceBridgeEnsureDirectory()
+	if not doesDirectoryExist(AMBridge.directory) then
+		createDirectory(AMBridge.directory)
+	end
+end
+
+function marketplaceBridgeRead(arg_53_0)
+	marketplaceBridgeEnsureDirectory()
+
+	if doesFileExist(arg_53_0) then
+		return readJsonFile(arg_53_0)
+	end
+
+	return nil
+end
+
+function marketplaceBridgeWrite(arg_54_0, arg_54_1)
+	marketplaceBridgeEnsureDirectory()
+	return writeJsonFile(arg_54_1, arg_54_0)
+end
+
 local var_0_54 = {
 	text = "",
 	player_name = "",
@@ -780,22 +807,22 @@ local var_0_96 = {
 }
 local var_0_97 = {
 	{
-		title = var_0_5("Основное"),
+		title = var_0_5("РћСЃРЅРѕРІРЅРѕРµ"),
 		list = {
-			var_0_5("Продажа"),
-			var_0_5("Скупка"),
-			var_0_5("Настройки"),
-			var_0_5("Логи")
+			var_0_5("РџСЂРѕРґР°Р¶Р°"),
+			var_0_5("РЎРєСѓРїРєР°"),
+			var_0_5("РќР°СЃС‚СЂРѕР№РєРё"),
+			var_0_5("Р›РѕРіРё")
 		}
 	},
 	{
-		title = var_0_5("Функции"),
+		title = var_0_5("Р¤СѓРЅРєС†РёРё"),
 		list = {
-			var_0_5("Маркет-Плейс"),
-			var_0_5("Дополнения"),
-			var_0_5("Рейтинг"),
-			var_0_5("Меню"),
-			var_0_5("Обзоры")
+			var_0_5("РњР°СЂРєРµС‚-РџР»РµР№СЃ"),
+			var_0_5("Р”РѕРїРѕР»РЅРµРЅРёСЏ"),
+			var_0_5("Р РµР№С‚РёРЅРі"),
+			var_0_5("РњРµРЅСЋ"),
+			var_0_5("РћР±Р·РѕСЂС‹")
 		}
 	}
 }
@@ -1169,6 +1196,20 @@ local var_0_115 = {
 	marketDealCache = {},
 	marketDealCacheSource = nil,
 	marketDealCacheSignature = "",
+	marketDealPage = 0,
+	marketplaceBridgeMode = "off",
+	marketplaceBridgeLastPoll = 0,
+	marketplaceBridgeLastMessage = 0,
+	marketplaceBridgeLastRequest = "",
+	marketplaceBridgePendingRequest = nil,
+	marketplaceBridgeLastFetch = 0,
+	marketplaceRequestInFlight = false,
+	marketplaceRequestRetries = 0,
+	marketplaceQueuedRefresh = false,
+	marketplaceQueuedAt = 0,
+	marketplaceQueuedServerId = nil,
+	marketplaceManualRefreshPending = false,
+	marketplaceManualLastFetch = 0,
 	lavka_summ = 0,
 	openAfterCloseMenu = false,
 	selected_custom_item = "",
@@ -1179,7 +1220,7 @@ local var_0_115 = {
 	itemsMarketData = {},
 	asyncData = {},
 	scriptVersion = {
-		"3.56-fork.1",
+		"3.56",
 		false,
 		{}
 	},
@@ -1212,16 +1253,16 @@ local var_0_115 = {
 	premItems = {},
 	premItemsTemp = {
 		buy = {
-			["0"] = "Нет информации",
-			["13"] = "Нет информации",
-			["12"] = "Нет информации",
-			["16"] = "Нет информации"
+			["0"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["13"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["12"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["16"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё"
 		},
 		sell = {
-			["0"] = "Нет информации",
-			["13"] = "Нет информации",
-			["12"] = "Нет информации",
-			["16"] = "Нет информации"
+			["0"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["13"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["12"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["16"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё"
 		}
 	},
 	font = renderCreateFont("Verdana", 12.5, 12),
@@ -1267,7 +1308,7 @@ local var_0_115 = {
 		0
 	},
 	marketplace_servers = {
-		var_0_5("Все сервера"),
+		var_0_5("Р’СЃРµ СЃРµСЂРІРµСЂР°"),
 		"Vice-City",
 		"Phoenix",
 		"Tucson",
@@ -1311,7 +1352,7 @@ local var_0_115 = {
 		"/fam"
 	},
 	autoPiarRadioStation = {
-		var_0_5("Автоматически"),
+		var_0_5("РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё"),
 		"SF",
 		"LV",
 		"LS"
@@ -1370,9 +1411,9 @@ local var_0_115 = {
 	selectConfigMove = {
 		var_0_11.int(333),
 		{
-			var_0_5(" Скопировать цены товаров"),
-			var_0_5(" Скопировать колличество товаров"),
-			var_0_5(" Скопировать весь конфиг")
+			var_0_5(" РЎРєРѕРїРёСЂРѕРІР°С‚СЊ С†РµРЅС‹ С‚РѕРІР°СЂРѕРІ"),
+			var_0_5(" РЎРєРѕРїРёСЂРѕРІР°С‚СЊ РєРѕР»Р»РёС‡РµСЃС‚РІРѕ С‚РѕРІР°СЂРѕРІ"),
+			var_0_5(" РЎРєРѕРїРёСЂРѕРІР°С‚СЊ РІРµСЃСЊ РєРѕРЅС„РёРі")
 		},
 		{
 			selectMove = -1,
@@ -1428,6 +1469,216 @@ local var_0_115 = {
 		timer = os.clock()
 	}
 }
+function marketplaceBridgeEnsureServerList()
+	if var_0_115.ImMarketplace_servers == nil then
+		var_0_115.ImMarketplace_servers = var_0_1.new["const char*"][#var_0_115.marketplace_servers](var_0_115.marketplace_servers)
+	end
+end
+
+function marketplaceBridgeReloadSettings()
+	if AMBridge.settingsLastCheck and AMBridge.settingsLastCheck == os.time() then
+		return
+	end
+
+	AMBridge.settingsLastCheck = os.time()
+	AMBridge.newSettings = marketplaceBridgeRead(AMBridge.settingsPath)
+
+	if type(AMBridge.newSettings) == "table" then
+		if AMBridge.settingsUpdatedAt ~= AMBridge.newSettings.updatedAt then
+			AMBridge.settingsUpdatedAt = AMBridge.newSettings.updatedAt
+			AMBridge.sourceInitialRequest = false
+			AMBridge.sourceBackgroundCompleted = false
+			AMBridge.loadedAt = nil
+			AMBridge.clientLastCheck = 0
+			download_marketplace = nil
+		end
+
+		AMBridge.settings = AMBridge.newSettings
+	end
+end
+
+function marketplaceBridgeCurrentServerId()
+	AMBridge.serverAddress = sampGetCurrentServerAddress()
+
+	return var_0_28[AMBridge.serverAddress]
+end
+
+function marketplaceBridgeFindServer(arg_59_0)
+	AMBridge.findText = tostring(arg_59_0 or ""):lower():gsub("[^%w]", "")
+	AMBridge.findNumber = tonumber(AMBridge.findText)
+
+	if AMBridge.findNumber and AMBridge.findNumber >= 0 and AMBridge.findNumber <= #var_0_115.marketplace_servers - 2 then
+		return AMBridge.findNumber
+	end
+
+	AMBridge.findIndex = 2
+
+	while AMBridge.findIndex <= #var_0_115.marketplace_servers do
+		AMBridge.findName = tostring(var_0_115.marketplace_servers[AMBridge.findIndex]):lower():gsub("[^%w]", "")
+
+		if AMBridge.findText == AMBridge.findName then
+			return AMBridge.findIndex - 2
+		end
+
+		AMBridge.findIndex = AMBridge.findIndex + 1
+	end
+
+	return nil
+end
+
+function marketplaceBridgeIsSource()
+	marketplaceBridgeReloadSettings()
+
+	return type(AMBridge.settings) == "table" and AMBridge.settings.enabled == true and marketplaceBridgeCurrentServerId() == AMBridge.settings.sourceServerId
+end
+
+function marketplaceBridgeIsUniversal()
+	return type(AMBridge.settings) == "table" and AMBridge.settings.enabled == true and AMBridge.settings.targetMode == "any"
+end
+
+function marketplaceBridgeTargetLabel()
+	if marketplaceBridgeIsUniversal() then
+		return "any server"
+	end
+
+	return tostring(var_0_115.marketplace_servers[(AMBridge.settings.targetServerId or -1) + 2] or "unknown server")
+end
+
+function marketplaceBridgeIsTarget()
+	marketplaceBridgeReloadSettings()
+
+	AMBridge.currentServerId = marketplaceBridgeCurrentServerId()
+
+	return type(AMBridge.settings) == "table" and AMBridge.settings.enabled == true and AMBridge.currentServerId ~= nil and AMBridge.currentServerId ~= AMBridge.settings.sourceServerId and (marketplaceBridgeIsUniversal() or AMBridge.currentServerId == AMBridge.settings.targetServerId)
+end
+
+function marketplaceBridgeSaveSourceData()
+	if not marketplaceBridgeIsSource() then
+		return false
+	end
+
+	AMBridge.sourceAuth = {
+		authKey = tostring(var_0_115.premiumKeys[3] or ""),
+		authToken = tostring(var_0_106.cfg.myServerToken or ""),
+		authClient = tostring(var_0_115.premiumKeys[1] or ""),
+		serverId = tostring(var_0_106.cfg.myServerId or ""),
+		uid = tostring(var_0_115.myUidCheck[2] or "")
+	}
+
+	-- A reconnect may deliver setToken before every other ArzMarket value is
+	-- initialised.  Never overwrite a working bridge cache with empty fields.
+	if AMBridge.sourceAuth.authToken == "" or AMBridge.sourceAuth.authClient == "" or AMBridge.sourceAuth.serverId == "" then
+		return false
+	end
+
+	AMBridge.cache = marketplaceBridgeRead(AMBridge.dataPath) or {}
+	AMBridge.cache.data = {
+		updatedAt = tostring(os.time()) .. ":" .. tostring(math.floor(os.clock() * 1000)),
+		sourceServerId = AMBridge.settings.sourceServerId,
+		targetServerId = AMBridge.settings.targetServerId,
+		targetMode = AMBridge.settings.targetMode or "single",
+		auth = AMBridge.sourceAuth
+	}
+	marketplaceBridgeWrite(AMBridge.dataPath, AMBridge.cache)
+	return true
+end
+
+function marketplaceBridgeHasSharedAuth()
+	return type(AMBridge.sharedAuth) == "table" and type(AMBridge.sharedAuth.authToken) == "string" and #AMBridge.sharedAuth.authToken > 0 and type(AMBridge.sharedAuth.authClient) == "string" and #AMBridge.sharedAuth.authClient > 0 and type(AMBridge.sharedAuth.serverId) == "string" and #AMBridge.sharedAuth.serverId > 0
+end
+
+function marketplaceBridgeLoadSavedData()
+	if not marketplaceBridgeIsTarget() then
+		return false
+	end
+
+	if AMBridge.clientLastCheck and AMBridge.clientLastCheck == os.time() then
+		return type(download_marketplace) == "table"
+	end
+
+	AMBridge.clientLastCheck = os.time()
+	AMBridge.cache = marketplaceBridgeRead(AMBridge.dataPath)
+	AMBridge.savedData = AMBridge.cache and AMBridge.cache.data
+
+	if type(AMBridge.savedData) ~= "table" or AMBridge.savedData.sourceServerId ~= AMBridge.settings.sourceServerId then
+		return false
+	end
+
+	if not marketplaceBridgeIsUniversal() and AMBridge.savedData.targetServerId ~= AMBridge.settings.targetServerId then
+		return false
+	end
+
+	AMBridge.sharedAuth = AMBridge.savedData.auth
+
+	marketplaceBridgeEnsureServerList()
+
+	return marketplaceBridgeHasSharedAuth()
+end
+
+function marketplaceBridgeSourceLabel()
+	if type(AMBridge.settings) ~= "table" then
+		return "Source"
+	end
+
+	return tostring(var_0_115.marketplace_servers[(AMBridge.settings.sourceServerId or -1) + 2] or "unknown server")
+end
+
+function marketplaceBridgeBindCurrentSource()
+	AMBridge.bindServerId = marketplaceBridgeCurrentServerId()
+
+	if AMBridge.bindServerId == nil then
+		AFKMessage("\x42\x72\x69\x64\x67\x65\x3A\x20\xED\xE5\x20\xF3\xE4\xE0\xEB\xEE\xF1\xFC\x20\xEE\xEF\xF0\xE5\xE4\xE5\xEB\xE8\xF2\xFC\x20\xF2\xE5\xEA\xF3\xF9\xE8\xE9\x20\xF1\xE5\xF0\xE2\xE5\xF0\x2E\x20\xCF\xEE\xE4\xEE\xE6\xE4\xE8\xF2\xE5\x20\xEF\xEE\xE4\xEA\xEB\xFE\xF7\xE5\xED\xE8\xFF\x20\xEA\x20\x53\x41\x4D\x50\x2E")
+		return false
+	end
+
+	AMBridge.settings = {
+		enabled = true,
+		sourceServerId = AMBridge.bindServerId,
+		targetServerId = nil,
+		targetMode = "any",
+		updatedAt = tostring(os.time()) .. ":" .. tostring(math.floor(os.clock() * 1000))
+	}
+	AMBridge.settingsUpdatedAt = AMBridge.settings.updatedAt
+	AMBridge.clientLastCheck = 0
+	download_marketplace = nil
+	marketplaceBridgeWrite(AMBridge.settingsPath, AMBridge.settings)
+	marketplaceBridgeSaveSourceData()
+	AFKMessage("\x42\x72\x69\x64\x67\x65\x20\xEF\xF0\xE8\xE2\xFF\xE7\xE0\xED\x3A\x20" .. marketplaceBridgeSourceLabel() .. "\x2E\x20\x54\x61\x72\x67\x65\x74\x3A\x20\xE2\xF1\xE5\x20\xEE\xF1\xF2\xE0\xEB\xFC\xED\xFB\xE5\x20\xF1\xE5\xF0\xE2\xE5\xF0\xE0\x2E")
+	return true
+end
+
+function marketplaceBridgeRequestCurrentServer()
+	-- Only the latest click matters.  While an HTTP request is running this
+	-- stays set, so its callback starts one more request for the last server.
+	var_0_115.marketplaceQueuedRefresh = true
+	var_0_115.marketplaceQueuedAt = os.clock() + 0.2
+	var_0_115.marketplaceQueuedServerId = var_0_106.cfg.marketplaceSelectedItem - 1
+	var_0_115.marketplaceManualRefreshPending = true
+
+	if marketplaceBridgeIsSource() or not (type(AMBridge.settings) == "table" and AMBridge.settings.enabled == true) then
+		AFKMessage("ArzMarket: marketplace refresh requested")
+	elseif marketplaceBridgeIsTarget() then
+		-- Reload the Source credentials on the next Marketplace frame.  Do not
+		-- load them here: download_marketplace is reset to nil immediately after
+		-- this function and the same-second cache would report a false failure.
+		AMBridge.clientLastCheck = 0
+	end
+end
+
+function marketplaceBridgeLoadMarketplaceTextures()
+	if AMBridge.marketplaceTexturesTried or var_0_10[1] ~= nil then
+		return
+	end
+
+	if type(marketPhoto3) ~= "string" or type(marketPhoto4) ~= "string" then
+		return
+	end
+
+	AMBridge.marketplaceTexturesTried = true
+	var_0_10[1] = var_0_1.CreateTextureFromFileInMemory(var_0_1.new("const char*", marketPhoto4), #marketPhoto4)
+	var_0_10[3] = var_0_1.CreateTextureFromFileInMemory(var_0_1.new("const char*", marketPhoto3), #marketPhoto3)
+end
+
 local var_0_116 = var_0_106.cfg.dynamic_lavka_color
 local var_0_117 = false
 local var_0_118 = false
@@ -1598,7 +1849,7 @@ function main()
 	if type(var_0_112) ~= "table" then
 		var_0_112 = {}
 
-		AFKMessage("К сожалению авто-пиар конфиг был поврежден. Восстановить его не получится.")
+		AFKMessage("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ Р°РІС‚Рѕ-РїРёР°СЂ РєРѕРЅС„РёРі Р±С‹Р» РїРѕРІСЂРµР¶РґРµРЅ. Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РµРіРѕ РЅРµ РїРѕР»СѓС‡РёС‚СЃСЏ.")
 	end
 
 	jsonLog = readJsonFile("moonloader\\ArzMarket\\Log.json")
@@ -1635,8 +1886,8 @@ function main()
 		var_0_111 = {}
 	end
 
-	AFKMessage("Arizona Market V3 | Успешно загружен! Открыть меню скрипта: /crr")
-	sendNotify("Arizona Market Успешно загружен! Открыть меню скрипта: /crr")
+	AFKMessage("Arizona Market V3 | РЈСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅ! РћС‚РєСЂС‹С‚СЊ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°: /crr")
+	sendNotify("Arizona Market РЈСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅ! РћС‚РєСЂС‹С‚СЊ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°: /crr")
 
 	var_0_106.cfg.marketplaceSelectedItem = 1
 	ip = sampGetCurrentServerAddress()
@@ -1657,14 +1908,14 @@ function main()
 	end
 
 	sampRegisterChatCommand("shelp", function(arg_12_0)
-		AFKMessage("Вы открыли инструкцию проблем с выставкой товара.")
-		AFKMessage("Если у вас не выставляются товары/нет кнопки SCAN на лавках игрока и т.д - выполните следующий путь:")
-		AFKMessage("/settings - Настройка инвентаря - Сбросить настройки")
+		AFKMessage("Р’С‹ РѕС‚РєСЂС‹Р»Рё РёРЅСЃС‚СЂСѓРєС†РёСЋ РїСЂРѕР±Р»РµРј СЃ РІС‹СЃС‚Р°РІРєРѕР№ С‚РѕРІР°СЂР°.")
+		AFKMessage("Р•СЃР»Рё Сѓ РІР°СЃ РЅРµ РІС‹СЃС‚Р°РІР»СЏСЋС‚СЃСЏ С‚РѕРІР°СЂС‹/РЅРµС‚ РєРЅРѕРїРєРё SCAN РЅР° Р»Р°РІРєР°С… РёРіСЂРѕРєР° Рё С‚.Рґ - РІС‹РїРѕР»РЅРёС‚Рµ СЃР»РµРґСѓСЋС‰РёР№ РїСѓС‚СЊ:")
+		AFKMessage("/settings - РќР°СЃС‚СЂРѕР№РєР° РёРЅРІРµРЅС‚Р°СЂСЏ - РЎР±СЂРѕСЃРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё")
 	end)
 	sampRegisterChatCommand("autolavka", function()
 		var_0_115.autoLavka = not var_0_115.autoLavka
 
-		sendNotify("Авто установка лавки " .. (var_0_115.autoLavka and "включено" or "выключено"))
+		sendNotify("РђРІС‚Рѕ СѓСЃС‚Р°РЅРѕРІРєР° Р»Р°РІРєРё " .. (var_0_115.autoLavka and "РІРєР»СЋС‡РµРЅРѕ" or "РІС‹РєР»СЋС‡РµРЅРѕ"))
 	end)
 	sampRegisterChatCommand("crr", function()
 		kifir = 1
@@ -1692,6 +1943,43 @@ function main()
 
 		AFKMessage("set to > " .. tostring(var_0_106.cfg.bannedByRkn))
 		save_all()
+	end)
+	sampRegisterChatCommand("ambridge", function(arg_16_0)
+		AMBridge.command = tostring(arg_16_0 or "")
+		AMBridge.commandLower = AMBridge.command:lower()
+
+		if AMBridge.commandLower == "reset" or AMBridge.commandLower == "off" then
+			AMBridge.settings = {
+				enabled = false,
+				updatedAt = tostring(os.time()) .. ":" .. tostring(math.floor(os.clock() * 1000))
+			}
+			AMBridge.settingsUpdatedAt = AMBridge.settings.updatedAt
+			AMBridge.sourceInitialRequest = false
+			AMBridge.sourceBackgroundCompleted = false
+			AMBridge.sharedAuth = nil
+			AMBridge.loadedAt = nil
+			download_marketplace = nil
+			marketplaceBridgeWrite(AMBridge.settingsPath, AMBridge.settings)
+			AFKMessage("ArzMarket bridge reset")
+		elseif AMBridge.commandLower == "status" then
+			marketplaceBridgeReloadSettings()
+
+			if type(AMBridge.settings) == "table" and AMBridge.settings.enabled == true then
+				AFKMessage("Bridge: " .. marketplaceBridgeSourceLabel() .. " -> all other servers")
+			else
+				AFKMessage("Bridge is disabled")
+			end
+		elseif AMBridge.commandLower == "" then
+			marketplaceBridgeReloadSettings()
+
+			if type(AMBridge.settings) == "table" and AMBridge.settings.enabled == true then
+				AFKMessage("\x42\x72\x69\x64\x67\x65\x20\xF3\xE6\xE5\x20\xEF\xF0\xE8\xE2\xFF\xE7\xE0\xED\x20\xEA\x20" .. marketplaceBridgeSourceLabel() .. "\x2E\x20\xC8\xF1\xEF\xEE\xEB\xFC\xE7\xF3\xE9\xF2\xE5\x20\x2F\x61\x6D\x62\x72\x69\x64\x67\x65\x20\x72\x65\x73\x65\x74\x2C\x20\xF7\xF2\xEE\xE1\xFB\x20\xF1\xEC\xE5\xED\xE8\xF2\xFC\x20\x53\x6F\x75\x72\x63\x65\x2E")
+			else
+				marketplaceBridgeBindCurrentSource()
+			end
+		else
+			AFKMessage("Usage: /ambridge | /ambridge status | /ambridge reset")
+		end
 	end)
 	sampRegisterChatCommand("kogda", function()
 		local var_16_0 = os.time() - var_0_115.last_vr_Message
@@ -1755,26 +2043,26 @@ function main()
 
 			var_0_115.emule_ExelPremium[0] = not var_0_115.emule_ExelPremium[0]
 		else
-			AFKMessage("Доступно только с подпиской LITE и выше.")
+			AFKMessage("Р”РѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ СЃ РїРѕРґРїРёСЃРєРѕР№ LITE Рё РІС‹С€Рµ.")
 		end
 	end)
 	sampRegisterChatCommand("crsell", function()
 		if not var_0_93.sell then
 			if is_invent_open ~= nil or var_0_115.custom_is_invent_open[1] ~= nil then
 				sampSendClickTextdraw(65535)
-				AFKMessage("С открытым инвентарем не работает. Нужно переоткрыть. Запустите повторно.")
+				AFKMessage("РЎ РѕС‚РєСЂС‹С‚С‹Рј РёРЅРІРµРЅС‚Р°СЂРµРј РЅРµ СЂР°Р±РѕС‚Р°РµС‚. РќСѓР¶РЅРѕ РїРµСЂРµРѕС‚РєСЂС‹С‚СЊ. Р—Р°РїСѓСЃС‚РёС‚Рµ РїРѕРІС‚РѕСЂРЅРѕ.")
 			else
 				local var_25_0, var_25_1 = sampGetCurrentServerAddress()
 
 				if var_0_28[var_25_0] == 0 and var_0_167 or var_0_28[var_25_0] ~= 0 and not var_0_167 then
-					AFKMessage("ВНИМАНИЕ! У вас установлен не тот режим продажи. Зайдите в продажу и проверьте валюту в которой выставляете.")
+					AFKMessage("Р’РќРРњРђРќРР•! РЈ РІР°СЃ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РЅРµ С‚РѕС‚ СЂРµР¶РёРј РїСЂРѕРґР°Р¶Рё. Р—Р°Р№РґРёС‚Рµ РІ РїСЂРѕРґР°Р¶Сѓ Рё РїСЂРѕРІРµСЂСЊС‚Рµ РІР°Р»СЋС‚Сѓ РІ РєРѕС‚РѕСЂРѕР№ РІС‹СЃС‚Р°РІР»СЏРµС‚Рµ.")
 				else
 					var_0_34 = {}
 					var_0_83 = true
 					var_0_89 = {}
 
 					SendToServer("/stats")
-					AFKMessage("Подготовка к выставке товара...")
+					AFKMessage("РџРѕРґРіРѕС‚РѕРІРєР° Рє РІС‹СЃС‚Р°РІРєРµ С‚РѕРІР°СЂР°...")
 
 					sell_check = true
 					var_0_72[0] = true
@@ -1786,7 +2074,7 @@ function main()
 					}
 
 					for iter_25_0, iter_25_1 in pairs(var_0_88) do
-						saveLog("[" .. tostring(iter_25_1.enabled) .. "] Товар: [" .. iter_25_0 .. "|" .. #var_0_88 .. "] [" .. iter_25_1.name .. "] [" .. iter_25_1.count .. "] [" .. iter_25_1.price .. "|" .. iter_25_1.price_vc .. "] [" .. tostring(var_0_167) .. "] [" .. tostring(var_0_137[0]) .. "]")
+						saveLog("[" .. tostring(iter_25_1.enabled) .. "] РўРѕРІР°СЂ: [" .. iter_25_0 .. "|" .. #var_0_88 .. "] [" .. iter_25_1.name .. "] [" .. iter_25_1.count .. "] [" .. iter_25_1.price .. "|" .. iter_25_1.price_vc .. "] [" .. tostring(var_0_167) .. "] [" .. tostring(var_0_137[0]) .. "]")
 
 						var_0_93.score_from = iter_25_0
 					end
@@ -1804,7 +2092,7 @@ function main()
 				score_from = 1
 			}
 
-			AFKMessage("Выставление товаров было отменено.")
+			AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р±С‹Р»Рѕ РѕС‚РјРµРЅРµРЅРѕ.")
 
 			if sell_alitems_d ~= nil then
 				lets_gooo = false
@@ -1816,7 +2104,7 @@ function main()
 			local var_26_0, var_26_1 = sampGetCurrentServerAddress()
 
 			if var_0_28[var_26_0] == 0 and var_0_167 or var_0_28[var_26_0] ~= 0 and not var_0_167 then
-				AFKMessage("ВНИМАНИЕ! У вас установлен не тот режим продажи. Зайдите в скупку и проверьте валюту в которой выставляете.")
+				AFKMessage("Р’РќРРњРђРќРР•! РЈ РІР°СЃ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РЅРµ С‚РѕС‚ СЂРµР¶РёРј РїСЂРѕРґР°Р¶Рё. Р—Р°Р№РґРёС‚Рµ РІ СЃРєСѓРїРєСѓ Рё РїСЂРѕРІРµСЂСЊС‚Рµ РІР°Р»СЋС‚Сѓ РІ РєРѕС‚РѕСЂРѕР№ РІС‹СЃС‚Р°РІР»СЏРµС‚Рµ.")
 			else
 				var_0_34 = {}
 				var_0_72[0] = true
@@ -1827,10 +2115,10 @@ function main()
 					score_from = 1
 				}
 
-				AFKMessage("Начинаем выставлять товары.")
+				AFKMessage("РќР°С‡РёРЅР°РµРј РІС‹СЃС‚Р°РІР»СЏС‚СЊ С‚РѕРІР°СЂС‹.")
 
 				for iter_26_0, iter_26_1 in pairs(var_0_87) do
-					saveLog("[" .. tostring(iter_26_1.enabled) .. "] [buy] Товар: [" .. iter_26_0 .. "|" .. #var_0_87 .. "] [" .. iter_26_1.name .. "] [" .. iter_26_1.count .. "] [" .. iter_26_1.price .. "|" .. iter_26_1.price_vc .. "] [" .. tostring(var_0_167) .. "] ")
+					saveLog("[" .. tostring(iter_26_1.enabled) .. "] [buy] РўРѕРІР°СЂ: [" .. iter_26_0 .. "|" .. #var_0_87 .. "] [" .. iter_26_1.name .. "] [" .. iter_26_1.count .. "] [" .. iter_26_1.price .. "|" .. iter_26_1.price_vc .. "] [" .. tostring(var_0_167) .. "] ")
 
 					var_0_93.score_from = iter_26_0
 				end
@@ -1847,7 +2135,7 @@ function main()
 				score_from = 1
 			}
 
-			AFKMessage("Выставление товаров было отменено.")
+			AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р±С‹Р»Рѕ РѕС‚РјРµРЅРµРЅРѕ.")
 		end
 	end)
 	sampRegisterChatCommand("lavka", function()
@@ -1858,18 +2146,18 @@ function main()
 				local var_27_1, var_27_2, var_27_3 = getCharCoordinates(PLAYER_PED)
 				local var_27_4, var_27_5, var_27_6, var_27_7, var_27_8, var_27_9, var_27_10, var_27_11, var_27_12 = sampGet3dTextInfoById(iter_27_0)
 
-				if not var_27_4:find("Управления товарами.") or getDistanceBetweenCoords3d(var_27_6, var_27_7, var_27_8, var_27_1, var_27_2, var_27_3) >= 5 then
+				if not var_27_4:find("РЈРїСЂР°РІР»РµРЅРёСЏ С‚РѕРІР°СЂР°РјРё.") or getDistanceBetweenCoords3d(var_27_6, var_27_7, var_27_8, var_27_1, var_27_2, var_27_3) >= 5 then
 					-- block empty
 				else
 					var_27_0 = false
 
-					AFKMessage("не могу поставить")
+					AFKMessage("РЅРµ РјРѕРіСѓ РїРѕСЃС‚Р°РІРёС‚СЊ")
 				end
 
-				if var_27_4:find("Номер бизнеса") and getDistanceBetweenCoords3d(var_27_6, var_27_7, var_27_8, var_27_1, var_27_2, var_27_3) < 25 then
+				if var_27_4:find("РќРѕРјРµСЂ Р±РёР·РЅРµСЃР°") and getDistanceBetweenCoords3d(var_27_6, var_27_7, var_27_8, var_27_1, var_27_2, var_27_3) < 25 then
 					var_27_0 = false
 
-					AFKMessage("не могу поставить")
+					AFKMessage("РЅРµ РјРѕРіСѓ РїРѕСЃС‚Р°РІРёС‚СЊ")
 				end
 			end
 		end
@@ -2153,7 +2441,7 @@ function main()
 
 			var_0_210[1], var_0_210[2] = nil, false
 
-			AFKMessage("Сканирование лавки завершено. Можете смотреть разделы.")
+			AFKMessage("РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ Р»Р°РІРєРё Р·Р°РІРµСЂС€РµРЅРѕ. РњРѕР¶РµС‚Рµ СЃРјРѕС‚СЂРµС‚СЊ СЂР°Р·РґРµР»С‹.")
 		end
 
 		if lets_gooooo_clear == true then
@@ -2166,7 +2454,7 @@ function main()
 
 			var_0_211[1], var_0_211[2], var_0_211[3] = nil, false, false
 
-			AFKMessage("Очистка страницы закончена.")
+			AFKMessage("РћС‡РёСЃС‚РєР° СЃС‚СЂР°РЅРёС†С‹ Р·Р°РєРѕРЅС‡РµРЅР°.")
 		end
 
 		if var_0_168[0] then
@@ -2177,11 +2465,11 @@ function main()
 					local var_11_25, var_11_26, var_11_27, var_11_28, var_11_29, var_11_30, var_11_31, var_11_32, var_11_33 = sampGet3dTextInfoById(iter_11_8)
 
 					if getDistanceBetweenCoords3d(var_11_27, var_11_28, var_11_29, var_11_22, var_11_23, var_11_24) < var_0_106.cfg.renderLavkaRadius then
-						if var_11_25:find("Управления товарами.") then
+						if var_11_25:find("РЈРїСЂР°РІР»РµРЅРёСЏ С‚РѕРІР°СЂР°РјРё.") then
 							drawCircleIn3d(var_11_27, var_11_28, var_11_29, 5, 40, getDistanceBetweenCoords3d(var_11_27, var_11_28, var_11_29, var_11_22, var_11_23, var_11_24) < 5 and 10 or 0.5, getDistanceBetweenCoords3d(var_11_27, var_11_28, var_11_29, var_11_22, var_11_23, var_11_24) < 5 and 4294377472 or 4294967295)
 						end
 
-						if var_11_25:find("Номер бизнеса") then
+						if var_11_25:find("РќРѕРјРµСЂ Р±РёР·РЅРµСЃР°") then
 							drawCircleIn3d(var_11_27, var_11_28, var_11_29 - 1, 25, 40, getDistanceBetweenCoords3d(var_11_27, var_11_28, var_11_29, var_11_22, var_11_23, var_11_24) < 25 and 10 or 0.5, getDistanceBetweenCoords3d(var_11_27, var_11_28, var_11_29, var_11_22, var_11_23, var_11_24) < 25 and 4294377472 or 4294967295)
 						end
 					end
@@ -2191,7 +2479,8 @@ function main()
 
 		if var_0_115.autoUpdateCheck[2] then
 			var_0_115.autoUpdateCheck[2] = false
-			-- Updates are handled by ArzMarket_Loader.lua.
+
+			autoUpdateCheckUrl()
 		end
 
 		if var_0_115.getAllItemsFromStorage[1] and var_0_56[29][1] + 0.85 <= os.clock() then
@@ -2203,8 +2492,8 @@ function main()
 			if var_0_56[29][2] + 6 <= os.time() then
 				var_0_115.getAllItemsFromStorage[1] = false
 
-				sendNotify("Что то случилось, выключаем забор с хранилища.")
-				sendNotify("Проверьте, возможно у вас нет 1го слота в инвентаре.")
+				sendNotify("Р§С‚Рѕ С‚Рѕ СЃР»СѓС‡РёР»РѕСЃСЊ, РІС‹РєР»СЋС‡Р°РµРј Р·Р°Р±РѕСЂ СЃ С…СЂР°РЅРёР»РёС‰Р°.")
+				sendNotify("РџСЂРѕРІРµСЂСЊС‚Рµ, РІРѕР·РјРѕР¶РЅРѕ Сѓ РІР°СЃ РЅРµС‚ 1РіРѕ СЃР»РѕС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ.")
 			end
 		end
 
@@ -2247,13 +2536,13 @@ function main()
 
 			var_0_115.copyLavkaFunc.slotId = var_0_115.copyLavkaFunc.slotId + 1
 
-			sendNotify("Скопировано: " .. tostring(var_0_115.copyLavkaFunc.slotId) .. " из " .. tostring(var_0_115.copyLavkaFunc.maxSlotId + 2))
+			sendNotify("РЎРєРѕРїРёСЂРѕРІР°РЅРѕ: " .. tostring(var_0_115.copyLavkaFunc.slotId) .. " РёР· " .. tostring(var_0_115.copyLavkaFunc.maxSlotId + 2))
 
 			if var_0_115.copyLavkaFunc.slotId > var_0_115.copyLavkaFunc.maxSlotId + 1 then
 				var_0_115.copyLavkaFunc.status = false
 
-				AFKMessage("Копирование конфига завершено.")
-				sendNotify("Копирование конфига завершено.")
+				AFKMessage("РљРѕРїРёСЂРѕРІР°РЅРёРµ РєРѕРЅС„РёРіР° Р·Р°РІРµСЂС€РµРЅРѕ.")
+				sendNotify("РљРѕРїРёСЂРѕРІР°РЅРёРµ РєРѕРЅС„РёРіР° Р·Р°РІРµСЂС€РµРЅРѕ.")
 			end
 		end
 
@@ -2292,7 +2581,7 @@ function main()
 						if iter_11_10.settingsAd["" .. iter_11_10.isType].isCounter.count < 1 then
 							iter_11_10.isEnabled = false
 
-							sendNotify("Выключен авто-пиар " .. var_0_115.autoPiarMode[iter_11_10.isType + 1])
+							sendNotify("Р’С‹РєР»СЋС‡РµРЅ Р°РІС‚Рѕ-РїРёР°СЂ " .. var_0_115.autoPiarMode[iter_11_10.isType + 1])
 							deAFKMessage("stop flooder " .. var_0_115.autoPiarMode[iter_11_10.isType + 1])
 
 							break
@@ -2361,7 +2650,7 @@ end
 
 function autoUpdateCheckUrl()
 	print("isUpdate?")
-	asyncHttpRequest("GET", "https://raw.githubusercontent.com/f3rkomen/PirojkiSPovidlom/main/release/updateArzMarket.js", {}, function(arg_29_0)
+	asyncHttpRequest("GET", "https://raw.githubusercontent.com/FREYM1337/forumnick/main/ArzMarketV3/updateArzMarket.js", {}, function(arg_29_0)
 		if arg_29_0.status_code == 200 or arg_29_0.status_code == 304 then
 			local var_29_0 = decodeJson(arg_29_0.text)
 
@@ -2421,7 +2710,7 @@ function loadPremiumFunction(arg_31_0)
 					var_0_115.premiumTokenAuth = var_0_11.char[256]("" .. var_31_2)
 				end
 			else
-				deAFKMessage("Ошибка: " .. var_31_3)
+				deAFKMessage("РћС€РёР±РєР°: " .. var_31_3)
 			end
 
 			var_31_1 = var_31_1 + 1
@@ -2464,24 +2753,24 @@ function loadPremiumFunction(arg_31_0)
 						var_0_115.isPremiumAuthedStatus = true
 						var_0_115.lastUpdatePremiumToken = os.time()
 
-						sendNotify("Авторизация успешна! Спасибо, " .. tostring(var_0_115.premiumUserInfo.userName) .. ", что вы пользуетесь Arizona Market Premium!")
+						sendNotify("РђРІС‚РѕСЂРёР·Р°С†РёСЏ СѓСЃРїРµС€РЅР°! РЎРїР°СЃРёР±Рѕ, " .. tostring(var_0_115.premiumUserInfo.userName) .. ", С‡С‚Рѕ РІС‹ РїРѕР»СЊР·СѓРµС‚РµСЃСЊ Arizona Market Premium!")
 						save_all()
 
 						var_0_56[27] = os.time()
 						var_0_56[26] = os.clock() - 3.5
 						isStartLoadPremium = 2
 					else
-						sendNotify("Авторизация прошла успешно, " .. tostring(var_0_115.premiumUserInfo.userName) .. ".")
+						sendNotify("РђРІС‚РѕСЂРёР·Р°С†РёСЏ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ, " .. tostring(var_0_115.premiumUserInfo.userName) .. ".")
 					end
 				elseif var_0_115.premiumUserInfo.error then
 					var_0_106.cfg.premiumTokenAuth = -1
 
 					save_all()
-					sendNotify("К сожалению данный ключ продукта недопустим.")
+					sendNotify("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РґР°РЅРЅС‹Р№ РєР»СЋС‡ РїСЂРѕРґСѓРєС‚Р° РЅРµРґРѕРїСѓСЃС‚РёРј.")
 				end
 			else
 				deAFKMessage(debug.getinfo(1, "l"), "error[2] " .. tostring(arg_32_0.status_code) .. " | " .. tostring(arg_32_0.text))
-				sendNotify("Ошибка " .. tostring(arg_32_0.status_code) .. ".")
+				sendNotify("РћС€РёР±РєР° " .. tostring(arg_32_0.status_code) .. ".")
 			end
 		end, function(arg_33_0)
 			deAFKMessage(debug.getinfo(1, "l"), "sub error")
@@ -2498,18 +2787,18 @@ function loadPremiumFunction(arg_31_0)
 				if not var_34_0.error then
 					var_0_115.premItems = var_34_0
 
-					sendNotify("Таблица с предметами успешно загружена! Открыть таблицу: /crrxl")
+					sendNotify("РўР°Р±Р»РёС†Р° СЃ РїСЂРµРґРјРµС‚Р°РјРё СѓСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅР°! РћС‚РєСЂС‹С‚СЊ С‚Р°Р±Р»РёС†Сѓ: /crrxl")
 				else
 					var_0_115.premItems = {}
 
-					sendNotify("Ошибка загрузка таблицы. Обратитесь в поддержку.")
+					sendNotify("РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєР° С‚Р°Р±Р»РёС†С‹. РћР±СЂР°С‚РёС‚РµСЃСЊ РІ РїРѕРґРґРµСЂР¶РєСѓ.")
 				end
 			else
 				deAFKMessage(debug.getinfo(1, "l"), "error1 premItems " .. tostring(arg_34_0.status_code))
 			end
 		end, function(arg_35_0)
-			sendNotify("Ошибка клиента/сервера. Обратитесь в поддержку.")
-			sendNotify("Для решения вашей проблемы возможно поможет команда /premhost, напишите ее в чат игры")
+			sendNotify("РћС€РёР±РєР° РєР»РёРµРЅС‚Р°/СЃРµСЂРІРµСЂР°. РћР±СЂР°С‚РёС‚РµСЃСЊ РІ РїРѕРґРґРµСЂР¶РєСѓ.")
+			sendNotify("Р”Р»СЏ СЂРµС€РµРЅРёСЏ РІР°С€РµР№ РїСЂРѕР±Р»РµРјС‹ РІРѕР·РјРѕР¶РЅРѕ РїРѕРјРѕР¶РµС‚ РєРѕРјР°РЅРґР° /premhost, РЅР°РїРёС€РёС‚Рµ РµРµ РІ С‡Р°С‚ РёРіСЂС‹")
 			deAFKMessage(debug.getinfo(1, "l"), "error2 premItems")
 		end)
 	end
@@ -2581,7 +2870,7 @@ function getKey(arg_39_0)
 	local var_39_1 = var_0_55.RegOpenKeyExA(var_0_45.cast("HKEY", 2147483649), "Software\\ArzMarket\\info", 0, 131097, var_39_0)
 
 	if var_39_1 ~= 0 then
-		return nil, "Ошибка открытия ключа реестра: " .. tostring(var_39_1)
+		return nil, "РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ РєР»СЋС‡Р° СЂРµРµСЃС‚СЂР°: " .. tostring(var_39_1)
 	end
 
 	local var_39_2 = tostring(arg_39_0)
@@ -2590,7 +2879,7 @@ function getKey(arg_39_0)
 	if var_0_55.RegQueryValueExA(var_39_0[0], var_39_2, nil, nil, nil, var_39_3) ~= 0 or var_39_3[0] == 0 then
 		var_0_55.RegCloseKey(var_39_0[0])
 
-		return nil, "Ключ не найден или пустой"
+		return nil, "РљР»СЋС‡ РЅРµ РЅР°Р№РґРµРЅ РёР»Рё РїСѓСЃС‚РѕР№"
 	end
 
 	local var_39_4 = var_0_45.new("char[?]", var_39_3[0])
@@ -2600,7 +2889,7 @@ function getKey(arg_39_0)
 	var_0_55.RegCloseKey(var_39_0[0])
 
 	if var_39_6 ~= 0 then
-		return nil, "Ошибка чтения ключа: " .. tostring(var_39_6)
+		return nil, "РћС€РёР±РєР° С‡С‚РµРЅРёСЏ РєР»СЋС‡Р°: " .. tostring(var_39_6)
 	end
 
 	return (var_0_45.string(var_39_4, var_39_3[0] - 1):gsub("%z+$", ""):gsub("^%s*(.-)%s*$", "%1"))
@@ -2751,7 +3040,7 @@ function premiumObjectManager(arg_46_0, arg_46_1, arg_46_2, arg_46_3)
 						local var_47_2, var_47_3, var_47_4, var_47_5, var_47_6, var_47_7, var_47_8, var_47_9, var_47_10 = sampGet3dTextInfoById(iter_47_2)
 						local var_47_11 = getDistanceBetweenCoords3d(iter_47_1.position.x, iter_47_1.position.y, iter_47_1.position.z, var_47_4, var_47_5, var_47_6)
 
-						if var_47_2:find("Лавка") and var_47_11 < 1 then
+						if var_47_2:find("Р›Р°РІРєР°") and var_47_11 < 1 then
 							for iter_47_3, iter_47_4 in pairs(var_0_115.activeObjects) do
 								if iter_47_4.pickupId == iter_47_1.id then
 									deAFKMessage(debug.getinfo(1, "l"), "[respawn] destroy VIP object > " .. iter_47_4.modelHandle)
@@ -2821,7 +3110,7 @@ function isPremiumUser(arg_49_0, arg_49_1)
 end
 
 function isTextRelevant(arg_50_0)
-	return (arg_50_0:find("покупает") or arg_50_0:find("продаёт")) and arg_50_0:find("товар") and (arg_50_0:find("BE5555") or arg_50_0:find("555ABE") or arg_50_0:find("BEBB55")) or arg_50_0:find("редактирует") and arg_50_0:find("список товара")
+	return (arg_50_0:find("РїРѕРєСѓРїР°РµС‚") or arg_50_0:find("РїСЂРѕРґР°С‘С‚")) and arg_50_0:find("С‚РѕРІР°СЂ") and (arg_50_0:find("BE5555") or arg_50_0:find("555ABE") or arg_50_0:find("BEBB55")) or arg_50_0:find("СЂРµРґР°РєС‚РёСЂСѓРµС‚") and arg_50_0:find("СЃРїРёСЃРѕРє С‚РѕРІР°СЂР°")
 end
 
 function var_0_61.onCreatePickup(arg_51_0, arg_51_1, arg_51_2, arg_51_3)
@@ -2986,7 +3275,7 @@ function sell_alitems()
 			}
 
 			if var_0_115.custom_is_invent_open[5] > 4 then
-				AFKMessage("Произошла ошибка нового инвентаря! К сожалению единственным решением будет удалить все товары с продажи и начать выставку товара заново!")
+				AFKMessage("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РЅРѕРІРѕРіРѕ РёРЅРІРµРЅС‚Р°СЂСЏ! Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РµРґРёРЅСЃС‚РІРµРЅРЅС‹Рј СЂРµС€РµРЅРёРµРј Р±СѓРґРµС‚ СѓРґР°Р»РёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ СЃ РїСЂРѕРґР°Р¶Рё Рё РЅР°С‡Р°С‚СЊ РІС‹СЃС‚Р°РІРєСѓ С‚РѕРІР°СЂР° Р·Р°РЅРѕРІРѕ!")
 				off_sell_buy()
 			end
 		end
@@ -3013,9 +3302,9 @@ function sell_alitems()
 					var_0_58 = 1
 					var_0_72[0] = false
 
-					AFKMessage("Выставление товаров завершено.")
-					table.insert(var_0_34, "{35cf0a}Выставление товаров завершено. Проверить все товары вы можете ниже! ")
-					saveLog(os.date("[%H:%M:%S]") .. " Выставление товаров завершено. Проверить все товары вы можете ниже!")
+					AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ.")
+					table.insert(var_0_34, "{35cf0a}Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ. РџСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІС‹ РјРѕР¶РµС‚Рµ РЅРёР¶Рµ! ")
+					saveLog(os.date("[%H:%M:%S]") .. " Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ. РџСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІС‹ РјРѕР¶РµС‚Рµ РЅРёР¶Рµ!")
 
 					var_0_93 = {
 						score = 1,
@@ -3045,8 +3334,8 @@ function sell_alitems()
 			deAFKMessage("sell_list[display.score].enabled")
 
 			if var_0_88[var_0_93.score].enabled == false then
-				saveLog("{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как отключен.")
-				table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как отключен. ")
+				saveLog("{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕС‚РєР»СЋС‡РµРЅ.")
+				table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕС‚РєР»СЋС‡РµРЅ. ")
 
 				need_to_sell = 0
 				sell_busy = false
@@ -3057,8 +3346,8 @@ function sell_alitems()
 			local var_57_1, var_57_2 = sampGetCurrentServerAddress()
 
 			if var_0_28[var_57_1] == 0 and tonumber(var_0_88[var_0_93.score].price_vc) < 10 or var_0_28[var_57_1] ~= 0 and tonumber(var_0_88[var_0_93.score].price) < 10 then
-				saveLog("{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как цена 9, мы не выставляем такую цену.")
-				table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как цена 9, мы не выставляем такую цену. ")
+				saveLog("{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє С†РµРЅР° 9, РјС‹ РЅРµ РІС‹СЃС‚Р°РІР»СЏРµРј С‚Р°РєСѓСЋ С†РµРЅСѓ.")
+				table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє С†РµРЅР° 9, РјС‹ РЅРµ РІС‹СЃС‚Р°РІР»СЏРµРј С‚Р°РєСѓСЋ С†РµРЅСѓ. ")
 
 				need_to_sell = 0
 				sell_busy = false
@@ -3129,8 +3418,8 @@ function sell_alitems()
 							sell_busy = false
 							var_57_4 = false
 
-							saveLog("[error! item blocked by server, skip. CEF] {ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как он выставлен или заблокирован. ")
-							table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как он выставлен или заблокирован. ")
+							saveLog("[error! item blocked by server, skip. CEF] {ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕРЅ РІС‹СЃС‚Р°РІР»РµРЅ РёР»Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ. ")
+							table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕРЅ РІС‹СЃС‚Р°РІР»РµРЅ РёР»Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ. ")
 
 							break
 						end
@@ -3157,8 +3446,8 @@ function sell_alitems()
 					for iter_57_4, iter_57_5 in pairs(var_0_63) do
 						if tonumber(var_0_208[2]) == iter_57_5[2] then
 							if iter_57_5[3] == 0 then
-								saveLog("[error! item blocked by server, skip.] {ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как он выставлен или заблокирован. ")
-								table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как он выставлен или заблокирован. ")
+								saveLog("[error! item blocked by server, skip.] {ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕРЅ РІС‹СЃС‚Р°РІР»РµРЅ РёР»Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ. ")
+								table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕРЅ РІС‹СЃС‚Р°РІР»РµРЅ РёР»Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ. ")
 
 								sell_busy = false
 								need_slot = need_slot + 1
@@ -3185,8 +3474,8 @@ function kapibara()
 		for iter_58_0, iter_58_1 in pairs(var_0_63) do
 			if tonumber(var_0_208[2]) == iter_58_1[2] then
 				if iter_58_1[3] == 0 then
-					saveLog("[error! item blocked by server, skip.] {ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как он выставлен или заблокирован. ")
-					table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] не выставлен так как он выставлен или заблокирован. ")
+					saveLog("[error! item blocked by server, skip.] {ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕРЅ РІС‹СЃС‚Р°РІР»РµРЅ РёР»Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ. ")
+					table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_88[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕРЅ РІС‹СЃС‚Р°РІР»РµРЅ РёР»Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ. ")
 
 					sell_busy = false
 					need_slot = need_slot + 1
@@ -3423,7 +3712,7 @@ function show_mobile(arg_88_0)
 					openCrr()
 				end
 
-				openUrl("https://youtu.be/tNokqjQvls8", "https://rutube.ru/video/private/0e8a9f973c0926e4e2285bf87c8a590a/?r=wd&p=9I8ApjaXRMFEIIDAQERHfA", "Ютуб", "Рутуб")
+				openUrl("https://youtu.be/tNokqjQvls8", "https://rutube.ru/video/private/0e8a9f973c0926e4e2285bf87c8a590a/?r=wd&p=9I8ApjaXRMFEIIDAQERHfA", "Р®С‚СѓР±", "Р СѓС‚СѓР±")
 			else
 				press_any_key(var_0_96.keys[iter_88_0])
 			end
@@ -3565,7 +3854,7 @@ function show_mobile(arg_88_0)
 		var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 1.7999, 14))
 		var_0_1.PushFont(fonts[25])
 
-		if var_0_1.CustomOnlyBorderButton(isCharInAnyCar(PLAYER_PED) and var_0_5("Выйти из машины") or var_0_5("Сесть в машину"), var_0_1.ImVec2(130, 120)) then
+		if var_0_1.CustomOnlyBorderButton(isCharInAnyCar(PLAYER_PED) and var_0_5("Р’С‹Р№С‚Рё РёР· РјР°С€РёРЅС‹") or var_0_5("РЎРµСЃС‚СЊ РІ РјР°С€РёРЅСѓ"), var_0_1.ImVec2(130, 120)) then
 			enter()
 		end
 
@@ -3607,7 +3896,7 @@ function premuimExelDialog(arg_90_0)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 	var_0_1.PushItemWidth(var_90_4 - 50)
-	var_0_1.NewInput(var_0_5("                                                           Поиск предметов [Всего предметов: ") .. #var_0_115.premItems .. "]", var_0_115.search_exel_Custom, 255, "search_exel_Custom")
+	var_0_1.NewInput(var_0_5("                                                           РџРѕРёСЃРє РїСЂРµРґРјРµС‚РѕРІ [Р’СЃРµРіРѕ РїСЂРµРґРјРµС‚РѕРІ: ") .. #var_0_115.premItems .. "]", var_0_115.search_exel_Custom, 255, "search_exel_Custom")
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 1)
 	var_0_1.PushFont(fonts[18])
@@ -3617,7 +3906,7 @@ function premuimExelDialog(arg_90_0)
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmarkxl", var_0_5("Нажав кнопку Вы закроете меню таблицы."), false)
+	var_0_1.Hint("xmarkxl", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ С‚Р°Р±Р»РёС†С‹."), false)
 	var_0_1.PopFont()
 	var_0_1.CustomInvisibleChild("GpremuimExelDialog", var_0_1.ImVec2(var_90_4, var_90_5 - 37), true, var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 2)
@@ -3638,7 +3927,7 @@ function premuimExelDialog(arg_90_0)
 
 	var_0_1.SetCursorPosX(10)
 	var_0_1.CustomInvisibleChild("header_name", var_0_1.ImVec2(var_90_9.name, 20), false)
-	var_0_1.TextColoredRGB("Название товара")
+	var_0_1.TextColoredRGB("РќР°Р·РІР°РЅРёРµ С‚РѕРІР°СЂР°")
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 6)
@@ -3646,7 +3935,7 @@ function premuimExelDialog(arg_90_0)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 6)
 	var_0_1.CustomInvisibleChild("header_ench", var_0_1.ImVec2(var_90_9.ench, 20), false)
-	var_0_1.TextColoredRGB("Заточка")
+	var_0_1.TextColoredRGB("Р—Р°С‚РѕС‡РєР°")
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 6)
@@ -3654,7 +3943,7 @@ function premuimExelDialog(arg_90_0)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 6)
 	var_0_1.CustomInvisibleChild("header_buy", var_0_1.ImVec2(var_90_9.buy, 20), false)
-	var_0_1.TextColoredRGB("Цена покупки")
+	var_0_1.TextColoredRGB("Р¦РµРЅР° РїРѕРєСѓРїРєРё")
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 6)
@@ -3662,7 +3951,7 @@ function premuimExelDialog(arg_90_0)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 6)
 	var_0_1.CustomInvisibleChild("header_sell", var_0_1.ImVec2(var_90_9.sell, 20), false)
-	var_0_1.TextColoredRGB("Цена продажи")
+	var_0_1.TextColoredRGB("Р¦РµРЅР° РїСЂРѕРґР°Р¶Рё")
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 6)
@@ -3670,7 +3959,7 @@ function premuimExelDialog(arg_90_0)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 6)
 	var_0_1.CustomInvisibleChild("header_profit", var_0_1.ImVec2(var_90_9.profit, 20), false)
-	var_0_1.TextColoredRGB("Прибыль")
+	var_0_1.TextColoredRGB("РџСЂРёР±С‹Р»СЊ")
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 6)
@@ -3678,7 +3967,7 @@ function premuimExelDialog(arg_90_0)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 6)
 	var_0_1.CustomInvisibleChild("header_updated", var_0_1.ImVec2(var_90_9.updated, 20), false)
-	var_0_1.TextColoredRGB("Обновлено")
+	var_0_1.TextColoredRGB("РћР±РЅРѕРІР»РµРЅРѕ")
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 8)
 	var_0_1.CustomSeparator(var_90_4 - 2, 2, 7.5)
@@ -3692,7 +3981,7 @@ function premuimExelDialog(arg_90_0)
 	end
 
 	if var_0_115.priceGraph.storage ~= nil then
-		var_0_1.OpenPopup(var_0_5("График таблицы."))
+		var_0_1.OpenPopup(var_0_5("Р“СЂР°С„РёРє С‚Р°Р±Р»РёС†С‹."))
 		crrXlGraphs(var_0_115.priceGraph.storage)
 	end
 
@@ -3711,7 +4000,7 @@ function premuimExelDialog(arg_90_0)
 				if var_0_1.IsItemHovered() then
 					var_0_1.BeginTooltip()
 					var_0_1.PushFont(var_0_85[17])
-					var_0_1.Text(var_0_5("[Продажа] | ") .. var_0_5(var_90_11[iter_90_2].item))
+					var_0_1.Text(var_0_5("[РџСЂРѕРґР°Р¶Р°] | ") .. var_0_5(var_90_11[iter_90_2].item))
 					var_0_1.CustomSeparator(450)
 					drawPriceGraph(var_90_11[iter_90_2].updateDate)
 					var_0_1.PopFont()
@@ -3777,16 +4066,16 @@ function premuimExelDialog(arg_90_0)
 
 	var_0_115.premItemsTemp = {
 		buy = {
-			["0"] = "Нет информации",
-			["13"] = "Нет информации",
-			["12"] = "Нет информации",
-			["16"] = "Нет информации"
+			["0"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["13"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["12"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["16"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё"
 		},
 		sell = {
-			["0"] = "Нет информации",
-			["13"] = "Нет информации",
-			["12"] = "Нет информации",
-			["16"] = "Нет информации"
+			["0"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["13"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["12"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["16"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё"
 		}
 	}
 
@@ -3831,11 +4120,11 @@ function premuimDialog()
 			if string.nlower(iter_91_1.item) == string.nlower(var_0_41[1]) then
 				var_91_6 = iter_91_1.isNeeded
 
-				if var_0_115.premItemsTemp.buy[tostring(iter_91_1.enchantment)] == "Нет информации" then
+				if var_0_115.premItemsTemp.buy[tostring(iter_91_1.enchantment)] == "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё" then
 					var_0_115.premItemsTemp.buy[tostring(iter_91_1.enchantment)] = moneySeparator(iter_91_1.price_buy) .. "$"
 				end
 
-				if var_0_115.premItemsTemp.sell[tostring(iter_91_1.enchantment)] == "Нет информации" then
+				if var_0_115.premItemsTemp.sell[tostring(iter_91_1.enchantment)] == "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё" then
 					var_0_115.premItemsTemp.sell[tostring(iter_91_1.enchantment)] = moneySeparator(iter_91_1.price_sell) .. "$"
 				end
 			end
@@ -3851,29 +4140,29 @@ function premuimDialog()
 		var_0_1.CustomVerticalSeparator(320)
 		var_0_1.CustomInvisibleChild("premuimLeft", var_0_1.ImVec2(var_91_2 / 2.4, -1), false, var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
-		var_0_1.TextColoredRGB("Предмет: " .. changeExtraSim(tostring(var_0_41[1]), 13))
+		var_0_1.TextColoredRGB("РџСЂРµРґРјРµС‚: " .. changeExtraSim(tostring(var_0_41[1]), 13))
 
-		if #("Предмет: " .. tostring(var_0_41[1])) > 12 and var_0_1.IsItemHovered() then
+		if #("РџСЂРµРґРјРµС‚: " .. tostring(var_0_41[1])) > 12 and var_0_1.IsItemHovered() then
 			var_0_1.BeginTooltip()
 			var_0_1.TextColoredRGB(var_0_41[1])
 			var_0_1.EndTooltip()
 		end
 
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
-		var_0_1.TextColoredRGB("Заточка: " .. (var_0_41[7] == "" and "" or "+") .. tostring(var_0_41[7]))
+		var_0_1.TextColoredRGB("Р—Р°С‚РѕС‡РєР°: " .. (var_0_41[7] == "" and "" or "+") .. tostring(var_0_41[7]))
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
-		var_0_1.TextColoredRGB("Уровень: " .. tostring(var_0_41[10]))
+		var_0_1.TextColoredRGB("РЈСЂРѕРІРµРЅСЊ: " .. tostring(var_0_41[10]))
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
-		var_0_1.TextColoredRGB("Нашивка: " .. tostring(var_0_41[9]) .. " " .. (var_0_41[8] == "" and "" or "к") .. " " .. tostring(var_0_41[8]))
+		var_0_1.TextColoredRGB("РќР°С€РёРІРєР°: " .. tostring(var_0_41[9]) .. " " .. (var_0_41[8] == "" and "" or "Рє") .. " " .. tostring(var_0_41[8]))
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 2)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 2)
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
-		var_0_1.CenterText(var_0_5("Скупка:"))
+		var_0_1.CenterText(var_0_5("РЎРєСѓРїРєР°:"))
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 2)
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 20)
 		var_0_1.CustomInvisibleChild("premuimLeft1", var_0_1.ImVec2(-1, -1), false, var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse)
-		var_0_1.TextColoredRGB("Сток: " .. tostring(var_0_115.premItemsTemp.buy["0"]))
+		var_0_1.TextColoredRGB("РЎС‚РѕРє: " .. tostring(var_0_115.premItemsTemp.buy["0"]))
 		var_0_1.TextColoredRGB("+12: " .. tostring(var_0_115.premItemsTemp.buy["12"]))
 		var_0_1.TextColoredRGB("+13: " .. tostring(var_0_115.premItemsTemp.buy["13"]))
 		var_0_1.TextColoredRGB("+16: " .. tostring(var_0_115.premItemsTemp.buy["16"]))
@@ -3884,15 +4173,15 @@ function premuimDialog()
 		var_0_1.CustomInvisibleChild("premuimRight", var_0_1.ImVec2(-1, -1), false, var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 		var_0_1.CustomInvisibleChild("premuimRight1", var_0_1.ImVec2(-1, 85), false, var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse)
-		var_0_1.TextColoredRGB("Популярность товара: ")
+		var_0_1.TextColoredRGB("РџРѕРїСѓР»СЏСЂРЅРѕСЃС‚СЊ С‚РѕРІР°СЂР°: ")
 		var_0_1.SameLine()
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 6)
-		var_0_1.TextColoredRGB(var_91_6 == 1 and "{00a00a}Ликвиден." or "{ff0000}Неликвиден.")
+		var_0_1.TextColoredRGB(var_91_6 == 1 and "{00a00a}Р›РёРєРІРёРґРµРЅ." or "{ff0000}РќРµР»РёРєРІРёРґРµРЅ.")
 		var_0_1.SetCursorPosY(20)
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Найти в таблице"), var_0_1.ImVec2(225, 30)) then
+		if var_0_1.Button(var_0_5("РќР°Р№С‚Рё РІ С‚Р°Р±Р»РёС†Рµ"), var_0_1.ImVec2(225, 30)) then
 			var_0_115.search_exel_Custom = var_0_11.char[256](var_0_5(tostring(var_0_41[1])))
 
 			if var_0_6 then
@@ -3902,7 +4191,7 @@ function premuimDialog()
 			var_0_115.emule_ExelPremium[0] = not var_0_115.emule_ExelPremium[0]
 		end
 
-		if var_0_1.Button(var_0_5("Найти в МаркетПлейсе"), var_0_1.ImVec2(225, 30)) then
+		if var_0_1.Button(var_0_5("РќР°Р№С‚Рё РІ РњР°СЂРєРµС‚РџР»РµР№СЃРµ"), var_0_1.ImVec2(225, 30)) then
 			if not var_0_6 then
 				openCrr()
 			end
@@ -3921,12 +4210,12 @@ function premuimDialog()
 		var_0_1.EndCustomInvisibleChild()
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 2)
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
-		var_0_1.CenterText(var_0_5("Продажа:"))
+		var_0_1.CenterText(var_0_5("РџСЂРѕРґР°Р¶Р°:"))
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 2)
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() / 4.5)
 		var_0_1.CustomInvisibleChild("premuimRight2", var_0_1.ImVec2(-1, 85), false, var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse)
-		var_0_1.TextColoredRGB("Сток: " .. tostring(var_0_115.premItemsTemp.sell["0"]))
+		var_0_1.TextColoredRGB("РЎС‚РѕРє: " .. tostring(var_0_115.premItemsTemp.sell["0"]))
 		var_0_1.TextColoredRGB("+12: " .. tostring(var_0_115.premItemsTemp.sell["12"]))
 		var_0_1.TextColoredRGB("+13: " .. tostring(var_0_115.premItemsTemp.sell["13"]))
 		var_0_1.TextColoredRGB("+16: " .. tostring(var_0_115.premItemsTemp.sell["16"]))
@@ -3939,16 +4228,16 @@ function premuimDialog()
 
 	var_0_115.premItemsTemp = {
 		buy = {
-			["0"] = "Нет информации",
-			["13"] = "Нет информации",
-			["12"] = "Нет информации",
-			["16"] = "Нет информации"
+			["0"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["13"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["12"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["16"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё"
 		},
 		sell = {
-			["0"] = "Нет информации",
-			["13"] = "Нет информации",
-			["12"] = "Нет информации",
-			["16"] = "Нет информации"
+			["0"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["13"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["12"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё",
+			["16"] = "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё"
 		}
 	}
 
@@ -4034,7 +4323,7 @@ end, function(arg_94_0)
 		var_0_1.CustomInvisibleChild("chatMAIN", var_0_1.ImVec2(var_94_5, var_94_6), false, var_0_1.WindowFlags.NoScrollbar)
 		var_0_1.PushFont(fonts[17])
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
-		var_0_1.CenterText(var_0_5("Чат с трейдером."))
+		var_0_1.CenterText(var_0_5("Р§Р°С‚ СЃ С‚СЂРµР№РґРµСЂРѕРј."))
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 		round_text(1)
@@ -4069,7 +4358,7 @@ end, function(arg_94_0)
 			end
 		else
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
-			var_0_1.TextDisabled(var_0_5("История сообщений пуста."))
+			var_0_1.TextDisabled(var_0_5("РСЃС‚РѕСЂРёСЏ СЃРѕРѕР±С‰РµРЅРёР№ РїСѓСЃС‚Р°."))
 		end
 
 		var_0_1.EndCustomInvisibleChild()
@@ -4077,7 +4366,7 @@ end, function(arg_94_0)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 		var_0_1.PushItemWidth(var_94_5 - 100)
 
-		if var_0_1.InputTextWithHintD("##trade_message", var_0_5("Введите сообщение"), var_0_182, var_0_45.sizeof(var_0_182), var_0_1.InputTextFlags.EnterReturnsTrue) then
+		if var_0_1.InputTextWithHintD("##trade_message", var_0_5("Р’РІРµРґРёС‚Рµ СЃРѕРѕР±С‰РµРЅРёРµ"), var_0_182, var_0_45.sizeof(var_0_182), var_0_1.InputTextFlags.EnterReturnsTrue) then
 			var_0_1.SetKeyboardFocusHere()
 
 			local var_94_11 = var_0_5:decode(var_0_45.string(var_0_182))
@@ -4090,7 +4379,7 @@ end, function(arg_94_0)
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Отправить")) then
+		if var_0_1.Button(var_0_5("РћС‚РїСЂР°РІРёС‚СЊ")) then
 			local var_94_12 = var_0_5:decode(var_0_45.string(var_0_182))
 
 			SendToServer(var_94_12)
@@ -4259,7 +4548,7 @@ end, function(arg_94_0)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 10)
 
-		if var_0_1.Button(var_0_5("Прервать"), var_0_1.ImVec2(130, 130)) then
+		if var_0_1.Button(var_0_5("РџСЂРµСЂРІР°С‚СЊ"), var_0_1.ImVec2(130, 130)) then
 			off_sell_buy()
 		end
 
@@ -4342,18 +4631,18 @@ end, function(arg_94_0)
 				var_0_56[8] = os.time()
 				var_0_211[3] = false
 
-				AFKMessage("Началась очистка страницы. Ожидайте.")
+				AFKMessage("РќР°С‡Р°Р»Р°СЃСЊ РѕС‡РёСЃС‚РєР° СЃС‚СЂР°РЅРёС†С‹. РћР¶РёРґР°Р№С‚Рµ.")
 
 				lets_gooooo_clear = true
 				var_0_95[3] = 0
 				clear_busy = false
 			else
-				AFKMessage("Доступно раз в 3 секунды.")
+				AFKMessage("Р”РѕСЃС‚СѓРїРЅРѕ СЂР°Р· РІ 3 СЃРµРєСѓРЅРґС‹.")
 			end
 		end
 
 		var_0_1.PopFont()
-		var_0_1.Hint("clear_sell_button", var_0_5("Функция полностью очищает выбранную страницу.\nОбратите внимание что функция очищает только одну страницу а не все!"), false)
+		var_0_1.Hint("clear_sell_button", var_0_5("Р¤СѓРЅРєС†РёСЏ РїРѕР»РЅРѕСЃС‚СЊСЋ РѕС‡РёС‰Р°РµС‚ РІС‹Р±СЂР°РЅРЅСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ.\nРћР±СЂР°С‚РёС‚Рµ РІРЅРёРјР°РЅРёРµ С‡С‚Рѕ С„СѓРЅРєС†РёСЏ РѕС‡РёС‰Р°РµС‚ С‚РѕР»СЊРєРѕ РѕРґРЅСѓ СЃС‚СЂР°РЅРёС†Сѓ Р° РЅРµ РІСЃРµ!"), false)
 		var_0_1.PopFont()
 		var_0_1.End()
 	end
@@ -4388,13 +4677,13 @@ end, function(arg_94_0)
 			if var_0_94[4] == 0 and next(json_vlad) == nil then
 				var_94_36 = 1
 
-				AFKMessage("У вас не отсканирована скупка в меню скрипта (/crr)! Зайдите в раздел скупки и прочитайте инструкцию по середине меню.")
+				AFKMessage("РЈ РІР°СЃ РЅРµ РѕС‚СЃРєР°РЅРёСЂРѕРІР°РЅР° СЃРєСѓРїРєР° РІ РјРµРЅСЋ СЃРєСЂРёРїС‚Р° (/crr)! Р—Р°Р№РґРёС‚Рµ РІ СЂР°Р·РґРµР» СЃРєСѓРїРєРё Рё РїСЂРѕС‡РёС‚Р°Р№С‚Рµ РёРЅСЃС‚СЂСѓРєС†РёСЋ РїРѕ СЃРµСЂРµРґРёРЅРµ РјРµРЅСЋ.")
 			end
 
 			if var_0_94[4] == 1 and next(json_vlads) == nil then
 				var_94_36 = 1
 
-				AFKMessage("У вас не отсканирована страница продажи в меню скрипта в меню скрипта (/crr)! Зайдите в раздел продажи и прочитайте инструкцию по середине меню.")
+				AFKMessage("РЈ РІР°СЃ РЅРµ РѕС‚СЃРєР°РЅРёСЂРѕРІР°РЅР° СЃС‚СЂР°РЅРёС†Р° РїСЂРѕРґР°Р¶Рё РІ РјРµРЅСЋ СЃРєСЂРёРїС‚Р° РІ РјРµРЅСЋ СЃРєСЂРёРїС‚Р° (/crr)! Р—Р°Р№РґРёС‚Рµ РІ СЂР°Р·РґРµР» РїСЂРѕРґР°Р¶Рё Рё РїСЂРѕС‡РёС‚Р°Р№С‚Рµ РёРЅСЃС‚СЂСѓРєС†РёСЋ РїРѕ СЃРµСЂРµРґРёРЅРµ РјРµРЅСЋ.")
 			end
 
 			if var_94_36 == 0 then
@@ -4409,7 +4698,7 @@ end, function(arg_94_0)
 						lets_go = true
 					end
 				else
-					AFKMessage("Начался скан лавки. Ожидайте завершения, в чате будет выведено сообщение.")
+					AFKMessage("РќР°С‡Р°Р»СЃСЏ СЃРєР°РЅ Р»Р°РІРєРё. РћР¶РёРґР°Р№С‚Рµ Р·Р°РІРµСЂС€РµРЅРёСЏ, РІ С‡Р°С‚Рµ Р±СѓРґРµС‚ РІС‹РІРµРґРµРЅРѕ СЃРѕРѕР±С‰РµРЅРёРµ.")
 
 					lets_gooooo = true
 					var_0_94[3] = 0
@@ -4419,7 +4708,7 @@ end, function(arg_94_0)
 		end
 
 		var_0_1.PopFont()
-		var_0_1.Hint("scan_items_s", var_0_5("После включения этой функции вы просканируете всю лавку\nВсе предметы будут перенесены в скупку или продажу в зависимости продает человек или покупает."), false)
+		var_0_1.Hint("scan_items_s", var_0_5("РџРѕСЃР»Рµ РІРєР»СЋС‡РµРЅРёСЏ СЌС‚РѕР№ С„СѓРЅРєС†РёРё РІС‹ РїСЂРѕСЃРєР°РЅРёСЂСѓРµС‚Рµ РІСЃСЋ Р»Р°РІРєСѓ\nР’СЃРµ РїСЂРµРґРјРµС‚С‹ Р±СѓРґСѓС‚ РїРµСЂРµРЅРµСЃРµРЅС‹ РІ СЃРєСѓРїРєСѓ РёР»Рё РїСЂРѕРґР°Р¶Сѓ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РїСЂРѕРґР°РµС‚ С‡РµР»РѕРІРµРє РёР»Рё РїРѕРєСѓРїР°РµС‚."), false)
 		var_0_1.PopFont()
 		var_0_1.End()
 	end
@@ -4442,7 +4731,7 @@ end, function(arg_94_0)
 		var_0_1.PushStyleColor(var_94_39.ButtonHovered, var_0_1.ImVec4(0.5, 0.5, 0.5, 1))
 		var_0_1.PushStyleColor(var_94_39.ButtonActive, var_0_1.ImVec4(0.5, 0.5, 0.5, 1))
 
-		if var_0_1.Button(var_0_168[0] and var_0_5("Выключить радиус") or var_0_5("Включить радиус"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
+		if var_0_1.Button(var_0_168[0] and var_0_5("Р’С‹РєР»СЋС‡РёС‚СЊ СЂР°РґРёСѓСЃ") or var_0_5("Р’РєР»СЋС‡РёС‚СЊ СЂР°РґРёСѓСЃ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
 			var_0_168[0] = not var_0_168[0]
 			var_0_106.cfg.lavka_helper = var_0_168[0]
 
@@ -4450,7 +4739,7 @@ end, function(arg_94_0)
 		end
 
 		var_0_1.PopStyleColor(3)
-		var_0_1.Hint("radius_activer_lavka", var_0_5("После включения вы будете видеть радиус лавок"), false)
+		var_0_1.Hint("radius_activer_lavka", var_0_5("РџРѕСЃР»Рµ РІРєР»СЋС‡РµРЅРёСЏ РІС‹ Р±СѓРґРµС‚Рµ РІРёРґРµС‚СЊ СЂР°РґРёСѓСЃ Р»Р°РІРѕРє"), false)
 		var_0_1.PopFont()
 		var_0_1.End()
 	end
@@ -4479,7 +4768,7 @@ end, function(arg_94_0)
 		end
 
 		var_0_1.PopFont()
-		var_0_1.Hint("auto_full_dialog", var_0_5("После включения этой функции вы будете переность полный стак предмета."), false)
+		var_0_1.Hint("auto_full_dialog", var_0_5("РџРѕСЃР»Рµ РІРєР»СЋС‡РµРЅРёСЏ СЌС‚РѕР№ С„СѓРЅРєС†РёРё РІС‹ Р±СѓРґРµС‚Рµ РїРµСЂРµРЅРѕСЃС‚СЊ РїРѕР»РЅС‹Р№ СЃС‚Р°Рє РїСЂРµРґРјРµС‚Р°."), false)
 		var_0_1.PopFont()
 		var_0_1.End()
 	end
@@ -4570,6 +4859,42 @@ end, function(arg_94_0)
 		var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(8, 8))
 		var_0_1.PushStyleVarFloat(var_0_1.StyleVar.Alpha, UI_ANIM_BUTTON and os.clock() - UI_ANIM_BUTTON.time <= UI_ANIM_BUTTON.duration and kifir or 1)
 
+		if var_0_8 ~= 5 then
+			AMBridge.marketplacePageOpen = false
+		elseif not AMBridge.marketplacePageOpen then
+			AMBridge.marketplacePageOpen = true
+			AMBridge.targetInitialRequest = false
+
+			if marketplaceBridgeIsSource() then
+				var_0_106.cfg.marketplaceSelectedItem = AMBridge.settings.sourceServerId + 1
+				var_0_115.marketplace_serversSelected[0] = AMBridge.settings.sourceServerId + 1
+
+				-- Keep the already loaded list when switching between Marketplace
+				-- and the other tabs.  A request is only needed after a reload,
+				-- a manual refresh, or a server selection change.
+				if download_marketplace == nil then
+					var_0_115.marketplaceManualRefreshPending = true
+				end
+			elseif not (type(AMBridge.settings) == "table" and AMBridge.settings.enabled == true) then
+				if download_marketplace == nil then
+					var_0_115.marketplaceManualRefreshPending = true
+				end
+			elseif marketplaceBridgeIsTarget() then
+				if marketplaceBridgeIsUniversal() then
+					AMBridge.currentTargetServerId = marketplaceBridgeCurrentServerId()
+
+					if AMBridge.currentTargetServerId ~= nil then
+						var_0_106.cfg.marketplaceSelectedItem = AMBridge.currentTargetServerId + 1
+						var_0_115.marketplace_serversSelected[0] = AMBridge.currentTargetServerId + 1
+					end
+				end
+
+				if download_marketplace == nil then
+					AMBridge.clientLastCheck = 0
+				end
+			end
+		end
+
 		if var_0_8 == 1 then
 			sell(var_94_31)
 		elseif var_0_8 == 2 then
@@ -4583,15 +4908,36 @@ end, function(arg_94_0)
 		elseif var_0_8 == 4 then
 			logs_page()
 		elseif var_0_8 == 5 then
-			if download_marketplace == nil then
-				if (var_0_106.cfg.premiumTokenAuth == 1 or var_0_106.cfg.premiumTokenAuth == 2) and not var_0_115.premiumKeys[1] then
-					deAFKMessage("loading..?")
-					print("marketplace pre loading...")
-				else
-					download_marketplace = false
-
-					marketplace_Manager()
+			if marketplaceBridgeIsSource() then
+				if download_marketplace == nil then
+					if (var_0_106.cfg.premiumTokenAuth == 1 or var_0_106.cfg.premiumTokenAuth == 2) and not var_0_115.premiumKeys[1] then
+						deAFKMessage("loading..?")
+						print("marketplace pre loading...")
+					else
+						download_marketplace = false
+						var_0_115.marketplaceManualRefreshPending = true
+					end
 				end
+			elseif marketplaceBridgeIsTarget() then
+				if download_marketplace == nil then
+					AMBridge.clientLastCheck = 0
+
+					if marketplaceBridgeLoadSavedData() then
+						var_0_115.marketplaceManualRefreshPending = true
+					else
+						download_marketplace = "blocked"
+					end
+				end
+			elseif download_marketplace == nil then
+				download_marketplace = false
+				var_0_115.marketplaceManualRefreshPending = true
+			end
+
+			-- Keep calling the manager while a request is pending or in flight.
+			-- This is the missing part of the original code: otherwise a selection
+			-- made during its five-second limit remains on the spinner forever.
+			if var_0_115.marketplaceManualRefreshPending or var_0_115.marketplaceRequestInFlight then
+				marketplace_Manager()
 			end
 
 			if download_marketplace == true then
@@ -4611,11 +4957,11 @@ end, function(arg_94_0)
 
 				var_0_1.PushFont(fonts[18])
 				var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 15, sizeY / 2.2))
-				var_0_1.TextDisabled(var_0_5("Для того что бы данная функция была доступна нужно зайти в раздел скупки и..."))
+				var_0_1.TextDisabled(var_0_5("Р”Р»СЏ С‚РѕРіРѕ С‡С‚Рѕ Р±С‹ РґР°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ Р±С‹Р»Р° РґРѕСЃС‚СѓРїРЅР° РЅСѓР¶РЅРѕ Р·Р°Р№С‚Рё РІ СЂР°Р·РґРµР» СЃРєСѓРїРєРё Рё..."))
 				var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 4, sizeY / 1.95))
-				var_0_1.TextDisabled(var_0_5("...выполнить инструкцию на экране."))
+				var_0_1.TextDisabled(var_0_5("...РІС‹РїРѕР»РЅРёС‚СЊ РёРЅСЃС‚СЂСѓРєС†РёСЋ РЅР° СЌРєСЂР°РЅРµ."))
 				var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 3.6, sizeY / 1.75))
-				var_0_1.Link("https://youtu.be/7SCnwFnNaYg", "https://rutube.ru/video/private/98899bc7018fdc37812a045faf96ec4a/?p=1OLMt59-z_0eRWpsPrgeLA", var_0_5("[Инструкция] Как это сделать?"), nil, var_94_31, "Ютуб", "Рутуб")
+				var_0_1.Link("https://youtu.be/7SCnwFnNaYg", "https://rutube.ru/video/private/98899bc7018fdc37812a045faf96ec4a/?p=1OLMt59-z_0eRWpsPrgeLA", var_0_5("[РРЅСЃС‚СЂСѓРєС†РёСЏ] РљР°Рє СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ?"), nil, var_94_31, "Р®С‚СѓР±", "Р СѓС‚СѓР±")
 				var_0_1.PopFont()
 			end
 
@@ -4636,7 +4982,7 @@ end, function(arg_94_0)
 				var_0_1.Spinner("##spinne3r", 45, 2, var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_94_31[1], var_94_31[2], var_94_31[3], var_94_31[4])))
 				var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 335) / 3.8, sizeY / 1.65))
 				var_0_1.PushFont(fonts[18])
-				var_0_1.TextDisabled(var_0_5("Загрузка интерфейса. Пожалуйста подождите ") .. 28 - (var_0_56[39][2] + var_0_56[38][2]) .. var_0_5(" секунд... [") .. var_0_56[39][2] .. "] [" .. var_0_56[38][2] .. "]")
+				var_0_1.TextDisabled(var_0_5("Р—Р°РіСЂСѓР·РєР° РёРЅС‚РµСЂС„РµР№СЃР°. РџРѕР¶Р°Р»СѓР№СЃС‚Р° РїРѕРґРѕР¶РґРёС‚Рµ ") .. 28 - (var_0_56[39][2] + var_0_56[38][2]) .. var_0_5(" СЃРµРєСѓРЅРґ... [") .. var_0_56[39][2] .. "] [" .. var_0_56[38][2] .. "]")
 				var_0_1.PopFont()
 
 				if var_0_115.marketplaceTimeOut == true and var_0_56[38][1] + 1 < os.time() then
@@ -4674,7 +5020,7 @@ end, function(arg_94_0)
 				var_0_1.Spinner("##spi2nner", 45, 2, var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_94_31[1], var_94_31[2], var_94_31[3], var_94_31[4])))
 				var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 335) / 2.37, sizeY / 1.65))
 				var_0_1.PushFont(fonts[18])
-				var_0_1.TextDisabled(var_0_5("Загрузка интерфейса. Пожалуйста подождите..."))
+				var_0_1.TextDisabled(var_0_5("Р—Р°РіСЂСѓР·РєР° РёРЅС‚РµСЂС„РµР№СЃР°. РџРѕР¶Р°Р»СѓР№СЃС‚Р° РїРѕРґРѕР¶РґРёС‚Рµ..."))
 				var_0_1.PopFont()
 			end
 		elseif var_0_8 == 7 then
@@ -4696,7 +5042,7 @@ end, function(arg_94_0)
 				var_0_1.Spinner("##spinnefr", 45, 2, var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_94_31[1], var_94_31[2], var_94_31[3], var_94_31[4])))
 				var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 335) / 2.37, sizeY / 1.65))
 				var_0_1.PushFont(fonts[18])
-				var_0_1.TextDisabled(var_0_5("Загрузка интерфейса. Пожалуйста подождите..."))
+				var_0_1.TextDisabled(var_0_5("Р—Р°РіСЂСѓР·РєР° РёРЅС‚РµСЂС„РµР№СЃР°. РџРѕР¶Р°Р»СѓР№СЃС‚Р° РїРѕРґРѕР¶РґРёС‚Рµ..."))
 				var_0_1.PopFont()
 			end
 		elseif var_0_8 == 8 then
@@ -4716,7 +5062,7 @@ end, function(arg_94_0)
 					var_0_1.Spinner("##spinner2", 45, 2, var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_94_31[1], var_94_31[2], var_94_31[3], var_94_31[4])))
 					var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 335) / 2.37, sizeY / 1.65))
 					var_0_1.PushFont(fonts[18])
-					var_0_1.TextDisabled(var_0_5("Загрузка интерфейса. Пожалуйста подождите..."))
+					var_0_1.TextDisabled(var_0_5("Р—Р°РіСЂСѓР·РєР° РёРЅС‚РµСЂС„РµР№СЃР°. РџРѕР¶Р°Р»СѓР№СЃС‚Р° РїРѕРґРѕР¶РґРёС‚Рµ..."))
 					var_0_1.PopFont()
 				end
 			end
@@ -4734,7 +5080,7 @@ end, function(arg_94_0)
 				var_0_1.Spinner("##spinner2", 45, 2, var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_94_31[1], var_94_31[2], var_94_31[3], var_94_31[4])))
 				var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 335) / 2.37, sizeY / 1.65))
 				var_0_1.PushFont(fonts[18])
-				var_0_1.TextDisabled(var_0_5("Загрузка интерфейса. Пожалуйста подождите..."))
+				var_0_1.TextDisabled(var_0_5("Р—Р°РіСЂСѓР·РєР° РёРЅС‚РµСЂС„РµР№СЃР°. РџРѕР¶Р°Р»СѓР№СЃС‚Р° РїРѕРґРѕР¶РґРёС‚Рµ..."))
 				var_0_1.PopFont()
 			end
 		end
@@ -4811,27 +5157,27 @@ end, function(arg_94_0)
 			var_0_1.CustomInvisibleChild("razpred", var_0_1.ImVec2(var_94_57, var_94_58), false, var_0_1.WindowFlags.NoScrollbar)
 			var_0_1.PushFont(fonts[17])
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
-			var_0_1.CenterText(var_0_5("Фильтры."))
+			var_0_1.CenterText(var_0_5("Р¤РёР»СЊС‚СЂС‹."))
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-			if var_0_1.ToggleButton(var_0_5("Скрывать недоступные предметы."), var_0_136) then
+			if var_0_1.ToggleButton(var_0_5("РЎРєСЂС‹РІР°С‚СЊ РЅРµРґРѕСЃС‚СѓРїРЅС‹Рµ РїСЂРµРґРјРµС‚С‹."), var_0_136) then
 				var_0_106.cfg.filter_three = var_0_136[0]
 
 				save_all()
 			end
 
-			var_0_1.Hint("filter_threeA", var_0_5("Скрывает все предметы которых у вас нет в инвентаре\nВыполнять сортировку не нужно.\nПриминяется автоматически если включен."), false)
+			var_0_1.Hint("filter_threeA", var_0_5("РЎРєСЂС‹РІР°РµС‚ РІСЃРµ РїСЂРµРґРјРµС‚С‹ РєРѕС‚РѕСЂС‹С… Сѓ РІР°СЃ РЅРµС‚ РІ РёРЅРІРµРЅС‚Р°СЂРµ\nР’С‹РїРѕР»РЅСЏС‚СЊ СЃРѕСЂС‚РёСЂРѕРІРєСѓ РЅРµ РЅСѓР¶РЅРѕ.\nРџСЂРёРјРёРЅСЏРµС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РµСЃР»Рё РІРєР»СЋС‡РµРЅ."), false)
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 20)
-			var_0_1.CenterText(var_0_5("Сортировка предметов."))
+			var_0_1.CenterText(var_0_5("РЎРѕСЂС‚РёСЂРѕРІРєР° РїСЂРµРґРјРµС‚РѕРІ."))
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-			if var_0_1.ToggleButton(var_0_5("Отключить все чего нет в инвентаре."), var_0_134) then
+			if var_0_1.ToggleButton(var_0_5("РћС‚РєР»СЋС‡РёС‚СЊ РІСЃРµ С‡РµРіРѕ РЅРµС‚ РІ РёРЅРІРµРЅС‚Р°СЂРµ."), var_0_134) then
 				var_0_106.cfg.filter_one = var_0_134[0]
 
 				save_all()
@@ -4840,7 +5186,7 @@ end, function(arg_94_0)
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-			if var_0_1.ToggleButton(var_0_5("Все отключенные переместить вниз."), var_0_135) then
+			if var_0_1.ToggleButton(var_0_5("Р’СЃРµ РѕС‚РєР»СЋС‡РµРЅРЅС‹Рµ РїРµСЂРµРјРµСЃС‚РёС‚СЊ РІРЅРёР·."), var_0_135) then
 				var_0_106.cfg.filter_two = var_0_135[0]
 
 				save_all()
@@ -4851,7 +5197,7 @@ end, function(arg_94_0)
 
 			var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-			if var_0_1.Button(var_0_5("Выполнить сортировку"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
+			if var_0_1.Button(var_0_5("Р’С‹РїРѕР»РЅРёС‚СЊ СЃРѕСЂС‚РёСЂРѕРІРєСѓ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
 				if #var_0_88 > 0 then
 					for iter_94_1 = 1, #var_0_88 do
 						for iter_94_2, iter_94_3 in pairs(var_0_88) do
@@ -4869,7 +5215,7 @@ end, function(arg_94_0)
 					end
 				end
 
-				AFKMessage("Сортировка выполнена.")
+				AFKMessage("РЎРѕСЂС‚РёСЂРѕРІРєР° РІС‹РїРѕР»РЅРµРЅР°.")
 
 				var_0_75[0] = not var_0_75[0]
 			end
@@ -4912,11 +5258,11 @@ end, function(arg_94_0)
 			var_0_1.CustomInvisibleChild("razpred", var_0_1.ImVec2(var_94_66, var_94_67), false, var_0_1.WindowFlags.NoScrollbar)
 			var_0_1.PushFont(fonts[17])
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
-			var_0_1.CenterText(var_0_45.string(var_0_80.buy) >= "0" and var_0_5("Примерный Остаток денег: ") .. moneySeparator(GetMoneyLimit()) or var_0_5("Введите кол-во вирт"))
+			var_0_1.CenterText(var_0_45.string(var_0_80.buy) >= "0" and var_0_5("РџСЂРёРјРµСЂРЅС‹Р№ РћСЃС‚Р°С‚РѕРє РґРµРЅРµРі: ") .. moneySeparator(GetMoneyLimit()) or var_0_5("Р’РІРµРґРёС‚Рµ РєРѕР»-РІРѕ РІРёСЂС‚"))
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
-			var_0_1.Text(var_0_5("Кол-во вирт на скуп -"))
+			var_0_1.Text(var_0_5("РљРѕР»-РІРѕ РІРёСЂС‚ РЅР° СЃРєСѓРї -"))
 			var_0_1.SameLine()
 			var_0_1.PushItemWidth(100)
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 3)
@@ -4924,13 +5270,13 @@ end, function(arg_94_0)
 			var_0_1.InputTextD(var_0_167 and " SA$" or " VC$", var_0_80.buy, 32, var_0_1.InputTextFlags.CharsDecimal)
 			var_0_1.PopStyleVar()
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 35)
-			var_0_1.CenterText(var_0_5("Кол-во предметов - ") .. #var_0_87)
+			var_0_1.CenterText(var_0_5("РљРѕР»-РІРѕ РїСЂРµРґРјРµС‚РѕРІ - ") .. #var_0_87)
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 27)
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 
 			var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-			if var_0_1.Button(var_0_5("Распределить"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
+			if var_0_1.Button(var_0_5("Р Р°СЃРїСЂРµРґРµР»РёС‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
 				local var_94_70 = 0
 
 				for iter_94_4, iter_94_5 in pairs(var_0_87) do
@@ -4952,7 +5298,7 @@ end, function(arg_94_0)
 					end
 				end
 
-				AFKMessage("Распределение завершено. Примерный остаток - {505050}" .. moneySeparator(GetMoneyLimit()))
+				AFKMessage("Р Р°СЃРїСЂРµРґРµР»РµРЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ. РџСЂРёРјРµСЂРЅС‹Р№ РѕСЃС‚Р°С‚РѕРє - {505050}" .. moneySeparator(GetMoneyLimit()))
 
 				var_0_80.page = 0
 				var_0_67[0] = not var_0_67[0]
@@ -4977,10 +5323,6 @@ end, function(arg_94_0)
 
 		var_0_1.End()
 		var_0_1.PopStyleVar()
-	end
-
-	if var_0_115.marketDealOpen[0] then
-		marketplaceDealWindow()
 	end
 end)
 
@@ -5230,7 +5572,7 @@ function priceGraphRender(arg_99_0, arg_99_1, arg_99_2, arg_99_3, arg_99_4, arg_
 	local var_99_0 = arg_99_5 == 2 and "3" or "2"
 
 	if #arg_99_4 == 0 then
-		arg_99_0:AddText(var_0_1.ImVec2(arg_99_1.x + arg_99_2 / 2 - 50, arg_99_1.y + arg_99_3 / 2 - 10), 2432696319, "Нет данных для отображения")
+		arg_99_0:AddText(var_0_1.ImVec2(arg_99_1.x + arg_99_2 / 2 - 50, arg_99_1.y + arg_99_3 / 2 - 10), 2432696319, "РќРµС‚ РґР°РЅРЅС‹С… РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ")
 
 		return
 	end
@@ -5327,14 +5669,14 @@ function priceGraphRender(arg_99_0, arg_99_1, arg_99_2, arg_99_3, arg_99_4, arg_
 	if var_99_7 ~= -1 then
 		var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(8, 8))
 		var_0_1.BeginTooltip()
-		var_0_1.Text(var_0_5("Дата: ") .. arg_99_4[var_99_7]["1"])
-		var_0_1.Text(var_0_5("Цена: ") .. formatPrice(arg_99_4[var_99_7][var_99_0]))
+		var_0_1.Text(var_0_5("Р”Р°С‚Р°: ") .. arg_99_4[var_99_7]["1"])
+		var_0_1.Text(var_0_5("Р¦РµРЅР°: ") .. formatPrice(arg_99_4[var_99_7][var_99_0]))
 
 		if var_99_7 > 1 then
 			local var_99_22 = arg_99_4[var_99_7][var_99_0] - arg_99_4[var_99_7 - 1][var_99_0]
 			local var_99_23 = var_99_22 / arg_99_4[var_99_7 - 1][var_99_0] * 100
 
-			var_0_1.Text(string.format(var_0_5("Изменение: %s%.2f%%"), var_99_22 >= 0 and "+" or "-", var_99_23) .. "  %")
+			var_0_1.Text(string.format(var_0_5("РР·РјРµРЅРµРЅРёРµ: %s%.2f%%"), var_99_22 >= 0 and "+" or "-", var_99_23) .. "  %")
 		end
 
 		var_0_1.EndTooltip()
@@ -5477,20 +5819,20 @@ function marketplaceAuthPage()
 	var_0_1.PushStyleColor(var_109_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Авторизация в маркетплейсе."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("РђРІС‚РѕСЂРёР·Р°С†РёСЏ РІ РјР°СЂРєРµС‚РїР»РµР№СЃРµ."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_115.isPopupActive = true
 
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(650, 405))
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 		var_0_1.BeginChild("marketplaceAuthPage", var_0_1.ImVec2(-1, 255), true)
-		var_0_1.TextColoredRGB("{cccccc}Здравствуйте. Данный раздел создан для того что бы авторизоваться в маркетплейсе...")
-		var_0_1.TextColoredRGB("{cccccc}авторизуйтесь что бы продолжить использовать функцию \"Маркетплейс\".")
-		var_0_1.TextColoredRGB("{cccccc}ВНИМАНИЕ! Ключ для доступа можно взять написав в боте /start затем нажмите... .")
-		var_0_1.TextColoredRGB("{cccccc}кнопку \"Личный кабинет\".")
+		var_0_1.TextColoredRGB("{cccccc}Р—РґСЂР°РІСЃС‚РІСѓР№С‚Рµ. Р”Р°РЅРЅС‹Р№ СЂР°Р·РґРµР» СЃРѕР·РґР°РЅ РґР»СЏ С‚РѕРіРѕ С‡С‚Рѕ Р±С‹ Р°РІС‚РѕСЂРёР·РѕРІР°С‚СЊСЃСЏ РІ РјР°СЂРєРµС‚РїР»РµР№СЃРµ...")
+		var_0_1.TextColoredRGB("{cccccc}Р°РІС‚РѕСЂРёР·СѓР№С‚РµСЃСЊ С‡С‚Рѕ Р±С‹ РїСЂРѕРґРѕР»Р¶РёС‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С„СѓРЅРєС†РёСЋ \"РњР°СЂРєРµС‚РїР»РµР№СЃ\".")
+		var_0_1.TextColoredRGB("{cccccc}Р’РќРРњРђРќРР•! РљР»СЋС‡ РґР»СЏ РґРѕСЃС‚СѓРїР° РјРѕР¶РЅРѕ РІР·СЏС‚СЊ РЅР°РїРёСЃР°РІ РІ Р±РѕС‚Рµ /start Р·Р°С‚РµРј РЅР°Р¶РјРёС‚Рµ... .")
+		var_0_1.TextColoredRGB("{cccccc}РєРЅРѕРїРєСѓ \"Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚\".")
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 
-		if var_0_1.InputTextWithHintD(var_0_5("Введите ключ маркетплейса."), var_0_5("Введите ключ"), var_0_115.premiumTokenAuth, var_0_45.sizeof(var_0_115.premiumTokenAuth)) then
+		if var_0_1.InputTextWithHintD(var_0_5("Р’РІРµРґРёС‚Рµ РєР»СЋС‡ РјР°СЂРєРµС‚РїР»РµР№СЃР°."), var_0_5("Р’РІРµРґРёС‚Рµ РєР»СЋС‡"), var_0_115.premiumTokenAuth, var_0_45.sizeof(var_0_115.premiumTokenAuth)) then
 			-- block empty
 		end
 
@@ -5499,8 +5841,8 @@ function marketplaceAuthPage()
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Проверить авторизацию"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
-			sendNotify("  Попытка авторизации...")
+		if var_0_1.Button(var_0_5("РџСЂРѕРІРµСЂРёС‚СЊ Р°РІС‚РѕСЂРёР·Р°С†РёСЋ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+			sendNotify("  РџРѕРїС‹С‚РєР° Р°РІС‚РѕСЂРёР·Р°С†РёРё...")
 			asyncHttpRequest("POST", var_0_115.host .. "/api/checkKey/" .. var_0_45.string(var_0_115.premiumTokenAuth), {}, function(arg_110_0)
 				if arg_110_0.status_code == 201 then
 					deAFKMessage(debug.getinfo(1, "l"), "sub: " .. arg_110_0.text)
@@ -5510,7 +5852,7 @@ function marketplaceAuthPage()
 					if var_0_115.premiumUserInfo.endTime then
 						var_0_115.premiumKeys = {}
 
-						sendNotify("Авторизация маркетплейса успешна!")
+						sendNotify("РђРІС‚РѕСЂРёР·Р°С†РёСЏ РјР°СЂРєРµС‚РїР»РµР№СЃР° СѓСЃРїРµС€РЅР°!")
 
 						var_0_106.cfg.premiumTokenAuth = 2
 
@@ -5526,26 +5868,26 @@ function marketplaceAuthPage()
 
 						download_marketplace = nil
 					elseif var_0_115.premiumUserInfo.error then
-						sendNotify("К сожалению данный ключ отсутсвует.")
+						sendNotify("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РґР°РЅРЅС‹Р№ РєР»СЋС‡ РѕС‚СЃСѓС‚СЃРІСѓРµС‚.")
 					end
 				else
 					deAFKMessage(debug.getinfo(1, "l"), "error1 " .. tostring(arg_110_0.status_code))
-					sendNotify("Ошибка " .. tostring(arg_110_0.status_code) .. ".")
+					sendNotify("РћС€РёР±РєР° " .. tostring(arg_110_0.status_code) .. ".")
 				end
 			end, function(arg_111_0)
 				deAFKMessage(debug.getinfo(1, "l"), "sub error")
-				sendNotify("Ошибка клиента/сервера. Обратитесь в поддержку.")
+				sendNotify("РћС€РёР±РєР° РєР»РёРµРЅС‚Р°/СЃРµСЂРІРµСЂР°. РћР±СЂР°С‚РёС‚РµСЃСЊ РІ РїРѕРґРґРµСЂР¶РєСѓ.")
 			end)
 		end
 
-		if var_0_1.Button(var_0_5("Ничего не открылось"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("РќРёС‡РµРіРѕ РЅРµ РѕС‚РєСЂС‹Р»РѕСЃСЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
-			openUrl("https://t.me/ArzMarketManager_bot", "https://vk.com/im/convo/-237814015", "Telegram", "Вконтакте", true)
+			openUrl("https://t.me/ArzMarketManager_bot", "https://vk.com/im/convo/-237814015", "Telegram", "Р’РєРѕРЅС‚Р°РєС‚Рµ", true)
 		end
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
@@ -5569,21 +5911,21 @@ function downloadScriptPage()
 	var_0_1.PushStyleColor(var_112_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Найдено новое обновление скрипта!"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("РќР°Р№РґРµРЅРѕ РЅРѕРІРѕРµ РѕР±РЅРѕРІР»РµРЅРёРµ СЃРєСЂРёРїС‚Р°!"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_115.isPopupActive = true
 
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(650, 305))
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		var_0_1.BeginChild("downloadScriptPage", var_0_1.ImVec2(-1, 190), true)
-		var_0_1.CenterText(var_0_5("Обнаружено обновление скрипта! Новая версия: ") .. tostring(var_0_115.scriptVersion[3].latest) .. ".")
-		var_0_1.CenterText(var_0_5("Каждое обновление - важное. Что бы обновить скрипт нажмите \"Обновить сейчас\"."))
-		var_0_1.CenterText(var_0_5("Нажимая на \"Напомнить позже\", вы отказываетесь от актуальной версии скрипта!"))
+		var_0_1.CenterText(var_0_5("РћР±РЅР°СЂСѓР¶РµРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ СЃРєСЂРёРїС‚Р°! РќРѕРІР°СЏ РІРµСЂСЃРёСЏ: ") .. tostring(var_0_115.scriptVersion[3].latest) .. ".")
+		var_0_1.CenterText(var_0_5("РљР°Р¶РґРѕРµ РѕР±РЅРѕРІР»РµРЅРёРµ - РІР°Р¶РЅРѕРµ. Р§С‚Рѕ Р±С‹ РѕР±РЅРѕРІРёС‚СЊ СЃРєСЂРёРїС‚ РЅР°Р¶РјРёС‚Рµ \"РћР±РЅРѕРІРёС‚СЊ СЃРµР№С‡Р°СЃ\"."))
+		var_0_1.CenterText(var_0_5("РќР°Р¶РёРјР°СЏ РЅР° \"РќР°РїРѕРјРЅРёС‚СЊ РїРѕР·Р¶Рµ\", РІС‹ РѕС‚РєР°Р·С‹РІР°РµС‚РµСЃСЊ РѕС‚ Р°РєС‚СѓР°Р»СЊРЅРѕР№ РІРµСЂСЃРёРё СЃРєСЂРёРїС‚Р°!"))
 		var_0_1.EndChild()
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Обновить сейчас."), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("РћР±РЅРѕРІРёС‚СЊ СЃРµР№С‡Р°СЃ."), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			asyncHttpRequest("GET", var_0_115.scriptVersion[3].updateurl, {}, function(arg_113_0)
 				if arg_113_0.status_code == 200 or arg_113_0.status_code == 201 then
 					deAFKMessage(debug.getinfo(1, "l"), "updated script?: " .. arg_113_0.text)
@@ -5624,14 +5966,14 @@ function downloadScriptPage()
 				end
 			end, function(arg_114_0)
 				deAFKMessage(debug.getinfo(1, "l"), "sub error")
-				sendNotify("Ошибка клиента/сервера. Обратитесь в поддержку.")
+				sendNotify("РћС€РёР±РєР° РєР»РёРµРЅС‚Р°/СЃРµСЂРІРµСЂР°. РћР±СЂР°С‚РёС‚РµСЃСЊ РІ РїРѕРґРґРµСЂР¶РєСѓ.")
 			end)
 
 			var_0_115.isPopupActive = false
 			var_0_115.scriptVersion[2] = false
 		end
 
-		if var_0_1.Button(var_0_5("Напомнить позже."), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("РќР°РїРѕРјРЅРёС‚СЊ РїРѕР·Р¶Рµ."), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 			var_0_115.scriptVersion[2] = false
 
@@ -5656,7 +5998,7 @@ function SellBuyFull()
 	var_0_1.PushStyleColor(var_115_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Лог продаж и покупок."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("Р›РѕРі РїСЂРѕРґР°Р¶ Рё РїРѕРєСѓРїРѕРє."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_115.isPopupActive = true
 
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(900, 505))
@@ -5668,7 +6010,7 @@ function SellBuyFull()
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
@@ -5692,26 +6034,26 @@ function premiumPage(arg_116_0)
 	var_0_1.PushStyleColor(var_116_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Личный кабинет."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_115.isPopupActive = true
 
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(700, var_0_115.isMenuActive == 1 and 340 or 305))
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 		var_0_1.BeginChild("premiumPage", var_0_1.ImVec2(-1, 190), true)
-		var_0_1.CenterText(var_0_5("Здравствуйте. Приветствуем вас в разделе \"Личный кабинет\""), nil)
-		var_0_1.CenterText(var_0_5("Здесь вы можете авторизоваться в аккаунте и активировать подписку."), nil)
-		var_0_1.CenterText(var_0_5("Все возможности подписок PREMIUM вы можете найти нажав по тексту ниже."), nil)
+		var_0_1.CenterText(var_0_5("Р—РґСЂР°РІСЃС‚РІСѓР№С‚Рµ. РџСЂРёРІРµС‚СЃС‚РІСѓРµРј РІР°СЃ РІ СЂР°Р·РґРµР»Рµ \"Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚\""), nil)
+		var_0_1.CenterText(var_0_5("Р—РґРµСЃСЊ РІС‹ РјРѕР¶РµС‚Рµ Р°РІС‚РѕСЂРёР·РѕРІР°С‚СЊСЃСЏ РІ Р°РєРєР°СѓРЅС‚Рµ Рё Р°РєС‚РёРІРёСЂРѕРІР°С‚СЊ РїРѕРґРїРёСЃРєСѓ."), nil)
+		var_0_1.CenterText(var_0_5("Р’СЃРµ РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё РїРѕРґРїРёСЃРѕРє PREMIUM РІС‹ РјРѕР¶РµС‚Рµ РЅР°Р№С‚Рё РЅР°Р¶Р°РІ РїРѕ С‚РµРєСЃС‚Сѓ РЅРёР¶Рµ."), nil)
 		var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() / 9)
-		var_0_1.Link("https://t.me/ArzMarketManager_bot?start=start", "https://t.me/ArzMarketManager_bot?start=start", var_0_5("[!] Все возможности подписок PREMIUM, авто-реклама, таблица цен и другое."), nil, arg_116_0, "Telegram", "Telegram")
+		var_0_1.Link("https://t.me/ArzMarketManager_bot?start=start", "https://t.me/ArzMarketManager_bot?start=start", var_0_5("[!] Р’СЃРµ РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё РїРѕРґРїРёСЃРѕРє PREMIUM, Р°РІС‚Рѕ-СЂРµРєР»Р°РјР°, С‚Р°Р±Р»РёС†Р° С†РµРЅ Рё РґСЂСѓРіРѕРµ."), nil, arg_116_0, "Telegram", "Telegram")
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 
-		if (#var_0_45.string(var_0_115.premiumTokenAuth) == 0 or var_0_115.VisibleKey) and (not var_0_1.InputTextWithHintD(var_0_5("Введите ваш ключ от профиля."), var_0_5("Введите ключ"), var_0_115.premiumTokenAuth, var_0_45.sizeof(var_0_115.premiumTokenAuth)) or true) then
+		if (#var_0_45.string(var_0_115.premiumTokenAuth) == 0 or var_0_115.VisibleKey) and (not var_0_1.InputTextWithHintD(var_0_5("Р’РІРµРґРёС‚Рµ РІР°С€ РєР»СЋС‡ РѕС‚ РїСЂРѕС„РёР»СЏ."), var_0_5("Р’РІРµРґРёС‚Рµ РєР»СЋС‡"), var_0_115.premiumTokenAuth, var_0_45.sizeof(var_0_115.premiumTokenAuth)) or true) then
 			-- block empty
 		else
 			var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-			if var_0_1.Button(var_0_5("Изменить ключ (ВНИМАНИЕ! Ключ будет показан на экране)"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 3, 30)) then
+			if var_0_1.Button(var_0_5("РР·РјРµРЅРёС‚СЊ РєР»СЋС‡ (Р’РќРРњРђРќРР•! РљР»СЋС‡ Р±СѓРґРµС‚ РїРѕРєР°Р·Р°РЅ РЅР° СЌРєСЂР°РЅРµ)"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 3, 30)) then
 				var_0_115.VisibleKey = true
 			end
 
@@ -5721,8 +6063,8 @@ function premiumPage(arg_116_0)
 		if var_0_115.lastUpdatePremiumToken ~= -1 and var_0_115.premiumUserInfo.endTime then
 			local var_116_1 = math.floor((var_0_115.premiumUserInfo.endTime - os.time()) / 86400)
 
-			var_0_1.TextColoredRGB("{cccccc}Последняя проверка подписки: " .. tostring(os.date("%d.%m.%Y | %H:%M:%S", var_0_115.lastUpdatePremiumToken)))
-			var_0_1.TextColoredRGB("{cccccc}Статус подписки: " .. (var_116_1 > -1 and "{00a00a}Активна" or "{ff0000}Истекла") .. "{cccccc}. Дней до конца подписки: " .. tostring(var_116_1) .. ".")
+			var_0_1.TextColoredRGB("{cccccc}РџРѕСЃР»РµРґРЅСЏСЏ РїСЂРѕРІРµСЂРєР° РїРѕРґРїРёСЃРєРё: " .. tostring(os.date("%d.%m.%Y | %H:%M:%S", var_0_115.lastUpdatePremiumToken)))
+			var_0_1.TextColoredRGB("{cccccc}РЎС‚Р°С‚СѓСЃ РїРѕРґРїРёСЃРєРё: " .. (var_116_1 > -1 and "{00a00a}РђРєС‚РёРІРЅР°" or "{ff0000}РСЃС‚РµРєР»Р°") .. "{cccccc}. Р”РЅРµР№ РґРѕ РєРѕРЅС†Р° РїРѕРґРїРёСЃРєРё: " .. tostring(var_116_1) .. ".")
 		end
 
 		var_0_1.EndChild()
@@ -5730,8 +6072,8 @@ function premiumPage(arg_116_0)
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Проверить ключ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
-			sendNotify("  Попытка авторизации...")
+		if var_0_1.Button(var_0_5("РџСЂРѕРІРµСЂРёС‚СЊ РєР»СЋС‡"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+			sendNotify("  РџРѕРїС‹С‚РєР° Р°РІС‚РѕСЂРёР·Р°С†РёРё...")
 			asyncHttpRequest("POST", (var_0_106.cfg.priumUrlChange == true and var_0_115.premiumUrl[2] or var_0_115.premiumUrl[1]) .. "/api/checkKey/" .. var_0_45.string(var_0_115.premiumTokenAuth), {}, function(arg_117_0)
 				if arg_117_0.status_code == 201 then
 					deAFKMessage(debug.getinfo(1, "l"), "sub: " .. arg_117_0.text)
@@ -5762,35 +6104,35 @@ function premiumPage(arg_116_0)
 						var_0_56[27] = os.time()
 
 						if var_0_115.premiumUserInfo.userStatus ~= 0 then
-							sendNotify("Авторизация успешна! Спасибо, " .. tostring(var_0_115.premiumUserInfo.userName) .. ", что вы пользуетесь Arizona Market Premium!")
+							sendNotify("РђРІС‚РѕСЂРёР·Р°С†РёСЏ СѓСЃРїРµС€РЅР°! РЎРїР°СЃРёР±Рѕ, " .. tostring(var_0_115.premiumUserInfo.userName) .. ", С‡С‚Рѕ РІС‹ РїРѕР»СЊР·СѓРµС‚РµСЃСЊ Arizona Market Premium!")
 							save_all()
 
 							var_0_56[26] = os.clock() - 3.5
 							isStartLoadPremium = 2
 							var_0_115.isPremiumAuthedStatus = true
 						else
-							sendNotify("Авторизация прошла успешно, " .. tostring(var_0_115.premiumUserInfo.userName) .. ".")
+							sendNotify("РђРІС‚РѕСЂРёР·Р°С†РёСЏ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ, " .. tostring(var_0_115.premiumUserInfo.userName) .. ".")
 						end
 
 						isUpdateNick = 3
 					elseif var_0_115.premiumUserInfo.error then
 						var_0_115.lastUpdatePremiumToken = -1
 
-						sendNotify("К сожалению данный ключ продукта недопустим.")
+						sendNotify("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РґР°РЅРЅС‹Р№ РєР»СЋС‡ РїСЂРѕРґСѓРєС‚Р° РЅРµРґРѕРїСѓСЃС‚РёРј.")
 						save_all()
 					end
 				else
 					deAFKMessage(debug.getinfo(1, "l"), "error1 " .. tostring(arg_117_0.status_code))
-					sendNotify("Ошибка " .. tostring(arg_117_0.status_code) .. ".")
+					sendNotify("РћС€РёР±РєР° " .. tostring(arg_117_0.status_code) .. ".")
 				end
 			end, function(arg_118_0)
 				deAFKMessage(debug.getinfo(1, "l"), "sub error")
-				sendNotify("Ошибка клиента/сервера. Обратитесь в поддержку.")
-				sendNotify("Для решения вашей проблемы возможно поможет команда /premhost, напишите ее в чат игры")
+				sendNotify("РћС€РёР±РєР° РєР»РёРµРЅС‚Р°/СЃРµСЂРІРµСЂР°. РћР±СЂР°С‚РёС‚РµСЃСЊ РІ РїРѕРґРґРµСЂР¶РєСѓ.")
+				sendNotify("Р”Р»СЏ СЂРµС€РµРЅРёСЏ РІР°С€РµР№ РїСЂРѕР±Р»РµРјС‹ РІРѕР·РјРѕР¶РЅРѕ РїРѕРјРѕР¶РµС‚ РєРѕРјР°РЅРґР° /premhost, РЅР°РїРёС€РёС‚Рµ РµРµ РІ С‡Р°С‚ РёРіСЂС‹")
 			end)
 		end
 
-		if var_0_115.isMenuActive == 1 and var_0_1.Button(var_0_5("Привязать аккаунт"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_115.isMenuActive == 1 and var_0_1.Button(var_0_5("РџСЂРёРІСЏР·Р°С‚СЊ Р°РєРєР°СѓРЅС‚"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			local var_116_2 = getRealName(1)
 
 			if var_0_115.myUidCheck[2] ~= nil and var_116_2 ~= nil then
@@ -5814,9 +6156,9 @@ function premiumPage(arg_116_0)
 							var_0_115.isMenuActive = var_119_0.isMenuActive
 
 							if var_119_0.status then
-								sendNotify("Аккаунт успешно привязан! Зайдите в телеграм и прочитайте сообщение!")
+								sendNotify("РђРєРєР°СѓРЅС‚ СѓСЃРїРµС€РЅРѕ РїСЂРёРІСЏР·Р°РЅ! Р—Р°Р№РґРёС‚Рµ РІ С‚РµР»РµРіСЂР°Рј Рё РїСЂРѕС‡РёС‚Р°Р№С‚Рµ СЃРѕРѕР±С‰РµРЅРёРµ!")
 							else
-								sendNotify("К сожалению произошла ошибка при привязке! Пройдите в бота для просмотра причины!")
+								sendNotify("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё РїСЂРёРІСЏР·РєРµ! РџСЂРѕР№РґРёС‚Рµ РІ Р±РѕС‚Р° РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° РїСЂРёС‡РёРЅС‹!")
 							end
 						end
 					else
@@ -5826,11 +6168,11 @@ function premiumPage(arg_116_0)
 					deAFKMessage(debug.getinfo(1, "l"), "error2 confirm-binding")
 				end)
 			else
-				sendNotify("Произошла ошибка! Перезайдите полностью на сервер. Если проблема повторяется - напишите в тех поддержку.")
+				sendNotify("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°! РџРµСЂРµР·Р°Р№РґРёС‚Рµ РїРѕР»РЅРѕСЃС‚СЊСЋ РЅР° СЃРµСЂРІРµСЂ. Р•СЃР»Рё РїСЂРѕР±Р»РµРјР° РїРѕРІС‚РѕСЂСЏРµС‚СЃСЏ - РЅР°РїРёС€РёС‚Рµ РІ С‚РµС… РїРѕРґРґРµСЂР¶РєСѓ.")
 			end
 		end
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
@@ -5854,7 +6196,7 @@ function sputnikCustomer()
 	var_0_1.PushStyleColor(var_121_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Изменение/Добавления спутников."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("РР·РјРµРЅРµРЅРёРµ/Р”РѕР±Р°РІР»РµРЅРёСЏ СЃРїСѓС‚РЅРёРєРѕРІ."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(var_0_106.cfg.menuSize == 1 and 660 or var_0_106.cfg.menuSize == 2 and 650 or 0, 405))
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
@@ -5864,20 +6206,20 @@ function sputnikCustomer()
 		var_0_1.BeginChild("sputnikSelectors", var_0_1.ImVec2(-1, var_0_115.isEditSputnik[1] and 300 or 330), true)
 		var_0_1.PushItemWidth(270)
 
-		if var_0_1.InputTextWithHintD(var_0_5(" Ссылка на картинку спутника"), var_0_5(" Ссылка на картинку спутника"), var_0_115.sputnikImage, var_0_45.sizeof(var_0_115.sputnikImage)) then
+		if var_0_1.InputTextWithHintD(var_0_5(" РЎСЃС‹Р»РєР° РЅР° РєР°СЂС‚РёРЅРєСѓ СЃРїСѓС‚РЅРёРєР°"), var_0_5(" РЎСЃС‹Р»РєР° РЅР° РєР°СЂС‚РёРЅРєСѓ СЃРїСѓС‚РЅРёРєР°"), var_0_115.sputnikImage, var_0_45.sizeof(var_0_115.sputnikImage)) then
 			-- block empty
 		end
 
-		if var_0_1.InputTextWithHintD(var_0_5(" Название спутника"), var_0_5(" Название спутника"), var_0_115.sputnikName, var_0_45.sizeof(var_0_115.sputnikName)) then
+		if var_0_1.InputTextWithHintD(var_0_5(" РќР°Р·РІР°РЅРёРµ СЃРїСѓС‚РЅРёРєР°"), var_0_5(" РќР°Р·РІР°РЅРёРµ СЃРїСѓС‚РЅРёРєР°"), var_0_115.sputnikName, var_0_45.sizeof(var_0_115.sputnikName)) then
 			-- block empty
 		end
 
-		if var_0_1.InputTextWithHintD(var_0_5(" Задержка на отправку фраз над головой."), var_0_5(" Задержка на отправку фраз над головой."), var_0_115.sputnikDelay, var_0_45.sizeof(var_0_115.sputnikDelay)) then
+		if var_0_1.InputTextWithHintD(var_0_5(" Р—Р°РґРµСЂР¶РєР° РЅР° РѕС‚РїСЂР°РІРєСѓ С„СЂР°Р· РЅР°Рґ РіРѕР»РѕРІРѕР№."), var_0_5(" Р—Р°РґРµСЂР¶РєР° РЅР° РѕС‚РїСЂР°РІРєСѓ С„СЂР°Р· РЅР°Рґ РіРѕР»РѕРІРѕР№."), var_0_115.sputnikDelay, var_0_45.sizeof(var_0_115.sputnikDelay)) then
 			-- block empty
 		end
 
 		var_0_1.PopItemWidth()
-		var_0_1.Text(var_0_5("Фразы которые будут воспроизводится."))
+		var_0_1.Text(var_0_5("Р¤СЂР°Р·С‹ РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚ РІРѕСЃРїСЂРѕРёР·РІРѕРґРёС‚СЃСЏ."))
 		var_0_1.PushItemWidth(500)
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
@@ -5893,11 +6235,11 @@ function sputnikCustomer()
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Сохранить"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.01, 30)) then
+		if var_0_1.Button(var_0_5("РЎРѕС…СЂР°РЅРёС‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.01, 30)) then
 			local var_121_1 = var_0_45.string(var_0_115.sputnikName)
 			local var_121_2 = tonumber(var_0_45.string(var_0_115.sputnikDelay))
 
-			if #var_0_45.string(var_0_115.sputnikName) > 1 and #var_0_45.string(var_0_115.sputnikImage) > 1 and not var_0_5:decode(var_121_1):match("%d") and not var_0_5:decode(var_121_1):match("[а-яА-ЯёЁ]") and var_121_2 ~= nil and not var_0_5:decode(var_121_1):match("%s") then
+			if #var_0_45.string(var_0_115.sputnikName) > 1 and #var_0_45.string(var_0_115.sputnikImage) > 1 and not var_0_5:decode(var_121_1):match("%d") and not var_0_5:decode(var_121_1):match("[Р°-СЏРђ-РЇС‘РЃ]") and var_121_2 ~= nil and not var_0_5:decode(var_121_1):match("%s") then
 				if var_0_115.isEditSputnik[2] ~= "" and var_0_115.isEditSputnik[1] then
 					deAFKMessage("clean > current_theme.customSputniks")
 
@@ -5926,22 +6268,22 @@ function sputnikCustomer()
 
 				writeJsonFile(var_0_114, var_0_113)
 			else
-				AFKMessage("Вы заполнили не все параметры! Так же проверьте:")
-				AFKMessage("        Что бы название было на английском языке и без цифр!")
-				AFKMessage("        Что бы в таймере не было букв!")
-				AFKMessage("        Что бы в названии спутника не было пробелов!")
+				AFKMessage("Р’С‹ Р·Р°РїРѕР»РЅРёР»Рё РЅРµ РІСЃРµ РїР°СЂР°РјРµС‚СЂС‹! РўР°Рє Р¶Рµ РїСЂРѕРІРµСЂСЊС‚Рµ:")
+				AFKMessage("        Р§С‚Рѕ Р±С‹ РЅР°Р·РІР°РЅРёРµ Р±С‹Р»Рѕ РЅР° Р°РЅРіР»РёР№СЃРєРѕРј СЏР·С‹РєРµ Рё Р±РµР· С†РёС„СЂ!")
+				AFKMessage("        Р§С‚Рѕ Р±С‹ РІ С‚Р°Р№РјРµСЂРµ РЅРµ Р±С‹Р»Рѕ Р±СѓРєРІ!")
+				AFKMessage("        Р§С‚Рѕ Р±С‹ РІ РЅР°Р·РІР°РЅРёРё СЃРїСѓС‚РЅРёРєР° РЅРµ Р±С‹Р»Рѕ РїСЂРѕР±РµР»РѕРІ!")
 			end
 		end
 
 		var_0_1.SameLine()
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.04, 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.04, 30)) then
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
 		end
 
-		if var_0_115.isEditSputnik[1] and var_0_115.isEditSputnik[2] ~= "" and var_0_1.Button(var_0_5("[!] Удалить [!]"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_115.isEditSputnik[1] and var_0_115.isEditSputnik[2] ~= "" and var_0_1.Button(var_0_5("[!] РЈРґР°Р»РёС‚СЊ [!]"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
@@ -5972,7 +6314,7 @@ function newFilter(arg_122_0)
 	var_0_1.PushStyleColor(var_122_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Фильтры."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("Р¤РёР»СЊС‚СЂС‹."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_115.isPopupActive = true
 
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(550, 450))
@@ -5987,12 +6329,12 @@ function newFilter(arg_122_0)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 20)
-		var_0_1.CenterText(var_0_5("Сортировка предметов."))
+		var_0_1.CenterText(var_0_5("РЎРѕСЂС‚РёСЂРѕРІРєР° РїСЂРµРґРјРµС‚РѕРІ."))
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-		if var_0_1.ToggleButton(var_0_5("Отключить все чего нет в инвентаре."), var_0_134) then
+		if var_0_1.ToggleButton(var_0_5("РћС‚РєР»СЋС‡РёС‚СЊ РІСЃРµ С‡РµРіРѕ РЅРµС‚ РІ РёРЅРІРµРЅС‚Р°СЂРµ."), var_0_134) then
 			var_0_106.cfg.filter_one = var_0_134[0]
 
 			save_all()
@@ -6001,7 +6343,7 @@ function newFilter(arg_122_0)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-		if var_0_1.ToggleButton(var_0_5("Все отключенные переместить вниз."), var_0_135) then
+		if var_0_1.ToggleButton(var_0_5("Р’СЃРµ РѕС‚РєР»СЋС‡РµРЅРЅС‹Рµ РїРµСЂРµРјРµСЃС‚РёС‚СЊ РІРЅРёР·."), var_0_135) then
 			var_0_106.cfg.filter_two = var_0_135[0]
 
 			save_all()
@@ -6012,7 +6354,7 @@ function newFilter(arg_122_0)
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Выполнить сортировку"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
+		if var_0_1.Button(var_0_5("Р’С‹РїРѕР»РЅРёС‚СЊ СЃРѕСЂС‚РёСЂРѕРІРєСѓ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
 			if #var_0_88 > 0 then
 				for iter_122_0 = 1, #var_0_88 do
 					for iter_122_1, iter_122_2 in pairs(var_0_88) do
@@ -6032,7 +6374,7 @@ function newFilter(arg_122_0)
 
 			var_0_115.isPopupActive = false
 
-			AFKMessage("Сортировка выполнена.")
+			AFKMessage("РЎРѕСЂС‚РёСЂРѕРІРєР° РІС‹РїРѕР»РЅРµРЅР°.")
 		end
 
 		var_0_1.GetStyle().FrameBorderSize = 0
@@ -6041,19 +6383,19 @@ function newFilter(arg_122_0)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-		if var_0_1.ToggleButton(var_0_5("Скрывать недоступные предметы."), var_0_136) then
+		if var_0_1.ToggleButton(var_0_5("РЎРєСЂС‹РІР°С‚СЊ РЅРµРґРѕСЃС‚СѓРїРЅС‹Рµ РїСЂРµРґРјРµС‚С‹."), var_0_136) then
 			var_0_106.cfg.filter_three = var_0_136[0]
 
 			save_all()
 		end
 
-		var_0_1.Hint("filter_threeA", var_0_5("Скрывает все предметы которых у вас нет в инвентаре\nВыполнять сортировку не нужно.\nПриминяется автоматически если включен."), false)
+		var_0_1.Hint("filter_threeA", var_0_5("РЎРєСЂС‹РІР°РµС‚ РІСЃРµ РїСЂРµРґРјРµС‚С‹ РєРѕС‚РѕСЂС‹С… Сѓ РІР°СЃ РЅРµС‚ РІ РёРЅРІРµРЅС‚Р°СЂРµ\nР’С‹РїРѕР»РЅСЏС‚СЊ СЃРѕСЂС‚РёСЂРѕРІРєСѓ РЅРµ РЅСѓР¶РЅРѕ.\nРџСЂРёРјРёРЅСЏРµС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РµСЃР»Рё РІРєР»СЋС‡РµРЅ."), false)
 
 		if arg_122_0 == 1 then
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-			if var_0_1.ToggleButton(var_0_5("Скрывать непередаваемые предметы."), var_0_115.filter_four) then
+			if var_0_1.ToggleButton(var_0_5("РЎРєСЂС‹РІР°С‚СЊ РЅРµРїРµСЂРµРґР°РІР°РµРјС‹Рµ РїСЂРµРґРјРµС‚С‹."), var_0_115.filter_four) then
 				local var_122_3 = false
 
 				if json_vlad == nil or json_vlads == nil then
@@ -6062,7 +6404,7 @@ function newFilter(arg_122_0)
 				end
 
 				if next(json_vlad) == nil then
-					AFKMessage("У вас не отсканирована скупка в меню скрипта (/crr)! Зайдите в раздел скупки и прочитайте инструкцию по середине меню.")
+					AFKMessage("РЈ РІР°СЃ РЅРµ РѕС‚СЃРєР°РЅРёСЂРѕРІР°РЅР° СЃРєСѓРїРєР° РІ РјРµРЅСЋ СЃРєСЂРёРїС‚Р° (/crr)! Р—Р°Р№РґРёС‚Рµ РІ СЂР°Р·РґРµР» СЃРєСѓРїРєРё Рё РїСЂРѕС‡РёС‚Р°Р№С‚Рµ РёРЅСЃС‚СЂСѓРєС†РёСЋ РїРѕ СЃРµСЂРµРґРёРЅРµ РјРµРЅСЋ.")
 
 					var_0_115.filter_four[0] = false
 					var_122_3 = true
@@ -6073,7 +6415,7 @@ function newFilter(arg_122_0)
 					var_0_89 = {}
 
 					SendToServer("/stats")
-					AFKMessage("Проходит сканирование инвентаря. Подождите...")
+					AFKMessage("РџСЂРѕС…РѕРґРёС‚ СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ РёРЅРІРµРЅС‚Р°СЂСЏ. РџРѕРґРѕР¶РґРёС‚Рµ...")
 				end
 
 				var_0_106.cfg.filter_four = var_0_115.filter_four[0]
@@ -6081,32 +6423,32 @@ function newFilter(arg_122_0)
 				save_all()
 			end
 
-			var_0_1.Hint("filter_fourA", var_0_5("Скрывает все предметы которые нельзя продать.\nВажно помнить что нужно обновлять список предметов во вкладке \"Скупка\"\nЕсли каждое обновление не обновлять список предметов в скупке - будут скрываться ошибочные предметы."), false)
+			var_0_1.Hint("filter_fourA", var_0_5("РЎРєСЂС‹РІР°РµС‚ РІСЃРµ РїСЂРµРґРјРµС‚С‹ РєРѕС‚РѕСЂС‹Рµ РЅРµР»СЊР·СЏ РїСЂРѕРґР°С‚СЊ.\nР’Р°Р¶РЅРѕ РїРѕРјРЅРёС‚СЊ С‡С‚Рѕ РЅСѓР¶РЅРѕ РѕР±РЅРѕРІР»СЏС‚СЊ СЃРїРёСЃРѕРє РїСЂРµРґРјРµС‚РѕРІ РІРѕ РІРєР»Р°РґРєРµ \"РЎРєСѓРїРєР°\"\nР•СЃР»Рё РєР°Р¶РґРѕРµ РѕР±РЅРѕРІР»РµРЅРёРµ РЅРµ РѕР±РЅРѕРІР»СЏС‚СЊ СЃРїРёСЃРѕРє РїСЂРµРґРјРµС‚РѕРІ РІ СЃРєСѓРїРєРµ - Р±СѓРґСѓС‚ СЃРєСЂС‹РІР°С‚СЊСЃСЏ РѕС€РёР±РѕС‡РЅС‹Рµ РїСЂРµРґРјРµС‚С‹."), false)
 		end
 
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-		if var_0_1.ToggleButton(var_0_5("Пролистывание до добавленного предмета."), var_0_115.filter_five) then
+		if var_0_1.ToggleButton(var_0_5("РџСЂРѕР»РёСЃС‚С‹РІР°РЅРёРµ РґРѕ РґРѕР±Р°РІР»РµРЅРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°."), var_0_115.filter_five) then
 			var_0_106.cfg.filter_five = var_0_115.filter_five[0]
 
 			save_all()
 		end
 
-		var_0_1.Hint("filter_fiveA", var_0_5("После того как вы добавляете товар данная функция будет...\n автоматически пролистывать товар до того места куда он был добавлен."), false)
+		var_0_1.Hint("filter_fiveA", var_0_5("РџРѕСЃР»Рµ С‚РѕРіРѕ РєР°Рє РІС‹ РґРѕР±Р°РІР»СЏРµС‚Рµ С‚РѕРІР°СЂ РґР°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ Р±СѓРґРµС‚...\n Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїСЂРѕР»РёСЃС‚С‹РІР°С‚СЊ С‚РѕРІР°СЂ РґРѕ С‚РѕРіРѕ РјРµСЃС‚Р° РєСѓРґР° РѕРЅ Р±С‹Р» РґРѕР±Р°РІР»РµРЅ."), false)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-		if var_0_1.ToggleButton(var_0_5("Действия с товарами."), var_0_115.filter_six) then
+		if var_0_1.ToggleButton(var_0_5("Р”РµР№СЃС‚РІРёСЏ СЃ С‚РѕРІР°СЂР°РјРё."), var_0_115.filter_six) then
 			save_all()
 		end
 
-		var_0_1.Hint("filter_sixA", var_0_5("Настройка для включения или отключения всех товаров во вкладке."), false)
+		var_0_1.Hint("filter_sixA", var_0_5("РќР°СЃС‚СЂРѕР№РєР° РґР»СЏ РІРєР»СЋС‡РµРЅРёСЏ РёР»Рё РѕС‚РєР»СЋС‡РµРЅРёСЏ РІСЃРµС… С‚РѕРІР°СЂРѕРІ РІРѕ РІРєР»Р°РґРєРµ."), false)
 
 		if var_0_115.filter_six[0] then
 			var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-			if var_0_1.Button(var_0_5("Отключить все товары во вкладке"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.02, 30)) then
+			if var_0_1.Button(var_0_5("РћС‚РєР»СЋС‡РёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІРѕ РІРєР»Р°РґРєРµ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.02, 30)) then
 				for iter_122_3, iter_122_4 in pairs(arg_122_0 == 1 and var_0_88 or var_0_87) do
 					iter_122_4.enabled = false
 				end
@@ -6116,7 +6458,7 @@ function newFilter(arg_122_0)
 
 			var_0_1.SameLine()
 
-			if var_0_1.Button(var_0_5("Включить все товары во вкладке"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.02, 30)) then
+			if var_0_1.Button(var_0_5("Р’РєР»СЋС‡РёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІРѕ РІРєР»Р°РґРєРµ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.02, 30)) then
 				for iter_122_5, iter_122_6 in pairs(arg_122_0 == 1 and var_0_88 or var_0_87) do
 					iter_122_6.enabled = true
 				end
@@ -6131,13 +6473,13 @@ function newFilter(arg_122_0)
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 
-			if var_0_1.ToggleButton(var_0_5("Выставлять на один товар меньше."), var_0_115.filter_seven) then
+			if var_0_1.ToggleButton(var_0_5("Р’С‹СЃС‚Р°РІР»СЏС‚СЊ РЅР° РѕРґРёРЅ С‚РѕРІР°СЂ РјРµРЅСЊС€Рµ."), var_0_115.filter_seven) then
 				var_0_106.cfg.filter_seven = var_0_115.filter_seven[0]
 
 				save_all()
 			end
 
-			var_0_1.Hint("filter_sevenA", var_0_5("Товары во вкладке продажи будут выставляться на 1 товар меньше."), false)
+			var_0_1.Hint("filter_sevenA", var_0_5("РўРѕРІР°СЂС‹ РІРѕ РІРєР»Р°РґРєРµ РїСЂРѕРґР°Р¶Рё Р±СѓРґСѓС‚ РІС‹СЃС‚Р°РІР»СЏС‚СЊСЃСЏ РЅР° 1 С‚РѕРІР°СЂ РјРµРЅСЊС€Рµ."), false)
 		end
 
 		if arg_122_0 == 1 then
@@ -6150,7 +6492,7 @@ function newFilter(arg_122_0)
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
@@ -6174,7 +6516,7 @@ function configManager(arg_123_0, arg_123_1)
 	var_0_1.PushStyleColor(var_123_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Конфиг менеджер."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("РљРѕРЅС„РёРі РјРµРЅРµРґР¶РµСЂ."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_115.isPopupActive = true
 
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(550, var_0_115.selectConfigMove[3].selectMove == -1 and 278 or 350))
@@ -6182,7 +6524,7 @@ function configManager(arg_123_0, arg_123_1)
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 		var_0_1.BeginChild("configManagers", var_0_1.ImVec2(-1, var_0_115.selectConfigMove[3].selectMove == -1 and 160 or 200), true)
 		var_0_1.PushFont(fonts[17])
-		var_0_1.CenterText(var_0_5("Вы хотите скопировать что то из конфига ") .. (arg_123_1 == 1 and var_0_5("продажи") or var_0_5("скупки")), nil)
+		var_0_1.CenterText(var_0_5("Р’С‹ С…РѕС‚РёС‚Рµ СЃРєРѕРїРёСЂРѕРІР°С‚СЊ С‡С‚Рѕ С‚Рѕ РёР· РєРѕРЅС„РёРіР° ") .. (arg_123_1 == 1 and var_0_5("РїСЂРѕРґР°Р¶Рё") or var_0_5("СЃРєСѓРїРєРё")), nil)
 		var_0_1.CenterText((arg_123_1 == 1 and var_0_5(var_0_155) or var_0_5(var_0_156)) .. "?", nil)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 7)
 
@@ -6194,7 +6536,7 @@ function configManager(arg_123_0, arg_123_1)
 			end
 		end
 
-		if var_0_115.selectConfigMove[3].selectMove ~= -1 and var_0_1.RadioButtonIntPtr(var_0_5(" [!] Вставить конфиг в ") .. (arg_123_1 == 1 and var_0_5("продажу") or var_0_5("скупку")) .. "##configManagers", var_0_115.selectConfigMove[1], 4) then
+		if var_0_115.selectConfigMove[3].selectMove ~= -1 and var_0_1.RadioButtonIntPtr(var_0_5(" [!] Р’СЃС‚Р°РІРёС‚СЊ РєРѕРЅС„РёРі РІ ") .. (arg_123_1 == 1 and var_0_5("РїСЂРѕРґР°Р¶Сѓ") or var_0_5("СЃРєСѓРїРєСѓ")) .. "##configManagers", var_0_115.selectConfigMove[1], 4) then
 			-- block empty
 		end
 
@@ -6206,7 +6548,7 @@ function configManager(arg_123_0, arg_123_1)
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Выбрать и ") .. (var_0_115.selectConfigMove[1][0] ~= 4 and var_0_5("скопировать") or var_0_5("вставить конфиг из буфера")), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р’С‹Р±СЂР°С‚СЊ Рё ") .. (var_0_115.selectConfigMove[1][0] ~= 4 and var_0_5("СЃРєРѕРїРёСЂРѕРІР°С‚СЊ") or var_0_5("РІСЃС‚Р°РІРёС‚СЊ РєРѕРЅС„РёРі РёР· Р±СѓС„РµСЂР°")), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			deAFKMessage("selected: " .. var_0_115.selectConfigMove[1][0])
 
 			if var_0_115.selectConfigMove[1][0] ~= 4 then
@@ -6274,7 +6616,7 @@ function configManager(arg_123_0, arg_123_1)
 			var_0_1.CloseCurrentPopup()
 		end
 
-		if var_0_115.selectConfigMove[3].selectMove ~= -1 and var_0_1.Button(var_0_5("Очистить буфер"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_115.selectConfigMove[3].selectMove ~= -1 and var_0_1.Button(var_0_5("РћС‡РёСЃС‚РёС‚СЊ Р±СѓС„РµСЂ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.selectConfigMove[3] = {
 				selectMove = -1,
 				config = {}
@@ -6282,7 +6624,7 @@ function configManager(arg_123_0, arg_123_1)
 			var_0_115.selectConfigMove[1][0] = 333
 		end
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 			var_0_115.selectConfigMove[1][0] = 333
 
@@ -6307,7 +6649,7 @@ function crrXlGraphs(arg_124_0)
 	var_0_1.PushStyleColor(var_124_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("График таблицы."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("Р“СЂР°С„РёРє С‚Р°Р±Р»РёС†С‹."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_115.isPopupActive = true
 
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(550, 310))
@@ -6316,28 +6658,28 @@ function crrXlGraphs(arg_124_0)
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
 		if var_0_115.priceGraph.selected == -1 then
-			var_0_1.CenterText(var_0_5("Какой график хотите отобразить?"), nil)
+			var_0_1.CenterText(var_0_5("РљР°РєРѕР№ РіСЂР°С„РёРє С…РѕС‚РёС‚Рµ РѕС‚РѕР±СЂР°Р·РёС‚СЊ?"), nil)
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 182)
 
-			if var_0_1.Button(var_0_5("График скупки"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.025, 30)) then
+			if var_0_1.Button(var_0_5("Р“СЂР°С„РёРє СЃРєСѓРїРєРё"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.025, 30)) then
 				var_0_115.priceGraph.selected = 2
 			end
 
 			var_0_1.SameLine()
 
-			if var_0_1.Button(var_0_5("График продажи"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.025, 30)) then
+			if var_0_1.Button(var_0_5("Р“СЂР°С„РёРє РїСЂРѕРґР°Р¶Рё"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.025, 30)) then
 				var_0_115.priceGraph.selected = 1
 			end
 		else
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 55)
 			drawPriceGraph(arg_124_0, var_0_115.priceGraph.selected)
 
-			if var_0_1.Button(var_0_5("Назад"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+			if var_0_1.Button(var_0_5("РќР°Р·Р°Рґ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 				var_0_115.priceGraph.selected = -1
 			end
 		end
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 			var_0_115.priceGraph.storage = nil
 			var_0_115.priceGraph.selected = -1
@@ -6363,7 +6705,7 @@ function askServer()
 	var_0_1.PushStyleColor(var_125_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Копирование конфигов"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("РљРѕРїРёСЂРѕРІР°РЅРёРµ РєРѕРЅС„РёРіРѕРІ"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(900, 305))
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
@@ -6371,12 +6713,12 @@ function askServer()
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.BeginChild("serverChoose", var_0_1.ImVec2(-1, 235), true)
 		var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() / 3.1)
-		var_0_1.TextDisabled(var_0_5("Вы сейчас находитесь на сервере ") .. tostring(var_0_30[tostring(var_0_106.cfg.myServerId)]) .. "?")
+		var_0_1.TextDisabled(var_0_5("Р’С‹ СЃРµР№С‡Р°СЃ РЅР°С…РѕРґРёС‚РµСЃСЊ РЅР° СЃРµСЂРІРµСЂРµ ") .. tostring(var_0_30[tostring(var_0_106.cfg.myServerId)]) .. "?")
 		var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() / 2.9)
-		var_0_1.TextDisabled(var_0_5("Это нужно для формирования конфига."))
+		var_0_1.TextDisabled(var_0_5("Р­С‚Рѕ РЅСѓР¶РЅРѕ РґР»СЏ С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ РєРѕРЅС„РёРіР°."))
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 157)
 
-		if var_0_1.Button(var_0_5("Да"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2, 30)) then
+		if var_0_1.Button(var_0_5("Р”Р°"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2, 30)) then
 			var_0_115.askServer = false
 			var_0_115.isPopupActive = false
 			var_0_115.copyLavkaFunc.askServer = false
@@ -6398,7 +6740,7 @@ function askServer()
 				var_0_115.copyLavkaFunc.slotId = 0
 				var_0_115.copyLavkaFunc.status = true
 			else
-				AFKMessage("Нужно переоткрыть меню лавки что бы сканировать.")
+				AFKMessage("РќСѓР¶РЅРѕ РїРµСЂРµРѕС‚РєСЂС‹С‚СЊ РјРµРЅСЋ Р»Р°РІРєРё С‡С‚Рѕ Р±С‹ СЃРєР°РЅРёСЂРѕРІР°С‚СЊ.")
 			end
 
 			var_0_1.CloseCurrentPopup()
@@ -6406,18 +6748,18 @@ function askServer()
 
 		var_0_1.SameLine()
 
-		if var_0_1.Button(var_0_5("Нет"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2, 30)) then
+		if var_0_1.Button(var_0_5("РќРµС‚"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2, 30)) then
 			var_0_115.askServer = false
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
-			AFKMessage("Вы указали что сервер определился не верно. Перезайдите на сервер что бы сервер определился правильно.")
-			sendNotify("Вы указали что сервер определился не верно. Перезайдите на сервер что бы сервер определился правильно.")
+			AFKMessage("Р’С‹ СѓРєР°Р·Р°Р»Рё С‡С‚Рѕ СЃРµСЂРІРµСЂ РѕРїСЂРµРґРµР»РёР»СЃСЏ РЅРµ РІРµСЂРЅРѕ. РџРµСЂРµР·Р°Р№РґРёС‚Рµ РЅР° СЃРµСЂРІРµСЂ С‡С‚Рѕ Р±С‹ СЃРµСЂРІРµСЂ РѕРїСЂРµРґРµР»РёР»СЃСЏ РїСЂР°РІРёР»СЊРЅРѕ.")
+			sendNotify("Р’С‹ СѓРєР°Р·Р°Р»Рё С‡С‚Рѕ СЃРµСЂРІРµСЂ РѕРїСЂРµРґРµР»РёР»СЃСЏ РЅРµ РІРµСЂРЅРѕ. РџРµСЂРµР·Р°Р№РґРёС‚Рµ РЅР° СЃРµСЂРІРµСЂ С‡С‚Рѕ Р±С‹ СЃРµСЂРІРµСЂ РѕРїСЂРµРґРµР»РёР»СЃСЏ РїСЂР°РІРёР»СЊРЅРѕ.")
 		end
 
 		var_0_1.EndChild()
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.askServer = false
 			var_0_115.isPopupActive = false
 
@@ -6442,7 +6784,7 @@ function videoSelector(arg_126_0, arg_126_1, arg_126_2)
 	var_0_1.PushStyleColor(var_126_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Открытие ссылки."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("РћС‚РєСЂС‹С‚РёРµ СЃСЃС‹Р»РєРё."), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(900, 305))
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
@@ -6450,9 +6792,9 @@ function videoSelector(arg_126_0, arg_126_1, arg_126_2)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.BeginChild("videoSelectors", var_0_1.ImVec2(-1, 235), true)
 		var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() / 3.5)
-		var_0_1.TextDisabled(var_0_5("Вы хотите открыть ссылку ") .. tostring(arg_126_0[1]) .. " .")
+		var_0_1.TextDisabled(var_0_5("Р’С‹ С…РѕС‚РёС‚Рµ РѕС‚РєСЂС‹С‚СЊ СЃСЃС‹Р»РєСѓ ") .. tostring(arg_126_0[1]) .. " .")
 		var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() / 2.9)
-		var_0_1.TextDisabled(var_0_5("В каком источнике вы хотите ее открыть?"))
+		var_0_1.TextDisabled(var_0_5("Р’ РєР°РєРѕРј РёСЃС‚РѕС‡РЅРёРєРµ РІС‹ С…РѕС‚РёС‚Рµ РµРµ РѕС‚РєСЂС‹С‚СЊ?"))
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 157)
 
 		if var_0_1.Button(var_0_5(arg_126_0[2]), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2, 30)) then
@@ -6485,7 +6827,7 @@ function videoSelector(arg_126_0, arg_126_1, arg_126_2)
 
 		var_0_1.EndChild()
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.videoSelector = false
 			var_0_115.isPopupActive = false
 
@@ -6510,7 +6852,7 @@ function tg_settingsw()
 	var_0_1.PushStyleColor(var_127_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 0.9))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("Лог [Продажи/Скупки] товаров"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("Р›РѕРі [РџСЂРѕРґР°Р¶Рё/РЎРєСѓРїРєРё] С‚РѕРІР°СЂРѕРІ"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(900, 305))
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.BeginChild("tg_settingsw", var_0_1.ImVec2(-1, 235), true)
@@ -6522,7 +6864,7 @@ function tg_settingsw()
 
 		var_0_1.EndChild()
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_102.buy = false
 
 			var_0_1.CloseCurrentPopup()
@@ -6544,20 +6886,20 @@ function Particles_settngsFunc()
 	var_0_1.PushStyleColor(var_128_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 1))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("[PS] Настройки отображения частиц"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("[PS] РќР°СЃС‚СЂРѕР№РєРё РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ С‡Р°СЃС‚РёС†"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(600, 320))
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.BeginChild("Particles_settngsFunc", var_0_1.ImVec2(-1, 240), true)
 
-		if var_0_1.ColorEdit4(var_0_5(" Цвет летающих частиц (Линии)"), var_0_188) then
+		if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ Р»РµС‚Р°СЋС‰РёС… С‡Р°СЃС‚РёС† (Р›РёРЅРёРё)"), var_0_188) then
 			var_0_114.Particle_line_color[1], var_0_114.Particle_line_color[2], var_0_114.Particle_line_color[3], var_0_114.Particle_line_color[4] = var_0_188[0], var_0_188[1], var_0_188[2], var_0_188[3]
 
 			writeJsonFile(var_0_114, var_0_113)
 			load_particles()
 		end
 
-		if var_0_1.ColorEdit4(var_0_5(" Цвет летающих частиц (Точки)"), var_0_189) then
+		if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ Р»РµС‚Р°СЋС‰РёС… С‡Р°СЃС‚РёС† (РўРѕС‡РєРё)"), var_0_189) then
 			var_0_114.Particle_line_center[1], var_0_114.Particle_line_center[2], var_0_114.Particle_line_center[3], var_0_114.Particle_line_center[4] = var_0_189[0], var_0_189[1], var_0_189[2], var_0_189[3]
 
 			writeJsonFile(var_0_114, var_0_113)
@@ -6566,21 +6908,21 @@ function Particles_settngsFunc()
 
 		var_0_1.PushItemWidth(357)
 
-		if var_0_1.DragInt(var_0_5("  Максимальное колличество точек."), var_0_190, 1, 0, 900, "%.0f", var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2, 30)) then
+		if var_0_1.DragInt(var_0_5("  РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»Р»РёС‡РµСЃС‚РІРѕ С‚РѕС‡РµРє."), var_0_190, 1, 0, 900, "%.0f", var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2, 30)) then
 			var_0_114.Particlemax = var_0_190[0]
 
 			writeJsonFile(var_0_114, var_0_113)
 			load_particles()
 		end
 
-		if var_0_1.DragFloat(var_0_5("  Скорость перемещения точек."), var_0_194, 0.01, 0.1, 10, "%.1f") then
+		if var_0_1.DragFloat(var_0_5("  РЎРєРѕСЂРѕСЃС‚СЊ РїРµСЂРµРјРµС‰РµРЅРёСЏ С‚РѕС‡РµРє."), var_0_194, 0.01, 0.1, 10, "%.1f") then
 			var_0_114.Particlespeed = var_0_194[0]
 
 			writeJsonFile(var_0_114, var_0_113)
 			load_particles()
 		end
 
-		if var_0_1.Button(var_0_191[0] and var_0_5("Пропадаемые частицы") or var_0_5("Постоянные частицы"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+		if var_0_1.Button(var_0_191[0] and var_0_5("РџСЂРѕРїР°РґР°РµРјС‹Рµ С‡Р°СЃС‚РёС†С‹") or var_0_5("РџРѕСЃС‚РѕСЏРЅРЅС‹Рµ С‡Р°СЃС‚РёС†С‹"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 			var_0_191[0] = not var_0_191[0]
 			var_0_114.Particletype = var_0_191[0]
 
@@ -6588,7 +6930,7 @@ function Particles_settngsFunc()
 			load_particles()
 		end
 
-		if var_0_1.Button(var_0_192[0] and var_0_5("Радужные линии") or var_0_5("Обычные линии"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+		if var_0_1.Button(var_0_192[0] and var_0_5("Р Р°РґСѓР¶РЅС‹Рµ Р»РёРЅРёРё") or var_0_5("РћР±С‹С‡РЅС‹Рµ Р»РёРЅРёРё"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 			var_0_192[0] = not var_0_192[0]
 			var_0_114.Particle_line_type = var_0_192[0]
 
@@ -6596,7 +6938,7 @@ function Particles_settngsFunc()
 			load_particles()
 		end
 
-		if var_0_1.Button(var_0_193[0] and var_0_5("Радужные точки") or var_0_5("Обычные точки"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+		if var_0_1.Button(var_0_193[0] and var_0_5("Р Р°РґСѓР¶РЅС‹Рµ С‚РѕС‡РєРё") or var_0_5("РћР±С‹С‡РЅС‹Рµ С‚РѕС‡РєРё"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 			var_0_193[0] = not var_0_193[0]
 			var_0_114.Particle_center_type = var_0_193[0]
 
@@ -6608,7 +6950,7 @@ function Particles_settngsFunc()
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_1.CloseCurrentPopup()
 		end
 
@@ -6630,7 +6972,7 @@ function tg_settings()
 	var_0_1.PushStyleColor(var_129_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 1))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("[TG] Настройки"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("[TG] РќР°СЃС‚СЂРѕР№РєРё"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(420, 405))
 
 		var_0_115.isPopupActive = true
@@ -6639,32 +6981,32 @@ function tg_settings()
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 		var_0_1.BeginChild("tg_settings", var_0_1.ImVec2(-1, var_0_1.GetWindowSize().y - 70), true)
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление что вашу лавку удалили"), var_0_107.lavka_destroypt) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ С‡С‚Рѕ РІР°С€Сѓ Р»Р°РІРєСѓ СѓРґР°Р»РёР»Рё"), var_0_107.lavka_destroypt) then
 			var_0_106.tg_setting.lavka_destroypt = var_0_107.lavka_destroypt[0]
 
 			save_all()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление когда вы установили/арендовали лавку"), var_0_107.lavka_build) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ РєРѕРіРґР° РІС‹ СѓСЃС‚Р°РЅРѕРІРёР»Рё/Р°СЂРµРЅРґРѕРІР°Р»Рё Р»Р°РІРєСѓ"), var_0_107.lavka_build) then
 			var_0_106.tg_setting.lavka_build = var_0_107.lavka_build[0]
 
 			save_all()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление от разработчиков"), var_0_107.ao_message) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ РѕС‚ СЂР°Р·СЂР°Р±РѕС‚С‡РёРєРѕРІ"), var_0_107.ao_message) then
 			var_0_106.tg_setting.ao_message = var_0_107.ao_message[0]
 
 			save_all()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление о Покупка/Продажа"), var_0_107.notf_buysell) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РџРѕРєСѓРїРєР°/РџСЂРѕРґР°Р¶Р°"), var_0_107.notf_buysell) then
 			var_0_106.tg_setting.notf_buysell = var_0_107.notf_buysell[0]
 
 			save_all()
 		end
 
 		if var_0_107.notf_buysell[0] then
-			if var_0_1.ToggleButton(var_0_5("Дополнить статистикой за день"), var_0_107.stats) then
+			if var_0_1.ToggleButton(var_0_5("Р”РѕРїРѕР»РЅРёС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєРѕР№ Р·Р° РґРµРЅСЊ"), var_0_107.stats) then
 				var_0_106.tg_setting.stats = var_0_107.stats[0]
 
 				save_all()
@@ -6673,38 +7015,38 @@ function tg_settings()
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление о Слетевшей лавки"), var_0_107.lavka_status) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РЎР»РµС‚РµРІС€РµР№ Р»Р°РІРєРё"), var_0_107.lavka_status) then
 			var_0_106.tg_setting.lavka_status = var_0_107.lavka_status[0]
 
 			save_all()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление о Смерти персонажа"), var_0_107.death_notf) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РЎРјРµСЂС‚Рё РїРµСЂСЃРѕРЅР°Р¶Р°"), var_0_107.death_notf) then
 			var_0_106.tg_setting.death_notf = var_0_107.death_notf[0]
 
 			save_all()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление о сообщения в /pm"), var_0_107.admin_message) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ СЃРѕРѕР±С‰РµРЅРёСЏ РІ /pm"), var_0_107.admin_message) then
 			var_0_106.tg_setting.admin_message = var_0_107.admin_message[0]
 
 			save_all()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление о кик/заходе"), var_0_107.connect_message) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РєРёРє/Р·Р°С…РѕРґРµ"), var_0_107.connect_message) then
 			var_0_106.tg_setting.connect_message = var_0_107.connect_message[0]
 
 			save_all()
 		end
 
 		if var_0_107.connect_message[0] then
-			if var_0_1.ToggleButton(var_0_5("Уведомление о неверном пароле"), var_0_107.wrongpassword) then
+			if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РЅРµРІРµСЂРЅРѕРј РїР°СЂРѕР»Рµ"), var_0_107.wrongpassword) then
 				var_0_106.tg_setting.wrongpassword = var_0_107.wrongpassword[0]
 
 				save_all()
 			end
 
-			if var_0_1.ToggleButton(var_0_5("Уведомление о полном спавне после авторизации"), var_0_107.wrongpasswordconnect) then
+			if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РїРѕР»РЅРѕРј СЃРїР°РІРЅРµ РїРѕСЃР»Рµ Р°РІС‚РѕСЂРёР·Р°С†РёРё"), var_0_107.wrongpasswordconnect) then
 				var_0_106.tg_setting.wrongpasswordconnect = var_0_107.wrongpasswordconnect[0]
 
 				save_all()
@@ -6713,19 +7055,19 @@ function tg_settings()
 			var_0_1.CustomSeparator()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление о оплате любых налогов"), var_0_107.nalog_message) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РѕРїР»Р°С‚Рµ Р»СЋР±С‹С… РЅР°Р»РѕРіРѕРІ"), var_0_107.nalog_message) then
 			var_0_106.tg_setting.nalog_message = var_0_107.nalog_message[0]
 
 			save_all()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление о PayDay"), var_0_107.PayDay_Message) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ PayDay"), var_0_107.PayDay_Message) then
 			var_0_106.tg_setting.PayDay_Message = var_0_107.PayDay_Message[0]
 
 			save_all()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Уведомление о банк переводах"), var_0_107.bank_Message) then
+		if var_0_1.ToggleButton(var_0_5("РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ Р±Р°РЅРє РїРµСЂРµРІРѕРґР°С…"), var_0_107.bank_Message) then
 			var_0_106.tg_setting.bank_Message = var_0_107.bank_Message[0]
 
 			save_all()
@@ -6733,13 +7075,13 @@ function tg_settings()
 
 		var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 
-		if var_0_1.InputTextWithHintD(var_0_5("Введите Token"), var_0_5("Введите Token"), var_0_107.token, var_0_45.sizeof(var_0_107.token)) then
+		if var_0_1.InputTextWithHintD(var_0_5("Р’РІРµРґРёС‚Рµ Token"), var_0_5("Р’РІРµРґРёС‚Рµ Token"), var_0_107.token, var_0_45.sizeof(var_0_107.token)) then
 			var_0_106.tg_setting.token = var_0_45.string(var_0_107.token)
 
 			save_all()
 		end
 
-		if var_0_1.InputTextWithHintD(var_0_5("Введите ChatID"), var_0_5("Введите ChatID"), var_0_107.chat_id, var_0_45.sizeof(var_0_107.chat_id)) then
+		if var_0_1.InputTextWithHintD(var_0_5("Р’РІРµРґРёС‚Рµ ChatID"), var_0_5("Р’РІРµРґРёС‚Рµ ChatID"), var_0_107.chat_id, var_0_45.sizeof(var_0_107.chat_id)) then
 			var_0_106.tg_setting.chat_id = var_0_45.string(var_0_107.chat_id)
 
 			save_all()
@@ -6749,28 +7091,28 @@ function tg_settings()
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Как это настроить?"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+		if var_0_1.Button(var_0_5("РљР°Рє СЌС‚Рѕ РЅР°СЃС‚СЂРѕРёС‚СЊ?"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
-			openUrl("https://youtu.be/wl8LLikySg4", "https://rutube.ru/video/private/0e8a9f973c0926e4e2285bf87c8a590a/?r=wd&p=9I8ApjaXRMFEIIDAQERHfA", "Ютуб", "Рутуб")
+			openUrl("https://youtu.be/wl8LLikySg4", "https://rutube.ru/video/private/0e8a9f973c0926e4e2285bf87c8a590a/?r=wd&p=9I8ApjaXRMFEIIDAQERHfA", "Р®С‚СѓР±", "Р СѓС‚СѓР±")
 		end
 
-		if var_0_1.Button(var_0_5("Проверить соединение"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
-			sendTelegramNotification("Проверка соединения прошла успешна!")
+		if var_0_1.Button(var_0_5("РџСЂРѕРІРµСЂРёС‚СЊ СЃРѕРµРґРёРЅРµРЅРёРµ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+			sendTelegramNotification("РџСЂРѕРІРµСЂРєР° СЃРѕРµРґРёРЅРµРЅРёСЏ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅР°!")
 		end
 
-		if var_0_1.Button(var_0_5("Резервная ссылка: " .. (var_0_106.cfg.telegram_reserve and "Вкл" or "Выкл")), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+		if var_0_1.Button(var_0_5("Р РµР·РµСЂРІРЅР°СЏ СЃСЃС‹Р»РєР°: " .. (var_0_106.cfg.telegram_reserve and "Р’РєР»" or "Р’С‹РєР»")), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 			var_0_106.cfg.telegram_reserve = not var_0_106.cfg.telegram_reserve
 
-			sendNotify("Вы переключили резервную ссылку на " .. (var_0_106.cfg.telegram_reserve and "Вкл" or "Выкл"))
+			sendNotify("Р’С‹ РїРµСЂРµРєР»СЋС‡РёР»Рё СЂРµР·РµСЂРІРЅСѓСЋ СЃСЃС‹Р»РєСѓ РЅР° " .. (var_0_106.cfg.telegram_reserve and "Р’РєР»" or "Р’С‹РєР»"))
 			save_all()
 		end
 
-		var_0_1.Hint("reservetg", var_0_5("Если в вашем регионе заблокирован телеграм, включите"), false)
+		var_0_1.Hint("reservetg", var_0_5("Р•СЃР»Рё РІ РІР°С€РµРј СЂРµРіРёРѕРЅРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ С‚РµР»РµРіСЂР°Рј, РІРєР»СЋС‡РёС‚Рµ"), false)
 		var_0_1.EndChild()
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_115.isPopupActive = false
 
 			var_0_1.CloseCurrentPopup()
@@ -6790,7 +7132,7 @@ function hexToRGBA(arg_130_0)
 	arg_130_0 = arg_130_0:gsub("{", ""):gsub("}", "")
 
 	if #arg_130_0 ~= 6 and #arg_130_0 ~= 8 then
-		error("Неверный формат HEX. Ожидается 6 или 8 символов.")
+		error("РќРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ HEX. РћР¶РёРґР°РµС‚СЃСЏ 6 РёР»Рё 8 СЃРёРјРІРѕР»РѕРІ.")
 	end
 
 	local var_130_0 = tonumber(arg_130_0:sub(1, 2), 16) / 255
@@ -6809,7 +7151,7 @@ function tg_settingsAD()
 	var_0_1.PushStyleColor(var_131_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 1))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("[TGAD] Настройки"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("[TGAD] РќР°СЃС‚СЂРѕР№РєРё"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(330, 320))
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
@@ -6819,10 +7161,10 @@ function tg_settingsAD()
 
 		if doesFileExist(getWorkingDirectory() .. "\\ArzMarket_TgBot\\NewArzMarketBot.js") then
 			if not doesDirectoryExist(getWorkingDirectory() .. "\\node_modules") then
-				if var_0_1.Button(var_0_5("Установить модули."), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
-					AFKMessage("Начали установку.")
-					AFKMessage("Игра может зависнуть на пару секунд, это нормально.")
-					AFKMessage("После этого перезагрузите ПК.")
+				if var_0_1.Button(var_0_5("РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РјРѕРґСѓР»Рё."), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+					AFKMessage("РќР°С‡Р°Р»Рё СѓСЃС‚Р°РЅРѕРІРєСѓ.")
+					AFKMessage("РРіСЂР° РјРѕР¶РµС‚ Р·Р°РІРёСЃРЅСѓС‚СЊ РЅР° РїР°СЂСѓ СЃРµРєСѓРЅРґ, СЌС‚Рѕ РЅРѕСЂРјР°Р»СЊРЅРѕ.")
+					AFKMessage("РџРѕСЃР»Рµ СЌС‚РѕРіРѕ РїРµСЂРµР·Р°РіСЂСѓР·РёС‚Рµ РџРљ.")
 
 					local var_131_1 = require("moonloader").download_status
 
@@ -6834,13 +7176,13 @@ function tg_settingsAD()
 							}
 
 							if var_0_51.unzip_full_archive_files(var_132_0.archive, var_132_0.output) then
-								AFKMessage("Скачивание успешно завершено.")
+								AFKMessage("РЎРєР°С‡РёРІР°РЅРёРµ СѓСЃРїРµС€РЅРѕ Р·Р°РІРµСЂС€РµРЅРѕ.")
 							end
 						end
 					end)
 				end
 
-				var_0_1.Hint("downloadnodemodules", var_0_5("Для корректной работы скрипта нужно утсановить модули.\nНажмите для установки."), false)
+				var_0_1.Hint("downloadnodemodules", var_0_5("Р”Р»СЏ РєРѕСЂСЂРµРєС‚РЅРѕР№ СЂР°Р±РѕС‚С‹ СЃРєСЂРёРїС‚Р° РЅСѓР¶РЅРѕ СѓС‚СЃР°РЅРѕРІРёС‚СЊ РјРѕРґСѓР»Рё.\nРќР°Р¶РјРёС‚Рµ РґР»СЏ СѓСЃС‚Р°РЅРѕРІРєРё."), false)
 			elseif doesFileExist(getWorkingDirectory() .. "\\ArzMarket_TgBot\\config.json") then
 				var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 
@@ -6856,27 +7198,27 @@ function tg_settingsAD()
 					local var_131_5 = var_0_11.bool(tg_settingsADD.saveSession)
 
 					if var_131_2 ~= nil and var_131_3 ~= nil and var_131_4 ~= nil and var_131_5 ~= nil then
-						if var_0_1.InputTextWithHintD(var_0_5("Введите AppID"), var_0_5("Введите AppID"), var_131_2, var_0_45.sizeof(var_131_2), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_131_2):match("^%d+$") then
+						if var_0_1.InputTextWithHintD(var_0_5("Р’РІРµРґРёС‚Рµ AppID"), var_0_5("Р’РІРµРґРёС‚Рµ AppID"), var_131_2, var_0_45.sizeof(var_131_2), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_131_2):match("^%d+$") then
 							tg_settingsADD.API_ID = tonumber(var_0_45.string(var_131_2))
 
 							writeJsonFile(tg_settingsADD, getWorkingDirectory() .. "\\ArzMarket_TgBot\\config.json")
 						end
 
-						if var_0_1.InputTextWithHintD(var_0_5("Введите ApiHash"), var_0_5("Введите ApiHash"), var_131_3, 255) then
+						if var_0_1.InputTextWithHintD(var_0_5("Р’РІРµРґРёС‚Рµ ApiHash"), var_0_5("Р’РІРµРґРёС‚Рµ ApiHash"), var_131_3, 255) then
 							tg_settingsADD.API_HASH = tostring(var_0_45.string(var_131_3))
 
 							writeJsonFile(tg_settingsADD, getWorkingDirectory() .. "\\ArzMarket_TgBot\\config.json")
 						end
 
-						if var_0_1.InputTextWithHintD(var_0_5("Кд рекламы"), var_0_5("Кд рекламы"), var_131_4, var_0_45.sizeof(var_131_4), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_131_4):match("^%d+$") then
+						if var_0_1.InputTextWithHintD(var_0_5("РљРґ СЂРµРєР»Р°РјС‹"), var_0_5("РљРґ СЂРµРєР»Р°РјС‹"), var_131_4, var_0_45.sizeof(var_131_4), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_131_4):match("^%d+$") then
 							tg_settingsADD.interval = tonumber(var_0_45.string(var_131_4)) * 1000
 
 							writeJsonFile(tg_settingsADD, getWorkingDirectory() .. "\\ArzMarket_TgBot\\config.json")
 						end
 
-						var_0_1.Hint("Interval1", var_0_5("Введите сколько будет задержка между рекламами (В секундах)."), false)
+						var_0_1.Hint("Interval1", var_0_5("Р’РІРµРґРёС‚Рµ СЃРєРѕР»СЊРєРѕ Р±СѓРґРµС‚ Р·Р°РґРµСЂР¶РєР° РјРµР¶РґСѓ СЂРµРєР»Р°РјР°РјРё (Р’ СЃРµРєСѓРЅРґР°С…)."), false)
 
-						if var_0_1.ToggleButton(var_0_5("Сохранение телеграмм сессии"), var_131_5) then
+						if var_0_1.ToggleButton(var_0_5("РЎРѕС…СЂР°РЅРµРЅРёРµ С‚РµР»РµРіСЂР°РјРј СЃРµСЃСЃРёРё"), var_131_5) then
 							tg_settingsADD.saveSession = var_131_5[0]
 
 							if var_131_5[0] == false then
@@ -6886,7 +7228,7 @@ function tg_settingsAD()
 							writeJsonFile(tg_settingsADD, getWorkingDirectory() .. "\\ArzMarket_TgBot\\config.json")
 						end
 
-						var_0_1.Hint("sessiontg", var_0_5("Если функция активна, после того как вы войдете 1 раз...\nпри перезаходе вводить данные заного будет не нужно.\nАвтологин."), false)
+						var_0_1.Hint("sessiontg", var_0_5("Р•СЃР»Рё С„СѓРЅРєС†РёСЏ Р°РєС‚РёРІРЅР°, РїРѕСЃР»Рµ С‚РѕРіРѕ РєР°Рє РІС‹ РІРѕР№РґРµС‚Рµ 1 СЂР°Р·...\nРїСЂРё РїРµСЂРµР·Р°С…РѕРґРµ РІРІРѕРґРёС‚СЊ РґР°РЅРЅС‹Рµ Р·Р°РЅРѕРіРѕ Р±СѓРґРµС‚ РЅРµ РЅСѓР¶РЅРѕ.\nРђРІС‚РѕР»РѕРіРёРЅ."), false)
 						var_0_1.SameLine()
 						var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 6)
 						var_0_1.PushFont(fonts[18])
@@ -6895,7 +7237,7 @@ function tg_settingsAD()
 							os.execute("explorer " .. getWorkingDirectory() .. "\"\\ArzMarket_TgBot")
 						end
 
-						var_0_1.Hint("explorerFOLDER", var_0_5("Вы откроете папку с js-скриптом"), false)
+						var_0_1.Hint("explorerFOLDER", var_0_5("Р’С‹ РѕС‚РєСЂРѕРµС‚Рµ РїР°РїРєСѓ СЃ js-СЃРєСЂРёРїС‚РѕРј"), false)
 						var_0_1.PopFont()
 					end
 
@@ -6905,30 +7247,30 @@ function tg_settingsAD()
 
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 14)
 
-					if var_0_1.Button(var_0_5("Открыть конструктор авто-пиара"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+					if var_0_1.Button(var_0_5("РћС‚РєСЂС‹С‚СЊ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Р°РІС‚Рѕ-РїРёР°СЂР°"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 						openUrl("https://t.me/ArzMarketTOS_Bot")
 					end
 
-					if var_0_1.Button(var_0_5("Открыть создание тг-бота"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+					if var_0_1.Button(var_0_5("РћС‚РєСЂС‹С‚СЊ СЃРѕР·РґР°РЅРёРµ С‚Рі-Р±РѕС‚Р°"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 						openUrl("https://my.telegram.org/")
 					end
 
-					if var_0_1.Button(var_0_5("Запустить скрипт"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+					if var_0_1.Button(var_0_5("Р—Р°РїСѓСЃС‚РёС‚СЊ СЃРєСЂРёРїС‚"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 						local var_131_6 = getWorkingDirectory() .. "\\ArzMarket_TgBot"
 
 						os.execute("cd " .. var_131_6 .. " && start node NewArzMarketBot.js && exit")
 					end
 
-					var_0_1.Hint("startnode", var_0_5("Перед запуском убедитесь что настроили все настройки правильно."), false)
+					var_0_1.Hint("startnode", var_0_5("РџРµСЂРµРґ Р·Р°РїСѓСЃРєРѕРј СѓР±РµРґРёС‚РµСЃСЊ С‡С‚Рѕ РЅР°СЃС‚СЂРѕРёР»Рё РІСЃРµ РЅР°СЃС‚СЂРѕР№РєРё РїСЂР°РІРёР»СЊРЅРѕ."), false)
 				end
 			else
-				if var_0_1.Button(var_0_5("Создать конфиг"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+				if var_0_1.Button(var_0_5("РЎРѕР·РґР°С‚СЊ РєРѕРЅС„РёРі"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 					local var_131_7 = getWorkingDirectory() .. "\\ArzMarket_TgBot"
 
 					os.execute("cd " .. var_131_7 .. " && start node NewArzMarketBot.js && exit")
 				end
 
-				var_0_1.Hint("startnode2", var_0_5("Для корректной работы нужно первый проверить все еще раз."), false)
+				var_0_1.Hint("startnode2", var_0_5("Р”Р»СЏ РєРѕСЂСЂРµРєС‚РЅРѕР№ СЂР°Р±РѕС‚С‹ РЅСѓР¶РЅРѕ РїРµСЂРІС‹Р№ РїСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ РµС‰Рµ СЂР°Р·."), false)
 			end
 		else
 			if isNodeInstalledV == nil then
@@ -6936,34 +7278,34 @@ function tg_settingsAD()
 			end
 
 			if isNodeInstalledV == true then
-				if var_0_1.Button(var_0_5("Установить скрипт"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
-					AFKMessage("Установка...")
+				if var_0_1.Button(var_0_5("РЈСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРєСЂРёРїС‚"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+					AFKMessage("РЈСЃС‚Р°РЅРѕРІРєР°...")
 
 					local var_131_8 = require("moonloader").download_status
 
 					download_id = downloadUrlToFile("https://raw.githubusercontent.com/FREYM1337/forumnick/main/ArzMarketV2/NewArzMarketBot.js", getWorkingDirectory() .. "\\ArzMarket_TgBot\\NewArzMarketBot.js", function(arg_133_0, arg_133_1)
 						if arg_133_1 == var_131_8.STATUS_ENDDOWNLOADDATA then
-							AFKMessage("Установка завершена.")
+							AFKMessage("РЈСЃС‚Р°РЅРѕРІРєР° Р·Р°РІРµСЂС€РµРЅР°.")
 						end
 					end)
 				end
 
-				var_0_1.Hint("downloadjs", var_0_5("Для продолжения вам нужно установить дополнения.\nЭто займет пару секунд."), false)
+				var_0_1.Hint("downloadjs", var_0_5("Р”Р»СЏ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ РІР°Рј РЅСѓР¶РЅРѕ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РґРѕРїРѕР»РЅРµРЅРёСЏ.\nР­С‚Рѕ Р·Р°Р№РјРµС‚ РїР°СЂСѓ СЃРµРєСѓРЅРґ."), false)
 			elseif isNodeInstalledV == false then
-				if var_0_1.Button(var_0_5("Установить node js"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
+				if var_0_1.Button(var_0_5("РЈСЃС‚Р°РЅРѕРІРёС‚СЊ node js"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
 					var_0_1.CloseCurrentPopup()
-					AFKMessage("Сейчас у вас открылся браузер. Зайдите и установите node js. Это нужно для работы скрипта.")
-					AFKMessage("ВАЖНО! После установки перезагрузите пк и вы сможете продолжить настройку.")
+					AFKMessage("РЎРµР№С‡Р°СЃ Сѓ РІР°СЃ РѕС‚РєСЂС‹Р»СЃСЏ Р±СЂР°СѓР·РµСЂ. Р—Р°Р№РґРёС‚Рµ Рё СѓСЃС‚Р°РЅРѕРІРёС‚Рµ node js. Р­С‚Рѕ РЅСѓР¶РЅРѕ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃРєСЂРёРїС‚Р°.")
+					AFKMessage("Р’РђР–РќРћ! РџРѕСЃР»Рµ СѓСЃС‚Р°РЅРѕРІРєРё РїРµСЂРµР·Р°РіСЂСѓР·РёС‚Рµ РїРє Рё РІС‹ СЃРјРѕР¶РµС‚Рµ РїСЂРѕРґРѕР»Р¶РёС‚СЊ РЅР°СЃС‚СЂРѕР№РєСѓ.")
 					openUrl("https://nodejs.org/dist/v22.11.0/node-v22.11.0-x64.msi")
 				end
 
-				var_0_1.Hint("downloadnode", var_0_5("После нажатия кнопки вы будете перемещены на оффициальный сайт nodejs.\nЗагрузка начнется автоматически."), false)
+				var_0_1.Hint("downloadnode", var_0_5("РџРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё РІС‹ Р±СѓРґРµС‚Рµ РїРµСЂРµРјРµС‰РµРЅС‹ РЅР° РѕС„С„РёС†РёР°Р»СЊРЅС‹Р№ СЃР°Р№С‚ nodejs.\nР—Р°РіСЂСѓР·РєР° РЅР°С‡РЅРµС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё."), false)
 			end
 		end
 
 		var_0_1.EndChild()
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_1.CloseCurrentPopup()
 		end
 
@@ -7003,7 +7345,7 @@ function lavka_color_edit()
 	var_0_1.PushStyleColor(var_135_0.PopupBg, var_0_1.ImVec4(0.05, 0.06, 0.1, 1))
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 0))
 
-	if var_0_1.BeginPopupModal(var_0_5("[Color] Настройки лавки"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
+	if var_0_1.BeginPopupModal(var_0_5("[Color] РќР°СЃС‚СЂРѕР№РєРё Р»Р°РІРєРё"), _, var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove + var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse) then
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(300, 305))
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
@@ -7017,7 +7359,7 @@ function lavka_color_edit()
 			var_0_1.PushStyleColor(var_0_1.Col.Text, var_0_1.ImVec4(hexToRGBA(iter_135_0:match("{......}"))))
 
 			if var_0_1.Button(iter_135_0:gsub("{......}", "") .. "##" .. var_135_1, var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10, 30)) then
-				AFKMessage("Вы выбрали " .. iter_135_0 .. " [Цвет]")
+				AFKMessage("Р’С‹ РІС‹Р±СЂР°Р»Рё " .. iter_135_0 .. " [Р¦РІРµС‚]")
 
 				var_0_116 = var_135_1
 				var_0_106.cfg.dynamic_lavka_color = var_0_116
@@ -7033,7 +7375,7 @@ function lavka_color_edit()
 
 		var_0_1.EndChild()
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 30)) then
 			var_0_1.CloseCurrentPopup()
 		end
 
@@ -7048,7 +7390,7 @@ function lavka_color_edit()
 end
 
 function changeDate()
-	if var_0_1.BeginPopupModal(var_0_5("Выбор даты"), _, var_0_1.WindowFlags.NoCollapse + var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove) then
+	if var_0_1.BeginPopupModal(var_0_5("Р’С‹Р±РѕСЂ РґР°С‚С‹"), _, var_0_1.WindowFlags.NoCollapse + var_0_1.WindowFlags.NoResize + var_0_1.WindowFlags.NoMove) then
 		var_0_1.SetWindowSizeVec2(var_0_1.ImVec2(300, 305))
 		var_0_1.BeginChild("changeDate", var_0_1.ImVec2(-1, var_0_1.GetWindowWidth() - 70), true)
 
@@ -7067,7 +7409,7 @@ function changeDate()
 			return arg_137_0.date > arg_137_1.date
 		end)
 
-		if var_0_1.Button(var_0_5("За весь период"), var_0_1.ImVec2(-1)) then
+		if var_0_1.Button(var_0_5("Р—Р° РІРµСЃСЊ РїРµСЂРёРѕРґ"), var_0_1.ImVec2(-1)) then
 			var_0_115.searchStorage.logPage_1[2] = ""
 			date_select = -1
 
@@ -7085,7 +7427,7 @@ function changeDate()
 
 		var_0_1.EndChild()
 
-		if var_0_1.Button(var_0_5("Закрыть"), var_0_1.ImVec2(-1, 30)) then
+		if var_0_1.Button(var_0_5("Р—Р°РєСЂС‹С‚СЊ"), var_0_1.ImVec2(-1, 30)) then
 			var_0_1.CloseCurrentPopup()
 		end
 
@@ -7277,10 +7619,10 @@ function var_0_1.CreateLeadersMenu(arg_145_0, arg_145_1, arg_145_2)
 	local var_145_1 = var_0_1.GetWindowDrawList()
 	local var_145_2 = var_0_1.GetCursorScreenPos()
 
-	var_145_1:AddText(var_0_1.ImVec2(var_145_2.x + 10, var_145_2.y + (var_0_1.CalcTextSize().y * 1.5 - var_0_1.CalcTextSize(var_0_5("Место")).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), var_0_5("Место"))
-	var_145_1:AddText(var_0_1.ImVec2(var_145_2.x + 100, var_145_2.y + (var_0_1.CalcTextSize().y * 1.5 - var_0_1.CalcTextSize(var_0_5("Ник")).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), var_0_5("Ник"))
-	var_145_1:AddText(var_0_1.ImVec2(var_145_2.x + 305, var_145_2.y + (var_0_1.CalcTextSize().y * 1.5 - var_0_1.CalcTextSize(var_0_5("Опыт")).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), var_0_5("Опыт"))
-	var_145_1:AddText(var_0_1.ImVec2(var_145_2.x + arg_145_2.x - var_0_1.CalcTextSize(var_0_5("Уровень")).x - 10 - 10, var_145_2.y + (var_0_1.CalcTextSize().y * 1.5 - var_0_1.CalcTextSize(var_0_5("Уровень")).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), var_0_5("Уровень"))
+	var_145_1:AddText(var_0_1.ImVec2(var_145_2.x + 10, var_145_2.y + (var_0_1.CalcTextSize().y * 1.5 - var_0_1.CalcTextSize(var_0_5("РњРµСЃС‚Рѕ")).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), var_0_5("РњРµСЃС‚Рѕ"))
+	var_145_1:AddText(var_0_1.ImVec2(var_145_2.x + 100, var_145_2.y + (var_0_1.CalcTextSize().y * 1.5 - var_0_1.CalcTextSize(var_0_5("РќРёРє")).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), var_0_5("РќРёРє"))
+	var_145_1:AddText(var_0_1.ImVec2(var_145_2.x + 305, var_145_2.y + (var_0_1.CalcTextSize().y * 1.5 - var_0_1.CalcTextSize(var_0_5("РћРїС‹С‚")).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), var_0_5("РћРїС‹С‚"))
+	var_145_1:AddText(var_0_1.ImVec2(var_145_2.x + arg_145_2.x - var_0_1.CalcTextSize(var_0_5("РЈСЂРѕРІРµРЅСЊ")).x - 10 - 10, var_145_2.y + (var_0_1.CalcTextSize().y * 1.5 - var_0_1.CalcTextSize(var_0_5("РЈСЂРѕРІРµРЅСЊ")).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), var_0_5("РЈСЂРѕРІРµРЅСЊ"))
 	var_0_1.EndChild()
 	var_0_1.PopStyleColor()
 	var_0_1.BeginChild(arg_145_0 .. "list", var_0_1.ImVec2(-1, -1), false, var_0_1.WindowFlags.NoScrollWithMouse + var_0_1.WindowFlags.NoScrollbar)
@@ -7302,13 +7644,13 @@ function var_0_1.CreateLeadersMenu(arg_145_0, arg_145_1, arg_145_2)
 
 			local var_145_3 = var_0_1.GetWindowDrawList()
 			local var_145_4 = var_0_1.GetCursorScreenPos()
-			local var_145_5 = var_0_1.ImVec2(var_145_4.x + 10 + var_0_1.CalcTextSize(var_0_5("Место")).x / 2 - var_145_0.SIZE_NUMBER_BUTTON / 2, var_145_4.y + (var_145_0.SIZE_BOX_CHILD - var_145_0.SIZE_NUMBER_BUTTON) / 2)
+			local var_145_5 = var_0_1.ImVec2(var_145_4.x + 10 + var_0_1.CalcTextSize(var_0_5("РњРµСЃС‚Рѕ")).x / 2 - var_145_0.SIZE_NUMBER_BUTTON / 2, var_145_4.y + (var_145_0.SIZE_BOX_CHILD - var_145_0.SIZE_NUMBER_BUTTON) / 2)
 
 			var_145_3:AddRectFilled(var_145_5, var_0_1.ImVec2(var_145_5.x + var_145_0.SIZE_NUMBER_BUTTON, var_145_5.y + var_145_0.SIZE_NUMBER_BUTTON), var_0_1.GetColorU32Vec4(var_145_0.NUMBER_BUTTON_COLOR), var_145_0.ROUNDING)
 			var_145_3:AddText(var_0_1.ImVec2(var_145_5.x + (var_145_0.SIZE_NUMBER_BUTTON - var_0_1.CalcTextSize(tostring(iter_145_0)).x) / 2, var_145_5.y + (var_145_0.SIZE_NUMBER_BUTTON - var_0_1.CalcTextSize(tostring(iter_145_0)).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), tostring(iter_145_0))
 			var_145_3:AddText(var_0_1.ImVec2(var_145_4.x + 100, var_145_4.y + (var_145_0.SIZE_BOX_CHILD - var_0_1.CalcTextSize(iter_145_1.name).y) / 2), var_0_1.GetColorU32Vec4(var_0_1.GetStyle().Colors[var_0_1.Col.Text]), iter_145_1.name)
-			var_145_3:AddText(var_0_1.ImVec2(var_145_4.x + 305 + (var_0_1.CalcTextSize(tostring(var_0_5("Опыт"))).x - var_0_1.CalcTextSize(tostring(iter_145_1.exp)).x) / 2, var_145_4.y + (var_145_0.SIZE_BOX_CHILD - var_0_1.CalcTextSize(tostring(iter_145_1.exp)).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), tostring(iter_145_1.exp))
-			var_145_3:AddText(var_0_1.ImVec2(var_145_4.x + arg_145_2.x - var_0_1.CalcTextSize(var_0_5("Уровень")).x - 10 - 10 + var_0_1.CalcTextSize(var_0_5("Уровень")).x / 2 - var_0_1.CalcTextSize(tostring(iter_145_1.lvl)).x / 2, var_145_4.y + (var_145_0.SIZE_BOX_CHILD - var_0_1.CalcTextSize(tostring(iter_145_1.lvl)).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), tostring(iter_145_1.lvl))
+			var_145_3:AddText(var_0_1.ImVec2(var_145_4.x + 305 + (var_0_1.CalcTextSize(tostring(var_0_5("РћРїС‹С‚"))).x - var_0_1.CalcTextSize(tostring(iter_145_1.exp)).x) / 2, var_145_4.y + (var_145_0.SIZE_BOX_CHILD - var_0_1.CalcTextSize(tostring(iter_145_1.exp)).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), tostring(iter_145_1.exp))
+			var_145_3:AddText(var_0_1.ImVec2(var_145_4.x + arg_145_2.x - var_0_1.CalcTextSize(var_0_5("РЈСЂРѕРІРµРЅСЊ")).x - 10 - 10 + var_0_1.CalcTextSize(var_0_5("РЈСЂРѕРІРµРЅСЊ")).x / 2 - var_0_1.CalcTextSize(tostring(iter_145_1.lvl)).x / 2, var_145_4.y + (var_145_0.SIZE_BOX_CHILD - var_0_1.CalcTextSize(tostring(iter_145_1.lvl)).y) / 2), var_0_1.GetColorU32Vec4(var_145_0.TEXT_COLOR), tostring(iter_145_1.lvl))
 			var_0_1.EndChild()
 		end
 	end
@@ -7368,27 +7710,27 @@ function var_0_1.CreateLeftMenu(arg_146_0, arg_146_1, arg_146_2, arg_146_3, arg_
 	end
 
 	if var_0_115.scriptVersion[2] then
-		var_0_1.OpenPopup(var_0_5("Найдено новое обновление скрипта!"))
+		var_0_1.OpenPopup(var_0_5("РќР°Р№РґРµРЅРѕ РЅРѕРІРѕРµ РѕР±РЅРѕРІР»РµРЅРёРµ СЃРєСЂРёРїС‚Р°!"))
 		downloadScriptPage()
 	end
 
 	if var_0_102.buy then
-		var_0_1.OpenPopup(var_0_5("Лог [Продажи/Скупки] товаров"))
+		var_0_1.OpenPopup(var_0_5("Р›РѕРі [РџСЂРѕРґР°Р¶Рё/РЎРєСѓРїРєРё] С‚РѕРІР°СЂРѕРІ"))
 		tg_settingsw()
 	end
 
 	if var_0_115.askServer then
-		var_0_1.OpenPopup(var_0_5("Копирование конфигов"))
+		var_0_1.OpenPopup(var_0_5("РљРѕРїРёСЂРѕРІР°РЅРёРµ РєРѕРЅС„РёРіРѕРІ"))
 		askServer()
 	end
 
 	if var_0_115.videoSelector then
-		var_0_1.OpenPopup(var_0_5("Открытие ссылки."))
+		var_0_1.OpenPopup(var_0_5("РћС‚РєСЂС‹С‚РёРµ СЃСЃС‹Р»РєРё."))
 		videoSelector(var_0_115.youtubeLink, var_0_115.rutubeLink, var_0_115.isOldMethodLink)
 	end
 
 	if var_0_115.day_timer_price + 86400 <= os.time() then
-		AFKMessage("У вас устарели средние цены. Обновляем.")
+		AFKMessage("РЈ РІР°СЃ СѓСЃС‚Р°СЂРµР»Рё СЃСЂРµРґРЅРёРµ С†РµРЅС‹. РћР±РЅРѕРІР»СЏРµРј.")
 
 		var_0_115.day_timer_price = os.time()
 		var_0_106.cfg.day_timer_price = var_0_115.day_timer_price
@@ -7398,7 +7740,7 @@ function var_0_1.CreateLeftMenu(arg_146_0, arg_146_1, arg_146_2, arg_146_3, arg_
 	end
 
 	if var_0_115.day_timer_sputnik + 86400 <= os.time() and var_0_115.isEnabledSputnik[0] then
-		sendNotify("Обновляем данные Спунтиков.")
+		sendNotify("РћР±РЅРѕРІР»СЏРµРј РґР°РЅРЅС‹Рµ РЎРїСѓРЅС‚РёРєРѕРІ.")
 
 		var_0_115.day_timer_sputnik = os.time()
 		var_0_106.cfg.day_timer_sputnik = var_0_115.day_timer_sputnik
@@ -7573,7 +7915,7 @@ function var_0_1.CreateLeftMenu(arg_146_0, arg_146_1, arg_146_2, arg_146_3, arg_
 		if var_0_56[18][2] > 2 then
 			thisScript():reload()
 			deAFKMessage(debug.getinfo(1, "l"), "reload script.")
-			AFKMessage("Вы перезагрузили скрипт.")
+			AFKMessage("Р’С‹ РїРµСЂРµР·Р°РіСЂСѓР·РёР»Рё СЃРєСЂРёРїС‚.")
 		end
 
 		var_0_56[18][2] = var_0_56[18][2] + 1
@@ -7920,7 +8262,7 @@ end
 
 function onScriptTerminate(arg_160_0, arg_160_1)
 	if arg_160_0 == thisScript() then
-		AFKMessage("Скрипт выгружен/перезагружен, обратитесь к разработчику если произошел краш скрипта. При обращении пришлите moonloader.log из папки moonloader.")
+		AFKMessage("РЎРєСЂРёРїС‚ РІС‹РіСЂСѓР¶РµРЅ/РїРµСЂРµР·Р°РіСЂСѓР¶РµРЅ, РѕР±СЂР°С‚РёС‚РµСЃСЊ Рє СЂР°Р·СЂР°Р±РѕС‚С‡РёРєСѓ РµСЃР»Рё РїСЂРѕРёР·РѕС€РµР» РєСЂР°С€ СЃРєСЂРёРїС‚Р°. РџСЂРё РѕР±СЂР°С‰РµРЅРёРё РїСЂРёС€Р»РёС‚Рµ moonloader.log РёР· РїР°РїРєРё moonloader.")
 
 		local var_160_0 = os.time()
 
@@ -8648,10 +8990,10 @@ function createConfig(arg_191_0, arg_191_1, arg_191_2, arg_191_3)
 	local var_191_1, var_191_2 = gojson(var_191_0, arg_191_2, arg_191_3):Save(arg_191_1)
 
 	if var_191_1 == false then
-		AFKMessage("Ошибка сохранения конфига! Сообщите разработчику! https://t.me/freym1337")
-		print("Сохранение конфига " .. tostring(arg_191_0) .. " прошло не удачно! Сообщите поддержке!")
+		AFKMessage("РћС€РёР±РєР° СЃРѕС…СЂР°РЅРµРЅРёСЏ РєРѕРЅС„РёРіР°! РЎРѕРѕР±С‰РёС‚Рµ СЂР°Р·СЂР°Р±РѕС‚С‡РёРєСѓ! https://t.me/freym1337")
+		print("РЎРѕС…СЂР°РЅРµРЅРёРµ РєРѕРЅС„РёРіР° " .. tostring(arg_191_0) .. " РїСЂРѕС€Р»Рѕ РЅРµ СѓРґР°С‡РЅРѕ! РЎРѕРѕР±С‰РёС‚Рµ РїРѕРґРґРµСЂР¶РєРµ!")
 		print(tostring(var_191_1) .. " | " .. tostring(var_191_2))
-		saveLog("Сохранение конфига " .. tostring(arg_191_0) .. " прошло не удачно! Сообщите поддержке!")
+		saveLog("РЎРѕС…СЂР°РЅРµРЅРёРµ РєРѕРЅС„РёРіР° " .. tostring(arg_191_0) .. " РїСЂРѕС€Р»Рѕ РЅРµ СѓРґР°С‡РЅРѕ! РЎРѕРѕР±С‰РёС‚Рµ РїРѕРґРґРµСЂР¶РєРµ!")
 		saveLog(tostring(var_191_1) .. " | " .. tostring(var_191_2))
 	end
 
@@ -8695,26 +9037,6 @@ function var_0_1.CustomOnlyBorderButton(...)
 	return var_193_2
 end
 
--- PirojkiSPovidlom trusted reinstall control
-local function pirojki_request_market_reinstall()
-	local pirojki_loader_directory = getWorkingDirectory() .. "\\ArzMarketLoader"
-
-	if not doesDirectoryExist(pirojki_loader_directory) then
-		createDirectory(pirojki_loader_directory)
-	end
-
-	local pirojki_request = io.open(pirojki_loader_directory .. "\\force-reinstall.request", "wb")
-
-	if not pirojki_request then
-		AFKMessage("Fork: could not queue the GitHub reinstall.")
-		return
-	end
-
-	pirojki_request:write(tostring(os.time()))
-	pirojki_request:close()
-	AFKMessage("Fork: GitHub reinstall queued.")
-end
-
 function cfg_menu(arg_194_0)
 	var_0_1.PushFont(fonts[18])
 	var_0_1.SameLine(var_0_106.cfg.menuSize == 1 and 555 or var_0_106.cfg.menuSize == 2 and 580 or 0)
@@ -8742,28 +9064,21 @@ function cfg_menu(arg_194_0)
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.PopFont()
 	var_0_1.CustomInvisibleChild("cfgBlockFirstsz", var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.1, sizeY - 45), false, var_0_1.WindowFlags.NoScrollbar + var_0_1.WindowFlags.NoScrollWithMouse)
 	var_0_1.Scroller("cfgBlockFirstsz", 100, 600, var_0_1.HoveredFlags.AllowWhenBlockedByActiveItem)
 	var_0_1.PushFont(fonts[18])
-	var_0_1.CenterText(var_0_5("Настройки"))
+	var_0_1.CenterText(var_0_5("РќР°СЃС‚СЂРѕР№РєРё"))
 	var_0_1.PushItemWidth(150)
-	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-	if var_0_1.Button(var_0_5("\xCF\xE5\xF0\xE5\xE7\xE0\xE3\xF0\xF3\xE7\xE8\xF2\xFC Market \xF1 GitHub") .. "##PirojkiForceReinstall", var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
-		pirojki_request_market_reinstall()
-	end
-
-	var_0_1.GetStyle().FrameBorderSize = 0
-
-	if var_0_1.ToggleButton(var_0_5("Всегда конвертировать [VC$/SA$]"), var_0_159) then
+	if var_0_1.ToggleButton(var_0_5("Р’СЃРµРіРґР° РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°С‚СЊ [VC$/SA$]"), var_0_159) then
 		var_0_106.cfg.Always_convert = var_0_159[0]
 
 		save_all()
 	end
 
-	if var_0_159[0] and var_0_1.ToggleButton(var_0_5("Конвертировать только 1 раз"), var_0_160) then
+	if var_0_159[0] and var_0_1.ToggleButton(var_0_5("РљРѕРЅРІРµСЂС‚РёСЂРѕРІР°С‚СЊ С‚РѕР»СЊРєРѕ 1 СЂР°Р·"), var_0_160) then
 		var_0_106.cfg.Always_convert_block = var_0_160[0]
 
 		save_all()
@@ -8771,7 +9086,7 @@ function cfg_menu(arg_194_0)
 
 	var_0_181 = var_0_11.char[256]("" .. var_0_106.cfg.buy_vc)
 
-	if var_0_1.InputTextD(var_0_5("  Курс покупки VC$"), var_0_181, var_0_45.sizeof(var_0_181), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_181):match("^%d+$") then
+	if var_0_1.InputTextD(var_0_5("  РљСѓСЂСЃ РїРѕРєСѓРїРєРё VC$"), var_0_181, var_0_45.sizeof(var_0_181), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_181):match("^%d+$") then
 		var_0_106.cfg.buy_vc = var_0_45.string(var_0_181)
 
 		save_all()
@@ -8779,13 +9094,13 @@ function cfg_menu(arg_194_0)
 
 	var_0_180 = var_0_11.char[256]("" .. var_0_106.cfg.sell_vc)
 
-	if var_0_1.InputTextD(var_0_5("  Курс продажи VC$"), var_0_180, var_0_45.sizeof(var_0_180), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_180):match("^%d+$") then
+	if var_0_1.InputTextD(var_0_5("  РљСѓСЂСЃ РїСЂРѕРґР°Р¶Рё VC$"), var_0_180, var_0_45.sizeof(var_0_180), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_180):match("^%d+$") then
 		var_0_106.cfg.sell_vc = var_0_45.string(var_0_180)
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Авто-пиар в чаты в игре"), var_0_115.vr_helper.status) then
+	if var_0_1.ToggleButton(var_0_5("РђРІС‚Рѕ-РїРёР°СЂ РІ С‡Р°С‚С‹ РІ РёРіСЂРµ"), var_0_115.vr_helper.status) then
 		var_0_106.cfg.vr_helper = var_0_115.vr_helper.status[0]
 
 		save_all()
@@ -8794,14 +9109,14 @@ function cfg_menu(arg_194_0)
 	if var_0_106.cfg.vr_helper then
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Открыть конструктор авто-пиара"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
+		if var_0_1.Button(var_0_5("РћС‚РєСЂС‹С‚СЊ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Р°РІС‚Рѕ-РїРёР°СЂР°"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
 			var_0_115.vr_helper.isClicked = true
 		end
 
 		var_0_1.GetStyle().FrameBorderSize = 0
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Включить помощника установки лавки"), var_0_168) then
+	if var_0_1.ToggleButton(var_0_5("Р’РєР»СЋС‡РёС‚СЊ РїРѕРјРѕС‰РЅРёРєР° СѓСЃС‚Р°РЅРѕРІРєРё Р»Р°РІРєРё"), var_0_168) then
 		var_0_106.cfg.lavka_helper = var_0_168[0]
 
 		save_all()
@@ -8812,7 +9127,7 @@ function cfg_menu(arg_194_0)
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.SliderFloat(var_0_5(" Дистанция прорисовки"), var_0_115.renderLavkaRadius, 1, 85) then
+		if var_0_1.SliderFloat(var_0_5(" Р”РёСЃС‚Р°РЅС†РёСЏ РїСЂРѕСЂРёСЃРѕРІРєРё"), var_0_115.renderLavkaRadius, 1, 85) then
 			var_0_106.cfg.renderLavkaRadius = var_0_115.renderLavkaRadius[0]
 
 			save_all()
@@ -8823,7 +9138,7 @@ function cfg_menu(arg_194_0)
 		var_0_1.PopStyleVar(1)
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Телеграмм уведомления"), var_0_141) then
+	if var_0_1.ToggleButton(var_0_5("РўРµР»РµРіСЂР°РјРј СѓРІРµРґРѕРјР»РµРЅРёСЏ"), var_0_141) then
 		var_0_106.cfg.telegram_notf = var_0_141[0]
 
 		save_all()
@@ -8832,8 +9147,8 @@ function cfg_menu(arg_194_0)
 	if var_0_141[0] then
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Открыть настройки уведомлений"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
-			var_0_1.OpenPopup(var_0_5("[TG] Настройки"))
+		if var_0_1.Button(var_0_5("РћС‚РєСЂС‹С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё СѓРІРµРґРѕРјР»РµРЅРёР№"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
+			var_0_1.OpenPopup(var_0_5("[TG] РќР°СЃС‚СЂРѕР№РєРё"))
 		end
 
 		tg_settings()
@@ -8841,7 +9156,7 @@ function cfg_menu(arg_194_0)
 		var_0_1.GetStyle().FrameBorderSize = 0
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Телеграмм реклама"), var_0_115.Telegram_Ad) then
+	if var_0_1.ToggleButton(var_0_5("РўРµР»РµРіСЂР°РјРј СЂРµРєР»Р°РјР°"), var_0_115.Telegram_Ad) then
 		var_0_106.cfg.Telegram_Ad = var_0_115.Telegram_Ad[0]
 
 		save_all()
@@ -8850,12 +9165,12 @@ function cfg_menu(arg_194_0)
 	if var_0_115.Telegram_Ad[0] then
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Открыть настройки авто телеграмм рекламы"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
+		if var_0_1.Button(var_0_5("РћС‚РєСЂС‹С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё Р°РІС‚Рѕ С‚РµР»РµРіСЂР°РјРј СЂРµРєР»Р°РјС‹"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
 			if not doesDirectoryExist(getWorkingDirectory() .. "\\ArzMarket_TgBot") then
 				createDirectory(getWorkingDirectory() .. "\\ArzMarket_TgBot")
 			end
 
-			var_0_1.OpenPopup(var_0_5("[TGAD] Настройки"))
+			var_0_1.OpenPopup(var_0_5("[TGAD] РќР°СЃС‚СЂРѕР№РєРё"))
 		end
 
 		tg_settingsAD()
@@ -8863,25 +9178,25 @@ function cfg_menu(arg_194_0)
 		var_0_1.GetStyle().FrameBorderSize = 0
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Показывать процесс выставки товаров"), var_0_133) then
+	if var_0_1.ToggleButton(var_0_5("РџРѕРєР°Р·С‹РІР°С‚СЊ РїСЂРѕС†РµСЃСЃ РІС‹СЃС‚Р°РІРєРё С‚РѕРІР°СЂРѕРІ"), var_0_133) then
 		var_0_106.cfg.buy_sell_history = var_0_133[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Чат с трейдером"), var_0_130) then
+	if var_0_1.ToggleButton(var_0_5("Р§Р°С‚ СЃ С‚СЂРµР№РґРµСЂРѕРј"), var_0_130) then
 		var_0_106.cfg.trader_bool = var_0_130[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Авто принятие трейда"), var_0_132) then
+	if var_0_1.ToggleButton(var_0_5("РђРІС‚Рѕ РїСЂРёРЅСЏС‚РёРµ С‚СЂРµР№РґР°"), var_0_132) then
 		var_0_106.cfg.trade_create = var_0_132[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Автоматически называть лавку"), var_0_158) then
+	if var_0_1.ToggleButton(var_0_5("РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РЅР°Р·С‹РІР°С‚СЊ Р»Р°РІРєСѓ"), var_0_158) then
 		var_0_106.cfg.auto_name_lavka = var_0_158[0]
 
 		save_all()
@@ -8890,7 +9205,7 @@ function cfg_menu(arg_194_0)
 	if var_0_158[0] then
 		var_0_1.PushFont(fonts[18])
 
-		if var_0_1.InputTextWithHintD("##nazvanie lavki", var_0_5("Название лавки"), var_0_179, var_0_45.sizeof(var_0_179)) then
+		if var_0_1.InputTextWithHintD("##nazvanie lavki", var_0_5("РќР°Р·РІР°РЅРёРµ Р»Р°РІРєРё"), var_0_179, var_0_45.sizeof(var_0_179)) then
 			var_0_106.cfg.lavka_name = var_0_45.string(var_0_179)
 
 			save_all()
@@ -8900,8 +9215,8 @@ function cfg_menu(arg_194_0)
 
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_5("Открыть настройки цвета лавки"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
-			var_0_1.OpenPopup(var_0_5("[Color] Настройки лавки"))
+		if var_0_1.Button(var_0_5("РћС‚РєСЂС‹С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё С†РІРµС‚Р° Р»Р°РІРєРё"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
+			var_0_1.OpenPopup(var_0_5("[Color] РќР°СЃС‚СЂРѕР№РєРё Р»Р°РІРєРё"))
 		end
 
 		lavka_color_edit()
@@ -8909,13 +9224,13 @@ function cfg_menu(arg_194_0)
 		var_0_1.GetStyle().FrameBorderSize = 0
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Авто сохранение конфига"), var_0_121) then
+	if var_0_1.ToggleButton(var_0_5("РђРІС‚Рѕ СЃРѕС…СЂР°РЅРµРЅРёРµ РєРѕРЅС„РёРіР°"), var_0_121) then
 		var_0_106.cfg.auto_save_cfg = var_0_121[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Отображение средних цен"), var_0_122) then
+	if var_0_1.ToggleButton(var_0_5("РћС‚РѕР±СЂР°Р¶РµРЅРёРµ СЃСЂРµРґРЅРёС… С†РµРЅ"), var_0_122) then
 		var_0_106.cfg.avg_price = var_0_122[0]
 
 		save_all()
@@ -8924,7 +9239,7 @@ function cfg_menu(arg_194_0)
 	if var_0_122[0] then
 		var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-		if var_0_1.Button(var_0_115.avg_price_choose[0] and var_0_5("Новое окно цен") or var_0_5("Старое окно цен"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
+		if var_0_1.Button(var_0_115.avg_price_choose[0] and var_0_5("РќРѕРІРѕРµ РѕРєРЅРѕ С†РµРЅ") or var_0_5("РЎС‚Р°СЂРѕРµ РѕРєРЅРѕ С†РµРЅ"), var_0_1.ImVec2(var_0_1.GetWindowWidth(), 27)) then
 			var_0_115.avg_price_choose[0] = not var_0_115.avg_price_choose[0]
 			var_0_106.cfg.avg_price_choose = var_0_115.avg_price_choose[0]
 
@@ -8933,36 +9248,36 @@ function cfg_menu(arg_194_0)
 
 		var_0_1.GetStyle().FrameBorderSize = 0
 
-		var_0_1.Hint("avg_price_choose", var_0_115.avg_price_choose[0] and var_0_5("[Новое окно цен]\nНовое окно цен полностью изменяет диалоги с информацией о предметах на новый интерфейс!") or var_0_5("[Старое окно цен]\nВсем привычное окно которое открывается справа при просмотре информации о предмете."), false)
+		var_0_1.Hint("avg_price_choose", var_0_115.avg_price_choose[0] and var_0_5("[РќРѕРІРѕРµ РѕРєРЅРѕ С†РµРЅ]\nРќРѕРІРѕРµ РѕРєРЅРѕ С†РµРЅ РїРѕР»РЅРѕСЃС‚СЊСЋ РёР·РјРµРЅСЏРµС‚ РґРёР°Р»РѕРіРё СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ Рѕ РїСЂРµРґРјРµС‚Р°С… РЅР° РЅРѕРІС‹Р№ РёРЅС‚РµСЂС„РµР№СЃ!") or var_0_5("[РЎС‚Р°СЂРѕРµ РѕРєРЅРѕ С†РµРЅ]\nР’СЃРµРј РїСЂРёРІС‹С‡РЅРѕРµ РѕРєРЅРѕ РєРѕС‚РѕСЂРѕРµ РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ СЃРїСЂР°РІР° РїСЂРё РїСЂРѕСЃРјРѕС‚СЂРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїСЂРµРґРјРµС‚Рµ."), false)
 	end
 
 	var_0_119 = var_0_11.char[256]("" .. var_0_106.cfg.sell_percent)
 
-	if var_0_1.InputTextD(var_0_5("  Ваша коммисия в %"), var_0_119, var_0_45.sizeof(var_0_119), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_119):match("^%d+$") then
+	if var_0_1.InputTextD(var_0_5("  Р’Р°С€Р° РєРѕРјРјРёСЃРёСЏ РІ %"), var_0_119, var_0_45.sizeof(var_0_119), var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_119):match("^%d+$") then
 		var_0_106.cfg.sell_percent = var_0_45.string(var_0_119)
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Fps Up при выставлении товаров"), var_0_123) then
+	if var_0_1.ToggleButton(var_0_5("Fps Up РїСЂРё РІС‹СЃС‚Р°РІР»РµРЅРёРё С‚РѕРІР°СЂРѕРІ"), var_0_123) then
 		var_0_106.cfg.fps_up_sell = var_0_123[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Мобильный режим"), var_0_115.Mobile_Enable) then
+	if var_0_1.ToggleButton(var_0_5("РњРѕР±РёР»СЊРЅС‹Р№ СЂРµР¶РёРј"), var_0_115.Mobile_Enable) then
 		var_0_106.cfg.Mobile_Enable = var_0_115.Mobile_Enable[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Режим просмотра игроков через (/id)"), var_0_115.IsArzmarketCheck) then
+	if var_0_1.ToggleButton(var_0_5("Р РµР¶РёРј РїСЂРѕСЃРјРѕС‚СЂР° РёРіСЂРѕРєРѕРІ С‡РµСЂРµР· (/id)"), var_0_115.IsArzmarketCheck) then
 		var_0_106.cfg.IsArzmarketCheck = var_0_115.IsArzmarketCheck[0]
 
 		save_all()
 	end
 
-	if var_0_115.isPremiumAuthedStatus == true and var_0_1.ToggleButton(var_0_5("[!] Премиум табличка с ценами"), var_0_115.premiumDialogEnabled) then
+	if var_0_115.isPremiumAuthedStatus == true and var_0_1.ToggleButton(var_0_5("[!] РџСЂРµРјРёСѓРј С‚Р°Р±Р»РёС‡РєР° СЃ С†РµРЅР°РјРё"), var_0_115.premiumDialogEnabled) then
 		var_0_106.cfg.premiumDialogEnabled = var_0_115.premiumDialogEnabled[0]
 
 		save_all()
@@ -8973,7 +9288,7 @@ function cfg_menu(arg_194_0)
 	var_0_1.CustomInvisibleChild("cfgSellBlockFirst", var_0_1.ImVec2(var_0_1.GetWindowWidth() / 1.95, -1), false, var_0_1.WindowFlags.NoScrollbar)
 	var_0_1.PushFont(fonts[18])
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 135)
-	var_0_1.Text(var_0_5("Продажа"))
+	var_0_1.Text(var_0_5("РџСЂРѕРґР°Р¶Р°"))
 	var_0_1.PopFont()
 	round_text(1)
 	var_0_1.CustomInvisibleChild("cfgSellBlockSecond", var_0_1.ImVec2(var_0_1.GetWindowWidth() - 15, sizeY / (var_0_106.cfg.menuSize == 1 and 3.8 or var_0_106.cfg.menuSize == 2 and 3.1 or 0)), true, var_0_1.WindowFlags.NoScrollWithMouse)
@@ -9028,14 +9343,14 @@ function cfg_menu(arg_194_0)
 						var_0_90.sell = var_0_155:match("(.+)%.json") and var_0_155 or var_0_155 .. ".json"
 
 						if createConfig("sell-cfg/" .. var_0_90.sell, var_0_88, "sell-cfg", var_0_90.sell) then
-							AFKMessage("Конфиг {505050}" .. var_0_155 .. "{ffffff} успешно загружен.")
+							AFKMessage("РљРѕРЅС„РёРі {505050}" .. var_0_155 .. "{ffffff} СѓСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅ.")
 
 							local var_194_3, var_194_4 = os.rename(var_194_1, getWorkingDirectory() .. "\\ArzMarket\\sell-cfg\\backups\\" .. iter_194_0:match("(.+)%.cfg") .. math.floor(os.clock()) .. ".cfg")
 
 							if not var_194_3 then
-								saveLog("Ошибка при перемещении файла: " .. var_194_4 .. " | " .. var_194_1)
+								saveLog("РћС€РёР±РєР° РїСЂРё РїРµСЂРµРјРµС‰РµРЅРёРё С„Р°Р№Р»Р°: " .. var_194_4 .. " | " .. var_194_1)
 							else
-								saveLog("Файл успешно перемещён. " .. var_194_1)
+								saveLog("Р¤Р°Р№Р» СѓСЃРїРµС€РЅРѕ РїРµСЂРµРјРµС‰С‘РЅ. " .. var_194_1)
 							end
 						end
 					end
@@ -9044,7 +9359,7 @@ function cfg_menu(arg_194_0)
 				end
 			end
 
-			var_0_1.Hint("ARROWS_ROTATE" .. iter_194_0:match(".+%.cfg"), var_0_5("После нажатия кнопки ваш конфиг будет конвертирован в наш формат.\nВы сможете его изменять и сохранять.\nКонфиг от палатки будет перемещен в папку sell-cfg/backups."), false)
+			var_0_1.Hint("ARROWS_ROTATE" .. iter_194_0:match(".+%.cfg"), var_0_5("РџРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё РІР°С€ РєРѕРЅС„РёРі Р±СѓРґРµС‚ РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅ РІ РЅР°С€ С„РѕСЂРјР°С‚.\nР’С‹ СЃРјРѕР¶РµС‚Рµ РµРіРѕ РёР·РјРµРЅСЏС‚СЊ Рё СЃРѕС…СЂР°РЅСЏС‚СЊ.\nРљРѕРЅС„РёРі РѕС‚ РїР°Р»Р°С‚РєРё Р±СѓРґРµС‚ РїРµСЂРµРјРµС‰РµРЅ РІ РїР°РїРєСѓ sell-cfg/backups."), false)
 			var_0_1.SameLine()
 
 			if var_0_1.CustomOnlyBorderButton(var_0_48("trash") .. "##" .. iter_194_0 .. iter_194_0:match("(.+)%.cfg")) then
@@ -9058,7 +9373,7 @@ function cfg_menu(arg_194_0)
 						save_all()
 					end
 
-					AFKMessage("Конфиг {505050}" .. iter_194_0:match("(.+)%.cfg") .. " {ffffff}удален.")
+					AFKMessage("РљРѕРЅС„РёРі {505050}" .. iter_194_0:match("(.+)%.cfg") .. " {ffffff}СѓРґР°Р»РµРЅ.")
 				else
 					print(var_194_6)
 				end
@@ -9089,7 +9404,7 @@ function cfg_menu(arg_194_0)
 
 				local var_194_8 = readJsonFile("moonloader/ArzMarket/sell-cfg/" .. iter_194_0:match("(.+)%.json") .. ".json")
 
-				var_0_1.Text(var_0_5("Название конфига: " .. iter_194_0:match("(.+)%.json") .. "\n "))
+				var_0_1.Text(var_0_5("РќР°Р·РІР°РЅРёРµ РєРѕРЅС„РёРіР°: " .. iter_194_0:match("(.+)%.json") .. "\n "))
 
 				if var_194_8 ~= nil then
 					for iter_194_1, iter_194_2 in pairs(var_194_8) do
@@ -9109,7 +9424,7 @@ function cfg_menu(arg_194_0)
 				var_0_88 = loadConfig("moonloader/ArzMarket/sell-cfg/" .. iter_194_0)
 
 				if type(var_0_88) == "nil" then
-					AFKMessage("К сожалению конфиг был поврежден. Загрузить его не получится.")
+					AFKMessage("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РєРѕРЅС„РёРі Р±С‹Р» РїРѕРІСЂРµР¶РґРµРЅ. Р—Р°РіСЂСѓР·РёС‚СЊ РµРіРѕ РЅРµ РїРѕР»СѓС‡РёС‚СЃСЏ.")
 
 					var_0_88 = {}
 					var_0_106.cfg.load_config_sell = ""
@@ -9117,7 +9432,7 @@ function cfg_menu(arg_194_0)
 
 					save_all()
 				else
-					AFKMessage("Конфиг {505050}" .. iter_194_0:match("(.+)%.json") .. "{ffffff} успешно загружен.", var_0_88)
+					AFKMessage("РљРѕРЅС„РёРі {505050}" .. iter_194_0:match("(.+)%.json") .. "{ffffff} СѓСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅ.", var_0_88)
 
 					var_0_106.cfg.load_config_sell = iter_194_0
 					var_0_155 = iter_194_0
@@ -9139,7 +9454,7 @@ function cfg_menu(arg_194_0)
 						save_all()
 					end
 
-					AFKMessage("Конфиг {505050}" .. iter_194_0:match("(.+)%.json") .. " {ffffff}удален.")
+					AFKMessage("РљРѕРЅС„РёРі {505050}" .. iter_194_0:match("(.+)%.json") .. " {ffffff}СѓРґР°Р»РµРЅ.")
 				else
 					print(var_194_10)
 				end
@@ -9152,7 +9467,7 @@ function cfg_menu(arg_194_0)
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.PushItemWidth(var_0_1.GetWindowWidth() - 43)
 	var_0_1.PushFont(fonts[18])
-	var_0_1.InputTextWithHintD("##search_cfg_sell", var_0_5("Название конфига"), var_0_174, var_0_45.sizeof(var_0_174))
+	var_0_1.InputTextWithHintD("##search_cfg_sell", var_0_5("РќР°Р·РІР°РЅРёРµ РєРѕРЅС„РёРіР°"), var_0_174, var_0_45.sizeof(var_0_174))
 	var_0_1.SameLine()
 	var_0_1.PushFont(fonts[18])
 
@@ -9165,14 +9480,14 @@ function cfg_menu(arg_194_0)
 
 	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-	if var_0_1.Button(var_0_5("Создать"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 15, 35)) then
+	if var_0_1.Button(var_0_5("РЎРѕР·РґР°С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 15, 35)) then
 		var_0_90.sell = var_0_5:decode(var_0_45.string(var_0_174)):gsub("[\"<|:>]", "")
 
 		if var_0_90.sell == "" or var_0_90.sell == nil or var_0_90.sell:match("^%s*$") ~= nil then
-			AFKMessage("{ff3535}[Error]:{ffffff} Вы не можете создать {505050}безымянный {ffffff}конфиг.")
+			AFKMessage("{ff3535}[Error]:{ffffff} Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРѕР·РґР°С‚СЊ {505050}Р±РµР·С‹РјСЏРЅРЅС‹Р№ {ffffff}РєРѕРЅС„РёРі.")
 		else
 			createConfig("sell-cfg/" .. var_0_90.sell .. ".json", {}, "sell-cfg", var_0_90.sell)
-			AFKMessage("[Продажа] Конфиг {505050}" .. tostring(var_0_90.sell) .. "{ffffff} создан2.")
+			AFKMessage("[РџСЂРѕРґР°Р¶Р°] РљРѕРЅС„РёРі {505050}" .. tostring(var_0_90.sell) .. "{ffffff} СЃРѕР·РґР°РЅ2.")
 		end
 	end
 
@@ -9182,7 +9497,7 @@ function cfg_menu(arg_194_0)
 	round_text(0)
 	var_0_1.PushFont(fonts[18])
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 140)
-	var_0_1.Text(var_0_5("Скупка"))
+	var_0_1.Text(var_0_5("РЎРєСѓРїРєР°"))
 	var_0_1.PopFont()
 	round_text(1)
 	var_0_1.CustomInvisibleChild("cfgBuyBlockSecond", var_0_1.ImVec2(var_0_1.GetWindowWidth() - 15, sizeY / 3.82), true, var_0_1.WindowFlags.NoScrollWithMouse)
@@ -9237,14 +9552,14 @@ function cfg_menu(arg_194_0)
 						var_0_90.buy = var_0_156:match("(.+)%.json") and var_0_156 or var_0_156 .. ".json"
 
 						if createConfig("buy-cfg/" .. var_0_90.buy, var_0_87, "buy-cfg", var_0_90.buy) then
-							AFKMessage("Конфиг {505050}" .. var_0_156 .. "{ffffff} успешно загружен.")
+							AFKMessage("РљРѕРЅС„РёРі {505050}" .. var_0_156 .. "{ffffff} СѓСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅ.")
 
 							local var_194_14, var_194_15 = os.rename(var_194_12, getWorkingDirectory() .. "\\ArzMarket\\buy-cfg\\backups\\" .. iter_194_3:match("(.+)%.cfg") .. math.floor(os.clock()) .. ".cfg")
 
 							if not var_194_14 then
-								saveLog("Ошибка при перемещении файла:" .. var_194_15 .. " | " .. var_194_12)
+								saveLog("РћС€РёР±РєР° РїСЂРё РїРµСЂРµРјРµС‰РµРЅРёРё С„Р°Р№Р»Р°:" .. var_194_15 .. " | " .. var_194_12)
 							else
-								saveLog("Файл успешно перемещён. " .. var_194_12)
+								saveLog("Р¤Р°Р№Р» СѓСЃРїРµС€РЅРѕ РїРµСЂРµРјРµС‰С‘РЅ. " .. var_194_12)
 							end
 						end
 					end
@@ -9253,7 +9568,7 @@ function cfg_menu(arg_194_0)
 				end
 			end
 
-			var_0_1.Hint("ARROWS_ROTATEs" .. iter_194_3:match(".+%.cfg"), var_0_5("После нажатия кнопки ваш конфиг будет конвертирован в наш формат.\nВы сможете его изменять и сохранять.\nКонфиг от палатки будет перемещен в папку buy-cfg/backups."), false)
+			var_0_1.Hint("ARROWS_ROTATEs" .. iter_194_3:match(".+%.cfg"), var_0_5("РџРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё РІР°С€ РєРѕРЅС„РёРі Р±СѓРґРµС‚ РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅ РІ РЅР°С€ С„РѕСЂРјР°С‚.\nР’С‹ СЃРјРѕР¶РµС‚Рµ РµРіРѕ РёР·РјРµРЅСЏС‚СЊ Рё СЃРѕС…СЂР°РЅСЏС‚СЊ.\nРљРѕРЅС„РёРі РѕС‚ РїР°Р»Р°С‚РєРё Р±СѓРґРµС‚ РїРµСЂРµРјРµС‰РµРЅ РІ РїР°РїРєСѓ buy-cfg/backups."), false)
 			var_0_1.SameLine()
 
 			if var_0_1.CustomOnlyBorderButton(var_0_48("trash") .. "##" .. iter_194_3 .. iter_194_3:match("(.+)%.cfg")) then
@@ -9267,7 +9582,7 @@ function cfg_menu(arg_194_0)
 						save_all()
 					end
 
-					AFKMessage("Конфиг {505050}" .. iter_194_3:match("(.+)%.cfg") .. " {ffffff}удален.")
+					AFKMessage("РљРѕРЅС„РёРі {505050}" .. iter_194_3:match("(.+)%.cfg") .. " {ffffff}СѓРґР°Р»РµРЅ.")
 				else
 					print(var_194_17)
 				end
@@ -9301,7 +9616,7 @@ function cfg_menu(arg_194_0)
 
 				local var_194_19 = readJsonFile("moonloader/ArzMarket/buy-cfg/" .. iter_194_3:match("(.+)%.json") .. ".json")
 
-				var_0_1.Text(var_0_5("Название конфига: " .. iter_194_3:match("(.+)%.json") .. "\n "))
+				var_0_1.Text(var_0_5("РќР°Р·РІР°РЅРёРµ РєРѕРЅС„РёРіР°: " .. iter_194_3:match("(.+)%.json") .. "\n "))
 
 				if var_194_19 ~= nil then
 					for iter_194_4, iter_194_5 in pairs(var_194_19) do
@@ -9321,7 +9636,7 @@ function cfg_menu(arg_194_0)
 				var_0_87 = loadConfig("moonloader/ArzMarket/buy-cfg/" .. iter_194_3)
 
 				if type(var_0_87) == "nil" then
-					AFKMessage("К сожалению конфиг был поврежден. Загрузить его не получится.")
+					AFKMessage("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РєРѕРЅС„РёРі Р±С‹Р» РїРѕРІСЂРµР¶РґРµРЅ. Р—Р°РіСЂСѓР·РёС‚СЊ РµРіРѕ РЅРµ РїРѕР»СѓС‡РёС‚СЃСЏ.")
 
 					var_0_87 = {}
 					var_0_106.cfg.load_config_buy = ""
@@ -9329,7 +9644,7 @@ function cfg_menu(arg_194_0)
 
 					save_all()
 				else
-					AFKMessage("Конфиг {505050}" .. iter_194_3:match("(.+)%.json") .. "{ffffff} успешно загружен.", var_0_88)
+					AFKMessage("РљРѕРЅС„РёРі {505050}" .. iter_194_3:match("(.+)%.json") .. "{ffffff} СѓСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅ.", var_0_88)
 
 					var_0_106.cfg.load_config_buy = iter_194_3
 					var_0_156 = iter_194_3
@@ -9352,7 +9667,7 @@ function cfg_menu(arg_194_0)
 						save_all()
 					end
 
-					AFKMessage("Конфиг {505050}" .. iter_194_3:match("(.+)%.json") .. " {ffffff}удален.")
+					AFKMessage("РљРѕРЅС„РёРі {505050}" .. iter_194_3:match("(.+)%.json") .. " {ffffff}СѓРґР°Р»РµРЅ.")
 				else
 					print(var_194_21)
 				end
@@ -9365,7 +9680,7 @@ function cfg_menu(arg_194_0)
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.PushItemWidth(var_0_1.GetWindowWidth() - 42)
 	var_0_1.PushFont(fonts[18])
-	var_0_1.InputTextWithHintD("##search_cfg_buy", var_0_5("Название конфига"), var_0_173, var_0_45.sizeof(var_0_173))
+	var_0_1.InputTextWithHintD("##search_cfg_buy", var_0_5("РќР°Р·РІР°РЅРёРµ РєРѕРЅС„РёРіР°"), var_0_173, var_0_45.sizeof(var_0_173))
 	var_0_1.SameLine()
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("FOLDER") .. "##0.29919293") then
@@ -9376,25 +9691,25 @@ function cfg_menu(arg_194_0)
 
 	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-	if var_0_1.Button(var_0_5("Создать##0"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 15, 35)) then
+	if var_0_1.Button(var_0_5("РЎРѕР·РґР°С‚СЊ##0"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 15, 35)) then
 		var_0_90.buy = var_0_5:decode(var_0_45.string(var_0_173)):gsub("[\"<|:>]", "")
 
 		if var_0_90.buy == "" or var_0_90.buy == nil or var_0_90.buy:match("^%s*$") ~= nil then
-			AFKMessage("{ff3535}[Error]:{ffffff} Вы не можете создать {505050}безымянный {ffffff}конфиг.")
+			AFKMessage("{ff3535}[Error]:{ffffff} Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРѕР·РґР°С‚СЊ {505050}Р±РµР·С‹РјСЏРЅРЅС‹Р№ {ffffff}РєРѕРЅС„РёРі.")
 		else
 			createConfig("buy-cfg/" .. var_0_90.buy .. ".json", {}, "buy-cfg", var_0_90.buy)
-			AFKMessage("[Скупка] Конфиг {505050}" .. tostring(var_0_90.buy) .. "{ffffff} создан.")
+			AFKMessage("[РЎРєСѓРїРєР°] РљРѕРЅС„РёРі {505050}" .. tostring(var_0_90.buy) .. "{ffffff} СЃРѕР·РґР°РЅ.")
 		end
 	end
 
 	var_0_1.GetStyle().FrameBorderSize = 0
 
 	var_0_1.SetCursorPos(var_0_1.ImVec2(0, sizeY - 63))
-	var_0_1.Text(var_0_5("  Баги, предложения"))
+	var_0_1.Text(var_0_5("  Р‘Р°РіРё, РїСЂРµРґР»РѕР¶РµРЅРёСЏ"))
 	var_0_1.SameLine()
-	var_0_1.Link("https://vk.com/arzmarket_tech", "https://t.me/arzmarket_dev", var_0_5("сюда."), nil, arg_194_0, "Вконтакте", "Телеграмм")
+	var_0_1.Link("https://vk.com/arzmarket_tech", "https://t.me/arzmarket_dev", var_0_5("СЃСЋРґР°."), nil, arg_194_0, "Р’РєРѕРЅС‚Р°РєС‚Рµ", "РўРµР»РµРіСЂР°РјРј")
 	var_0_1.SameLine()
-	var_0_1.Text(var_0_5("Мы заботимся о вас."))
+	var_0_1.Text(var_0_5("РњС‹ Р·Р°Р±РѕС‚РёРјСЃСЏ Рѕ РІР°СЃ."))
 	var_0_1.PopFont()
 	var_0_1.EndCustomInvisibleChild()
 end
@@ -9436,12 +9751,12 @@ function item_sell_custom()
 	var_0_1.CustomInvisibleChild("razpreds", var_0_1.ImVec2(var_196_4, var_196_5), false, var_0_1.WindowFlags.NoScrollbar)
 	var_0_1.PushFont(fonts[17])
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
-	var_0_1.CenterText(var_0_5("Кастомное добавление товара."))
+	var_0_1.CenterText(var_0_5("РљР°СЃС‚РѕРјРЅРѕРµ РґРѕР±Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂР°."))
 	var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 	var_0_1.PushItemWidth(200)
 	var_0_1.PushFont(var_0_85[1])
-	var_0_1.NewInput(var_0_5("          Поиск предметов"), var_0_115.search_sell_Custom, 255, "search_sell_Custom")
+	var_0_1.NewInput(var_0_5("          РџРѕРёСЃРє РїСЂРµРґРјРµС‚РѕРІ"), var_0_115.search_sell_Custom, 255, "search_sell_Custom")
 	var_0_1.SameLine()
 	var_0_1.PushItemWidth(80)
 
@@ -9473,7 +9788,7 @@ function item_sell_custom()
 		deAFKMessage(tostring(var_0_115.selected_item[0]) .. " | " .. var_196_8[var_0_115.selected_item[0] + 1] .. " | " .. var_0_115.selected_custom_item .. (var_0_115.selected_item[0] == 0 and "" or var_196_8[var_0_115.selected_item[0] + 1]))
 	end
 
-	var_0_1.Hint("enchantitem_combo", var_0_5("Выберите заточку предмета.\nЕсли вы хотите оставить предмет без заточки или же у предмета не существует заточки - оставьте +0/"), false)
+	var_0_1.Hint("enchantitem_combo", var_0_5("Р’С‹Р±РµСЂРёС‚Рµ Р·Р°С‚РѕС‡РєСѓ РїСЂРµРґРјРµС‚Р°.\nР•СЃР»Рё РІС‹ С…РѕС‚РёС‚Рµ РѕСЃС‚Р°РІРёС‚СЊ РїСЂРµРґРјРµС‚ Р±РµР· Р·Р°С‚РѕС‡РєРё РёР»Рё Р¶Рµ Сѓ РїСЂРµРґРјРµС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р·Р°С‚РѕС‡РєРё - РѕСЃС‚Р°РІСЊС‚Рµ +0/"), false)
 
 	var_0_1.GetStyle().FrameBorderSize = 0
 	var_0_1.GetStyle().PopupBorderSize = 1
@@ -9490,7 +9805,7 @@ function item_sell_custom()
 	end
 
 	if json_vlad == nil or #json_vlad == 0 then
-		AFKMessage("Перейдите в раздел скупки и выполните инструкцию которая у вас написана в этом разделе.")
+		AFKMessage("РџРµСЂРµР№РґРёС‚Рµ РІ СЂР°Р·РґРµР» СЃРєСѓРїРєРё Рё РІС‹РїРѕР»РЅРёС‚Рµ РёРЅСЃС‚СЂСѓРєС†РёСЋ РєРѕС‚РѕСЂР°СЏ Сѓ РІР°СЃ РЅР°РїРёСЃР°РЅР° РІ СЌС‚РѕРј СЂР°Р·РґРµР»Рµ.")
 
 		var_0_115.custom_add_item[0] = false
 
@@ -9571,7 +9886,7 @@ function item_sell_custom()
 
 	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-	if var_0_1.Button(var_0_5("Добавить товар"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
+	if var_0_1.Button(var_0_5("Р”РѕР±Р°РІРёС‚СЊ С‚РѕРІР°СЂ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 10)) then
 		if var_0_115.selected_custom_item ~= "" then
 			if not containsItem(var_0_88, var_0_115.selected_custom_item .. (var_0_115.selected_item[0] == 0 and "" or var_196_8[var_0_115.selected_item[0] + 1])) then
 				local var_196_14 = {
@@ -9593,17 +9908,17 @@ function item_sell_custom()
 				var_0_115.selected_custom_item = ""
 				var_0_115.selected_item[0] = 0
 
-				AFKMessage("Товар добавлен.")
+				AFKMessage("РўРѕРІР°СЂ РґРѕР±Р°РІР»РµРЅ.")
 				resetIO()
 			else
 				var_0_115.selected_custom_item = ""
 				var_0_115.selected_item[0] = 0
 
-				AFKMessage("Такой товар уже существует в вашем списке товаров. Добавить его не получится.")
+				AFKMessage("РўР°РєРѕР№ С‚РѕРІР°СЂ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РІ РІР°С€РµРј СЃРїРёСЃРєРµ С‚РѕРІР°СЂРѕРІ. Р”РѕР±Р°РІРёС‚СЊ РµРіРѕ РЅРµ РїРѕР»СѓС‡РёС‚СЃСЏ.")
 				resetIO()
 			end
 		else
-			AFKMessage("Выберите товар, затем уже сможете добавить его. Выбрать товар нужно из списка ниже, нажмите ЛКМ для выбора.")
+			AFKMessage("Р’С‹Р±РµСЂРёС‚Рµ С‚РѕРІР°СЂ, Р·Р°С‚РµРј СѓР¶Рµ СЃРјРѕР¶РµС‚Рµ РґРѕР±Р°РІРёС‚СЊ РµРіРѕ. Р’С‹Р±СЂР°С‚СЊ С‚РѕРІР°СЂ РЅСѓР¶РЅРѕ РёР· СЃРїРёСЃРєР° РЅРёР¶Рµ, РЅР°Р¶РјРёС‚Рµ Р›РљРњ РґР»СЏ РІС‹Р±РѕСЂР°.")
 		end
 	end
 
@@ -9620,36 +9935,36 @@ end
 function logs_page()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 	var_0_1.PushItemWidth(sizeX - (var_0_106.cfg.menuSize == 1 and 163 or var_0_106.cfg.menuSize == 2 and 183 or 0))
-	var_0_1.NewInput(var_0_5("Поиск по логу"), var_0_171, 444)
+	var_0_1.NewInput(var_0_5("РџРѕРёСЃРє РїРѕ Р»РѕРіСѓ"), var_0_171, 444)
 
 	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-	if var_0_1.Button(var_0_5("Лог"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 13.56, 27)) then
+	if var_0_1.Button(var_0_5("Р›РѕРі"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 13.56, 27)) then
 		var_0_115.searchStorage.logPage_1[2] = ""
 		var_0_9 = 0
 	end
 
-	var_0_1.Hint("sellbuys", var_0_5("Логи продажи/скупки товаров в лавке.\nЧужой лавке или вашей."), false)
+	var_0_1.Hint("sellbuys", var_0_5("Р›РѕРіРё РїСЂРѕРґР°Р¶Рё/СЃРєСѓРїРєРё С‚РѕРІР°СЂРѕРІ РІ Р»Р°РІРєРµ.\nР§СѓР¶РѕР№ Р»Р°РІРєРµ РёР»Рё РІР°С€РµР№."), false)
 	var_0_1.SameLine()
 
-	if var_0_1.Button(var_0_5("Аренда"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 11.56, 27)) then
+	if var_0_1.Button(var_0_5("РђСЂРµРЅРґР°"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 11.56, 27)) then
 		var_0_115.searchStorage.logPage_1[2] = ""
 		var_0_9 = 4
 	end
 
-	var_0_1.Hint("rent", var_0_5("Здесь отображаются ваши сдачи в аренду.\nАксов или Охранников."), false)
+	var_0_1.Hint("rent", var_0_5("Р—РґРµСЃСЊ РѕС‚РѕР±СЂР°Р¶Р°СЋС‚СЃСЏ РІР°С€Рё СЃРґР°С‡Рё РІ Р°СЂРµРЅРґСѓ.\nРђРєСЃРѕРІ РёР»Рё РћС…СЂР°РЅРЅРёРєРѕРІ."), false)
 	var_0_1.SameLine()
 
-	if var_0_1.Button(var_0_5("Банк переводы"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 6 - 10, 27)) then
+	if var_0_1.Button(var_0_5("Р‘Р°РЅРє РїРµСЂРµРІРѕРґС‹"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 6 - 10, 27)) then
 		var_0_115.searchStorage.logPage_1[2] = ""
 		var_0_9 = 3
 	end
 
-	var_0_1.Hint("bankperevodi", var_0_5("В данной вкладке отображаются все банковские переводы.\nДоступны логи по переводам на ваш аккаунт и от вас."), false)
+	var_0_1.Hint("bankperevodi", var_0_5("Р’ РґР°РЅРЅРѕР№ РІРєР»Р°РґРєРµ РѕС‚РѕР±СЂР°Р¶Р°СЋС‚СЃСЏ РІСЃРµ Р±Р°РЅРєРѕРІСЃРєРёРµ РїРµСЂРµРІРѕРґС‹.\nР”РѕСЃС‚СѓРїРЅС‹ Р»РѕРіРё РїРѕ РїРµСЂРµРІРѕРґР°Рј РЅР° РІР°С€ Р°РєРєР°СѓРЅС‚ Рё РѕС‚ РІР°СЃ."), false)
 	var_0_1.SameLine()
 
-	if var_0_1.Button(var_0_5("Выбрать дату"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 4.05 - 10, 27)) then
-		var_0_1.OpenPopup(var_0_5("Выбор даты"))
+	if var_0_1.Button(var_0_5("Р’С‹Р±СЂР°С‚СЊ РґР°С‚Сѓ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 4.05 - 10, 27)) then
+		var_0_1.OpenPopup(var_0_5("Р’С‹Р±РѕСЂ РґР°С‚С‹"))
 	end
 
 	changeDate()
@@ -9660,23 +9975,23 @@ function logs_page()
 		var_0_9 = 1
 	end
 
-	var_0_1.Hint("storage", var_0_5("Вся история /storage."), false)
+	var_0_1.Hint("storage", var_0_5("Р’СЃСЏ РёСЃС‚РѕСЂРёСЏ /storage."), false)
 	var_0_1.SameLine()
 
-	if var_0_1.Button(var_0_5("Предметы"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 6.66 - 10, 27)) then
+	if var_0_1.Button(var_0_5("РџСЂРµРґРјРµС‚С‹"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 6.66 - 10, 27)) then
 		var_0_115.searchStorage.logPage_1[2] = ""
 		var_0_9 = 1
 	end
 
-	var_0_1.Hint("sellbuys2", var_0_5("Логи продажи/скупки товаров в лавке.\nЧужой лавке или вашей."), false)
+	var_0_1.Hint("sellbuys2", var_0_5("Р›РѕРіРё РїСЂРѕРґР°Р¶Рё/СЃРєСѓРїРєРё С‚РѕРІР°СЂРѕРІ РІ Р»Р°РІРєРµ.\nР§СѓР¶РѕР№ Р»Р°РІРєРµ РёР»Рё РІР°С€РµР№."), false)
 	var_0_1.SameLine()
 
-	if var_0_1.Button(var_0_5("Трейды"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 7.05, 27)) then
+	if var_0_1.Button(var_0_5("РўСЂРµР№РґС‹"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 7.05, 27)) then
 		var_0_115.searchStorage.logPage_1[2] = ""
 		var_0_9 = 2
 	end
 
-	var_0_1.Hint("trades", var_0_5("Логи ваших трейдов через /trade"), false)
+	var_0_1.Hint("trades", var_0_5("Р›РѕРіРё РІР°С€РёС… С‚СЂРµР№РґРѕРІ С‡РµСЂРµР· /trade"), false)
 	round_text(1)
 	var_0_1.CustomInvisibleChild("botHelper", var_0_1.ImVec2(sizeX - (var_0_106.cfg.menuSize == 1 and 163 or var_0_106.cfg.menuSize == 2 and 183 or 0), sizeY - 255), true, var_0_1.WindowFlags.NoScrollWithMouse)
 	round_text(0)
@@ -9736,17 +10051,17 @@ function logs_page()
 
 				local var_197_5 = var_197_1()
 
-				var_0_1.CenterText(var_0_5("\nПродали за всё время: SA$") .. moneySeparator(var_197_5.sell_sa) .. var_0_5(" | Скупили за всё время: SA$") .. moneySeparator(var_197_5.buy_sa) .. var_0_5("\nПродали за всё время: VC$") .. moneySeparator(var_197_5.sell_vc) .. var_0_5(" | Скупили за всё время: VC$") .. moneySeparator(var_197_5.buy_vc) .. "\n ")
+				var_0_1.CenterText(var_0_5("\nРџСЂРѕРґР°Р»Рё Р·Р° РІСЃС‘ РІСЂРµРјСЏ: SA$") .. moneySeparator(var_197_5.sell_sa) .. var_0_5(" | РЎРєСѓРїРёР»Рё Р·Р° РІСЃС‘ РІСЂРµРјСЏ: SA$") .. moneySeparator(var_197_5.buy_sa) .. var_0_5("\nРџСЂРѕРґР°Р»Рё Р·Р° РІСЃС‘ РІСЂРµРјСЏ: VC$") .. moneySeparator(var_197_5.sell_vc) .. var_0_5(" | РЎРєСѓРїРёР»Рё Р·Р° РІСЃС‘ РІСЂРµРјСЏ: VC$") .. moneySeparator(var_197_5.buy_vc) .. "\n ")
 			else
 				var_197_2 = jsonLog[os.date(date_select)][1] or {}
 
-				var_0_1.CenterText(var_0_5("\nПродали за день: SA$") .. moneySeparator(jsonLog[os.date(date_select)][2]) .. var_0_5(" | Скупили за день: SA$") .. moneySeparator(jsonLog[os.date(date_select)][3]) .. var_0_5("\nПродали за день: VC$") .. moneySeparator(jsonLog[os.date(date_select)][4]) .. var_0_5(" | Скупили за день: VC$") .. moneySeparator(jsonLog[os.date(date_select)][5]) .. "\n ")
+				var_0_1.CenterText(var_0_5("\nРџСЂРѕРґР°Р»Рё Р·Р° РґРµРЅСЊ: SA$") .. moneySeparator(jsonLog[os.date(date_select)][2]) .. var_0_5(" | РЎРєСѓРїРёР»Рё Р·Р° РґРµРЅСЊ: SA$") .. moneySeparator(jsonLog[os.date(date_select)][3]) .. var_0_5("\nРџСЂРѕРґР°Р»Рё Р·Р° РґРµРЅСЊ: VC$") .. moneySeparator(jsonLog[os.date(date_select)][4]) .. var_0_5(" | РЎРєСѓРїРёР»Рё Р·Р° РґРµРЅСЊ: VC$") .. moneySeparator(jsonLog[os.date(date_select)][5]) .. "\n ")
 			end
 
 			if date_select ~= -1 then
 				var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-				if var_0_1.Button(var_0_5("Развернуть полный лог."), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 17, 27)) then
+				if var_0_1.Button(var_0_5("Р Р°Р·РІРµСЂРЅСѓС‚СЊ РїРѕР»РЅС‹Р№ Р»РѕРі."), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 17, 27)) then
 					local var_197_6 = ""
 
 					for iter_197_5 = #var_197_2, 1, -1 do
@@ -9754,11 +10069,11 @@ function logs_page()
 					end
 
 					if var_197_6 ~= "" then
-						var_0_1.OpenPopup(var_0_5("Лог продаж и покупок."))
+						var_0_1.OpenPopup(var_0_5("Р›РѕРі РїСЂРѕРґР°Р¶ Рё РїРѕРєСѓРїРѕРє."))
 
 						var_0_115.fullLogsDialog = tostring(var_197_6)
 					else
-						sendNotify("К сожалению нет логов за этот день для просмотра!")
+						sendNotify("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РЅРµС‚ Р»РѕРіРѕРІ Р·Р° СЌС‚РѕС‚ РґРµРЅСЊ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР°!")
 					end
 				end
 
@@ -9816,7 +10131,7 @@ function logs_page()
 
 			var_197_8:End()
 		else
-			var_0_1.CenterText(var_0_5("Нет статистики за этот день или не выбрана дата."))
+			var_0_1.CenterText(var_0_5("РќРµС‚ СЃС‚Р°С‚РёСЃС‚РёРєРё Р·Р° СЌС‚РѕС‚ РґРµРЅСЊ РёР»Рё РЅРµ РІС‹Р±СЂР°РЅР° РґР°С‚Р°."))
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 10)
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		end
@@ -9851,7 +10166,7 @@ function logs_page()
 			end
 
 			if date_select ~= -1 then
-				var_0_1.CenterText(var_0_5("\nПродали за день: $") .. moneySeparator(jsonLog[os.date(date_select)][2]) .. var_0_5(" Скупили за день: $") .. moneySeparator(jsonLog[os.date(date_select)][3]) .. var_0_5("\n Продали за день: VC$") .. moneySeparator(jsonLog[os.date(date_select)][4]) .. var_0_5(" Скупили за день: VC$") .. moneySeparator(jsonLog[os.date(date_select)][5]) .. "\n ")
+				var_0_1.CenterText(var_0_5("\nРџСЂРѕРґР°Р»Рё Р·Р° РґРµРЅСЊ: $") .. moneySeparator(jsonLog[os.date(date_select)][2]) .. var_0_5(" РЎРєСѓРїРёР»Рё Р·Р° РґРµРЅСЊ: $") .. moneySeparator(jsonLog[os.date(date_select)][3]) .. var_0_5("\n РџСЂРѕРґР°Р»Рё Р·Р° РґРµРЅСЊ: VC$") .. moneySeparator(jsonLog[os.date(date_select)][4]) .. var_0_5(" РЎРєСѓРїРёР»Рё Р·Р° РґРµРЅСЊ: VC$") .. moneySeparator(jsonLog[os.date(date_select)][5]) .. "\n ")
 			end
 
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 10)
@@ -9865,9 +10180,9 @@ function logs_page()
 						date = 1
 					}
 				else
-					local var_197_13 = iter_197_14:find("продал") and iter_197_14:match("продал \"(.+)\" за") or iter_197_14:match("\"(.+)\" за")
-					local var_197_14 = var_197_13:find("%(%d+ шт%.%)$") and var_197_13:match("%((%d+) шт%.%)$") or 1
-					local var_197_15 = var_197_13:find("%(%d+ шт%.%)$") and var_197_13:gsub("%(%d+ шт%.%)$", "") or var_197_13
+					local var_197_13 = iter_197_14:find("РїСЂРѕРґР°Р»") and iter_197_14:match("РїСЂРѕРґР°Р» \"(.+)\" Р·Р°") or iter_197_14:match("\"(.+)\" Р·Р°")
+					local var_197_14 = var_197_13:find("%(%d+ С€С‚%.%)$") and var_197_13:match("%((%d+) С€С‚%.%)$") or 1
+					local var_197_15 = var_197_13:find("%(%d+ С€С‚%.%)$") and var_197_13:gsub("%(%d+ С€С‚%.%)$", "") or var_197_13
 
 					if not var_197_12[var_197_15] then
 						var_197_12[var_197_15] = {
@@ -9876,7 +10191,7 @@ function logs_page()
 						}
 					end
 
-					var_197_12[var_197_15][iter_197_14:find("продал") and "buy" or "sell"] = var_197_12[var_197_15][iter_197_14:find("продал") and "buy" or "sell"] + var_197_14
+					var_197_12[var_197_15][iter_197_14:find("РїСЂРѕРґР°Р»") and "buy" or "sell"] = var_197_12[var_197_15][iter_197_14:find("РїСЂРѕРґР°Р»") and "buy" or "sell"] + var_197_14
 				end
 			end
 
@@ -9887,11 +10202,11 @@ function logs_page()
 					var_0_1.CustomSeparator(var_0_1.GetWindowWidth() - 10)
 				else
 					var_0_1.SetCursorPosX(2)
-					var_0_1.TextColoredRGB(("{808080} %s {ffffff}| Купили у меня:{808080} %s {ffffff}| Продали мне:{808080} %s {ffffff}"):format(iter_197_15:gsub(" $", ""), iter_197_16.sell, iter_197_16.buy))
+					var_0_1.TextColoredRGB(("{808080} %s {ffffff}| РљСѓРїРёР»Рё Сѓ РјРµРЅСЏ:{808080} %s {ffffff}| РџСЂРѕРґР°Р»Рё РјРЅРµ:{808080} %s {ffffff}"):format(iter_197_15:gsub(" $", ""), iter_197_16.sell, iter_197_16.buy))
 				end
 			end
 		else
-			var_0_1.CenterText(var_0_5("Нет статистики за этот день или не выбрана дата."))
+			var_0_1.CenterText(var_0_5("РќРµС‚ СЃС‚Р°С‚РёСЃС‚РёРєРё Р·Р° СЌС‚РѕС‚ РґРµРЅСЊ РёР»Рё РЅРµ РІС‹Р±СЂР°РЅР° РґР°С‚Р°."))
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 10)
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		end
@@ -9934,7 +10249,7 @@ function logs_page()
 				for iter_197_22, iter_197_23 in pairs(jsonLog) do
 					if iter_197_23[11] then
 						for iter_197_24, iter_197_25 in ipairs(iter_197_23[11]) do
-							if iter_197_25:find("Вы получили VC") then
+							if iter_197_25:find("Р’С‹ РїРѕР»СѓС‡РёР»Рё VC") then
 								var_197_19.sell_vc = var_197_19.sell_vc + (iter_197_23[9][iter_197_24] or 0)
 								var_197_19.buy_vc = var_197_19.buy_vc + (iter_197_23[8][iter_197_24] or 0)
 							else
@@ -9945,9 +10260,9 @@ function logs_page()
 					end
 				end
 
-				var_0_1.CenterText(var_0_5("\nПолучили за всё время: $") .. moneySeparator(var_197_19.sell_sa) .. var_0_5(" | Потратили за всё время: $") .. moneySeparator(var_197_19.buy_sa))
+				var_0_1.CenterText(var_0_5("\nРџРѕР»СѓС‡РёР»Рё Р·Р° РІСЃС‘ РІСЂРµРјСЏ: $") .. moneySeparator(var_197_19.sell_sa) .. var_0_5(" | РџРѕС‚СЂР°С‚РёР»Рё Р·Р° РІСЃС‘ РІСЂРµРјСЏ: $") .. moneySeparator(var_197_19.buy_sa))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 22)
-				var_0_1.CenterText(var_0_5("\nПолучили за всё время: VC$") .. moneySeparator(var_197_19.sell_vc) .. var_0_5(" | Потратили за всё время: VC$") .. moneySeparator(var_197_19.buy_vc))
+				var_0_1.CenterText(var_0_5("\nРџРѕР»СѓС‡РёР»Рё Р·Р° РІСЃС‘ РІСЂРµРјСЏ: VC$") .. moneySeparator(var_197_19.sell_vc) .. var_0_5(" | РџРѕС‚СЂР°С‚РёР»Рё Р·Р° РІСЃС‘ РІСЂРµРјСЏ: VC$") .. moneySeparator(var_197_19.buy_vc))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 17)
 			else
 				var_197_16 = {
@@ -9965,7 +10280,7 @@ function logs_page()
 				}
 
 				for iter_197_26, iter_197_27 in ipairs(jsonLog[date_select][11]) do
-					if iter_197_27:find("Вы получили VC") then
+					if iter_197_27:find("Р’С‹ РїРѕР»СѓС‡РёР»Рё VC") then
 						var_197_20.sell_vc = var_197_20.sell_vc + tonumber(jsonLog[date_select][9][iter_197_26])
 						var_197_20.buy_vc = var_197_20.buy_vc + tonumber(jsonLog[date_select][8][iter_197_26])
 					else
@@ -9974,9 +10289,9 @@ function logs_page()
 					end
 				end
 
-				var_0_1.CenterText(var_0_5("\nПолучили за день: $") .. moneySeparator(var_197_20.sell_sa) .. var_0_5(" Потратили за день: $") .. moneySeparator(var_197_20.buy_sa))
+				var_0_1.CenterText(var_0_5("\nРџРѕР»СѓС‡РёР»Рё Р·Р° РґРµРЅСЊ: $") .. moneySeparator(var_197_20.sell_sa) .. var_0_5(" РџРѕС‚СЂР°С‚РёР»Рё Р·Р° РґРµРЅСЊ: $") .. moneySeparator(var_197_20.buy_sa))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 22)
-				var_0_1.CenterText(var_0_5("\n Получили за день: VC$") .. moneySeparator(var_197_20.sell_vc) .. var_0_5(" Потратили за день: VC$") .. moneySeparator(var_197_20.buy_vc))
+				var_0_1.CenterText(var_0_5("\n РџРѕР»СѓС‡РёР»Рё Р·Р° РґРµРЅСЊ: VC$") .. moneySeparator(var_197_20.sell_vc) .. var_0_5(" РџРѕС‚СЂР°С‚РёР»Рё Р·Р° РґРµРЅСЊ: VC$") .. moneySeparator(var_197_20.buy_vc))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 17)
 			end
 
@@ -9986,7 +10301,7 @@ function logs_page()
 			for iter_197_28, iter_197_29 in ipairs(var_197_16[1]) do
 				var_0_1.TextColoredRGB(iter_197_29)
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 2)
-				var_0_1.Hint("jsonLogdate_select" .. iter_197_28, var_0_5("Нажмите ЛКМ для того что бы просмотреть информацию о обмене."), false)
+				var_0_1.Hint("jsonLogdate_select" .. iter_197_28, var_0_5("РќР°Р¶РјРёС‚Рµ Р›РљРњ РґР»СЏ С‚РѕРіРѕ С‡С‚Рѕ Р±С‹ РїСЂРѕСЃРјРѕС‚СЂРµС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РѕР±РјРµРЅРµ."), false)
 
 				if var_0_1.IsItemClicked() then
 					if var_0_1.GetIO().MouseDown[0] then
@@ -9995,13 +10310,13 @@ function logs_page()
 
 					var_0_115.openAfterCloseMenu = true
 
-					sendNotify("Меню скрыто для просмотра лога.")
+					sendNotify("РњРµРЅСЋ СЃРєСЂС‹С‚Рѕ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° Р»РѕРіР°.")
 					openCrr()
-					create_dialog(31313, 0, "Логи продаж.", "Закрыть", "", var_197_16[2][iter_197_28])
+					create_dialog(31313, 0, "Р›РѕРіРё РїСЂРѕРґР°Р¶.", "Р—Р°РєСЂС‹С‚СЊ", "", var_197_16[2][iter_197_28])
 				end
 			end
 		else
-			var_0_1.CenterText(var_0_5("Нет статистики за этот день или не выбрана дата."))
+			var_0_1.CenterText(var_0_5("РќРµС‚ СЃС‚Р°С‚РёСЃС‚РёРєРё Р·Р° СЌС‚РѕС‚ РґРµРЅСЊ РёР»Рё РЅРµ РІС‹Р±СЂР°РЅР° РґР°С‚Р°."))
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 10)
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		end
@@ -10034,7 +10349,7 @@ function logs_page()
 			end
 
 			if date_select ~= -1 and jsonLog[date_select][12] ~= nil then
-				var_0_1.CenterText(var_0_5("\nПолучили за день: $") .. moneySeparator(jsonLog[date_select][13]) .. var_0_5(" Потратили за день: $") .. moneySeparator(jsonLog[date_select][14]))
+				var_0_1.CenterText(var_0_5("\nРџРѕР»СѓС‡РёР»Рё Р·Р° РґРµРЅСЊ: $") .. moneySeparator(jsonLog[date_select][13]) .. var_0_5(" РџРѕС‚СЂР°С‚РёР»Рё Р·Р° РґРµРЅСЊ: $") .. moneySeparator(jsonLog[date_select][14]))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 17)
 			end
 
@@ -10045,7 +10360,7 @@ function logs_page()
 				var_0_1.TextColoredRGB(iter_197_36)
 			end
 		else
-			var_0_1.CenterText(var_0_5("Нет статистики за этот день или не выбрана дата."))
+			var_0_1.CenterText(var_0_5("РќРµС‚ СЃС‚Р°С‚РёСЃС‚РёРєРё Р·Р° СЌС‚РѕС‚ РґРµРЅСЊ РёР»Рё РЅРµ РІС‹Р±СЂР°РЅР° РґР°С‚Р°."))
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 10)
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		end
@@ -10078,9 +10393,9 @@ function logs_page()
 			end
 
 			if date_select ~= -1 and jsonLog[date_select][15] ~= nil then
-				var_0_1.CenterText(var_0_5("\nПолучили за день: $") .. moneySeparator(jsonLog[date_select][17]))
+				var_0_1.CenterText(var_0_5("\nРџРѕР»СѓС‡РёР»Рё Р·Р° РґРµРЅСЊ: $") .. moneySeparator(jsonLog[date_select][17]))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 22)
-				var_0_1.CenterText(var_0_5("\n Получили за день: VC$") .. moneySeparator(jsonLog[date_select][16]))
+				var_0_1.CenterText(var_0_5("\n РџРѕР»СѓС‡РёР»Рё Р·Р° РґРµРЅСЊ: VC$") .. moneySeparator(jsonLog[date_select][16]))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 17)
 			end
 
@@ -10091,7 +10406,7 @@ function logs_page()
 				var_0_1.TextColoredRGB(iter_197_43)
 			end
 		else
-			var_0_1.CenterText(var_0_5("Нет статистики за этот день или не выбрана дата."))
+			var_0_1.CenterText(var_0_5("РќРµС‚ СЃС‚Р°С‚РёСЃС‚РёРєРё Р·Р° СЌС‚РѕС‚ РґРµРЅСЊ РёР»Рё РЅРµ РІС‹Р±СЂР°РЅР° РґР°С‚Р°."))
 			var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 10)
 			var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 		end
@@ -10103,14 +10418,14 @@ function logs_page()
 
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.PushFont(fonts[18])
-	var_0_1.CenterText(var_0_5("Настройки. \"Логи продаж\"."))
+	var_0_1.CenterText(var_0_5("РќР°СЃС‚СЂРѕР№РєРё. \"Р›РѕРіРё РїСЂРѕРґР°Р¶\"."))
 	round_text(1)
 	var_0_1.CustomInvisibleChild("menu_settings1", var_0_1.ImVec2(sizeX - (var_0_106.cfg.menuSize == 1 and 163 or var_0_106.cfg.menuSize == 2 and 183 or 0), 145), true, var_0_1.WindowFlags.NoScrollWithMouse + var_0_1.WindowFlags.NoScrollbar)
 	round_text(0)
 
 	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-	if var_0_1.Button(var_0_5("Изменить позицию окна [Окно лавки]")) then
+	if var_0_1.Button(var_0_5("РР·РјРµРЅРёС‚СЊ РїРѕР·РёС†РёСЋ РѕРєРЅР° [РћРєРЅРѕ Р»Р°РІРєРё]")) then
 		var_0_117 = true
 		var_0_77[0] = true
 
@@ -10127,7 +10442,7 @@ function logs_page()
 				var_0_127 = var_0_1.ImVec2(select(1, getCursorPos()), select(2, getCursorPos()))
 
 				if var_0_1.IsMouseClicked(0) then
-					AFKMessage("Сохранено.")
+					AFKMessage("РЎРѕС…СЂР°РЅРµРЅРѕ.")
 
 					var_0_117 = false
 					var_0_110.marketPos = {
@@ -10139,7 +10454,7 @@ function logs_page()
 					writeJsonFile(var_0_110, var_0_109)
 
 					if var_0_125 == 1337228 then
-						AFKMessage("Окно лавки скрыто, так как у вас не установлена лавка.")
+						AFKMessage("РћРєРЅРѕ Р»Р°РІРєРё СЃРєСЂС‹С‚Рѕ, С‚Р°Рє РєР°Рє Сѓ РІР°СЃ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР° Р»Р°РІРєР°.")
 
 						var_0_77[0] = false
 					end
@@ -10170,25 +10485,25 @@ function logs_page()
 	end
 
 	var_0_1.SameLine()
-	var_0_1.Text(var_0_5(" Размер окна."))
+	var_0_1.Text(var_0_5(" Р Р°Р·РјРµСЂ РѕРєРЅР°."))
 	var_0_1.PopItemWidth()
 
-	if var_0_1.ColorEdit4(var_0_5(" Цвет текста в окне лавки."), var_0_126.text) then
+	if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ С‚РµРєСЃС‚Р° РІ РѕРєРЅРµ Р»Р°РІРєРё."), var_0_126.text) then
 		var_0_110.marketColor.text[1], var_0_110.marketColor.text[2], var_0_110.marketColor.text[3], var_0_110.marketColor.text[4] = var_0_126.text[0], var_0_126.text[1], var_0_126.text[2], var_0_126.text[3]
 
 		writeJsonFile(var_0_110, var_0_109)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ColorEdit4(var_0_5(" Цвет окна лавки."), var_0_126.window) then
+	if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ РѕРєРЅР° Р»Р°РІРєРё."), var_0_126.window) then
 		var_0_110.marketColor.window[1], var_0_110.marketColor.window[2], var_0_110.marketColor.window[3], var_0_110.marketColor.window[4] = var_0_126.window[0], var_0_126.window[1], var_0_126.window[2], var_0_126.window[3]
 
 		writeJsonFile(var_0_110, var_0_109)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.Button(var_0_5("Сбросить настройки этой вкладки.")) then
-		AFKMessage("Настройки успешно сброшены!")
+	if var_0_1.Button(var_0_5("РЎР±СЂРѕСЃРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё СЌС‚РѕР№ РІРєР»Р°РґРєРё.")) then
+		AFKMessage("РќР°СЃС‚СЂРѕР№РєРё СѓСЃРїРµС€РЅРѕ СЃР±СЂРѕС€РµРЅС‹!")
 
 		var_0_110 = {
 			log_windowFont = 1,
@@ -10237,7 +10552,7 @@ function logs_page()
 	var_0_1.SameLine()
 	var_0_1.PushItemWidth(82.5)
 
-	if var_0_1.DragFloat(var_0_5(" Размер шрифта"), var_0_124, 0.01, 0.1, 3, "%.1f") then
+	if var_0_1.DragFloat(var_0_5(" Р Р°Р·РјРµСЂ С€СЂРёС„С‚Р°"), var_0_124, 0.01, 0.1, 3, "%.1f") then
 		var_0_110.log_windowFont = var_0_124[0]
 
 		writeJsonFile(var_0_110, var_0_109)
@@ -10246,7 +10561,7 @@ function logs_page()
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 4)
 
-	if var_0_1.ToggleButton(var_0_5("Заменять окно лавки."), var_0_170) then
+	if var_0_1.ToggleButton(var_0_5("Р—Р°РјРµРЅСЏС‚СЊ РѕРєРЅРѕ Р»Р°РІРєРё."), var_0_170) then
 		var_0_106.cfg.replace_window = var_0_170[0]
 		var_0_77[0] = var_0_170[0]
 
@@ -10316,13 +10631,13 @@ function buy(arg_210_0)
 		if var_0_82 then
 			setGameKeyState(21, 255)
 			sampForceOnfootSync()
-			AFKMessage("Откройте меню лавки [ALT], если скрипт автоматически не открыл и скрипт автоматически начнет сканирование")
+			AFKMessage("РћС‚РєСЂРѕР№С‚Рµ РјРµРЅСЋ Р»Р°РІРєРё [ALT], РµСЃР»Рё СЃРєСЂРёРїС‚ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РЅРµ РѕС‚РєСЂС‹Р» Рё СЃРєСЂРёРїС‚ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РЅР°С‡РЅРµС‚ СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ")
 		else
-			AFKMessage("Сканирование было отменено.")
+			AFKMessage("РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ Р±С‹Р»Рѕ РѕС‚РјРµРЅРµРЅРѕ.")
 		end
 	end
 
-	var_0_1.Hint("MAGNIFYING_GLASS_LOCATION", var_0_5("Данная функция используется для сканирования предметов в лавке!"), false)
+	var_0_1.Hint("MAGNIFYING_GLASS_LOCATION", var_0_5("Р”Р°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ РїСЂРµРґРјРµС‚РѕРІ РІ Р»Р°РІРєРµ!"), false)
 	var_0_1.SameLine(36)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_166 and var_0_48("ARROW_UP_SHORT_WIDE") or var_0_48("ARROW_DOWN_WIDE_SHORT"), var_0_1.ImVec2(30, 27)) then
@@ -10332,23 +10647,23 @@ function buy(arg_210_0)
 		save_all()
 	end
 
-	var_0_1.Hint("ARROW_UP_SHORT_WIDE", var_0_5("Функция заполнения предметов в правый столбец.\n Если стрелка кнопки смотрит вниз то при добавлении предмета, он будет добавлен вниз."), false)
+	var_0_1.Hint("ARROW_UP_SHORT_WIDE", var_0_5("Р¤СѓРЅРєС†РёСЏ Р·Р°РїРѕР»РЅРµРЅРёСЏ РїСЂРµРґРјРµС‚РѕРІ РІ РїСЂР°РІС‹Р№ СЃС‚РѕР»Р±РµС†.\n Р•СЃР»Рё СЃС‚СЂРµР»РєР° РєРЅРѕРїРєРё СЃРјРѕС‚СЂРёС‚ РІРЅРёР· С‚Рѕ РїСЂРё РґРѕР±Р°РІР»РµРЅРёРё РїСЂРµРґРјРµС‚Р°, РѕРЅ Р±СѓРґРµС‚ РґРѕР±Р°РІР»РµРЅ РІРЅРёР·."), false)
 	var_0_1.SameLine(67)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("ARROWS_ROTATE"), var_0_1.ImVec2(30, 27)) then
-		sendNotify("Обновление списков скупки...")
+		sendNotify("РћР±РЅРѕРІР»РµРЅРёРµ СЃРїРёСЃРєРѕРІ СЃРєСѓРїРєРё...")
 		get_buyList()
 	end
 
-	var_0_1.Hint("ARROWS_ROTATE1", var_0_5("Моментально обновит список предметов на скупку.\nНе нужно бежать к своей лавке, все происходит удалённо!"), false)
+	var_0_1.Hint("ARROWS_ROTATE1", var_0_5("РњРѕРјРµРЅС‚Р°Р»СЊРЅРѕ РѕР±РЅРѕРІРёС‚ СЃРїРёСЃРѕРє РїСЂРµРґРјРµС‚РѕРІ РЅР° СЃРєСѓРїРєСѓ.\nРќРµ РЅСѓР¶РЅРѕ Р±РµР¶Р°С‚СЊ Рє СЃРІРѕРµР№ Р»Р°РІРєРµ, РІСЃРµ РїСЂРѕРёСЃС…РѕРґРёС‚ СѓРґР°Р»С‘РЅРЅРѕ!"), false)
 	var_0_1.SameLine(100)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("FACE_SMILE_HEARTS"), var_0_1.ImVec2(30, 27)) then
-		var_0_1.OpenPopup(var_0_5("Личный кабинет."))
+		var_0_1.OpenPopup(var_0_5("Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚."))
 	end
 
 	premiumPage(arg_210_0)
-	var_0_1.Hint("FACE_SMILE_HEARTS", var_0_5("Личный кабинет.\nЗдесь вы можете авторизоваться в вашем кабинете если вы купили ключ.\nЕсли нет - мы можем рассказать о плюсах подписки, нажав сюда."), false)
+	var_0_1.Hint("FACE_SMILE_HEARTS", var_0_5("Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚.\nР—РґРµСЃСЊ РІС‹ РјРѕР¶РµС‚Рµ Р°РІС‚РѕСЂРёР·РѕРІР°С‚СЊСЃСЏ РІ РІР°С€РµРј РєР°Р±РёРЅРµС‚Рµ РµСЃР»Рё РІС‹ РєСѓРїРёР»Рё РєР»СЋС‡.\nР•СЃР»Рё РЅРµС‚ - РјС‹ РјРѕР¶РµРј СЂР°СЃСЃРєР°Р·Р°С‚СЊ Рѕ РїР»СЋСЃР°С… РїРѕРґРїРёСЃРєРё, РЅР°Р¶Р°РІ СЃСЋРґР°."), false)
 	var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 355) / 2, 5))
 
 	if #var_0_45.string(var_0_171) ~= 0 then
@@ -10356,16 +10671,16 @@ function buy(arg_210_0)
 			var_0_171 = var_0_11.char[256]()
 		end
 
-		var_0_1.Hint("TRASH_CAN_UNDO", var_0_5("Очищает поле ввода (Поиск)"), false)
+		var_0_1.Hint("TRASH_CAN_UNDO", var_0_5("РћС‡РёС‰Р°РµС‚ РїРѕР»Рµ РІРІРѕРґР° (РџРѕРёСЃРє)"), false)
 		var_0_1.SameLine()
 	end
 
 	var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 300) / 2, 5))
 	var_0_1.PushItemWidth(255)
 	var_0_1.PopFont()
-	var_0_1.NewInput(var_0_5("Поиск предметов"), var_0_171, 255, "search_buy")
+	var_0_1.NewInput(var_0_5("РџРѕРёСЃРє РїСЂРµРґРјРµС‚РѕРІ"), var_0_171, 255, "search_buy")
 	var_0_1.PushFont(fonts[18])
-	var_0_1.Hint("search_sell", var_0_5("Данная функция ведет поиск в двух столбцах, в правом и левом.\nВы можете найти какой-то товар, добавить.\nТак же не забывайте что вы можете найти товар, затем выбрать для переноса, очистить поиск и перетащить куда вам нужно."), false)
+	var_0_1.Hint("search_sell", var_0_5("Р”Р°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ РІРµРґРµС‚ РїРѕРёСЃРє РІ РґРІСѓС… СЃС‚РѕР»Р±С†Р°С…, РІ РїСЂР°РІРѕРј Рё Р»РµРІРѕРј.\nР’С‹ РјРѕР¶РµС‚Рµ РЅР°Р№С‚Рё РєР°РєРѕР№-С‚Рѕ С‚РѕРІР°СЂ, РґРѕР±Р°РІРёС‚СЊ.\nРўР°Рє Р¶Рµ РЅРµ Р·Р°Р±С‹РІР°Р№С‚Рµ С‡С‚Рѕ РІС‹ РјРѕР¶РµС‚Рµ РЅР°Р№С‚Рё С‚РѕРІР°СЂ, Р·Р°С‚РµРј РІС‹Р±СЂР°С‚СЊ РґР»СЏ РїРµСЂРµРЅРѕСЃР°, РѕС‡РёСЃС‚РёС‚СЊ РїРѕРёСЃРє Рё РїРµСЂРµС‚Р°С‰РёС‚СЊ РєСѓРґР° РІР°Рј РЅСѓР¶РЅРѕ."), false)
 	var_0_1.SameLine(var_0_106.cfg.menuSize == 1 and 445 or var_0_106.cfg.menuSize == 2 and 470 or 0)
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetCursorPos().x - 5, var_0_1.GetCursorPos().y - 1))
 
@@ -10377,39 +10692,39 @@ function buy(arg_210_0)
 		vc_converter()
 	end
 
-	var_0_1.Hint("vice_city_mode", var_0_5("[buy] Нажав кнопку Вы смените режим цен на [ViceCity].\nТак же во вкладке \"Настройки\" Вы можете изменить функцию конвертации. Внимательно изучите ее!"), false)
+	var_0_1.Hint("vice_city_mode", var_0_5("[buy] РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ СЃРјРµРЅРёС‚Рµ СЂРµР¶РёРј С†РµРЅ РЅР° [ViceCity].\nРўР°Рє Р¶Рµ РІРѕ РІРєР»Р°РґРєРµ \"РќР°СЃС‚СЂРѕР№РєРё\" Р’С‹ РјРѕР¶РµС‚Рµ РёР·РјРµРЅРёС‚СЊ С„СѓРЅРєС†РёСЋ РєРѕРЅРІРµСЂС‚Р°С†РёРё. Р’РЅРёРјР°С‚РµР»СЊРЅРѕ РёР·СѓС‡РёС‚Рµ РµРµ!"), false)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetCursorPos().x, var_0_1.GetCursorPos().y + 1))
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("COPY"), var_0_1.ImVec2(35, 27)) then
-		var_0_1.OpenPopup(var_0_5("Конфиг менеджер."))
+		var_0_1.OpenPopup(var_0_5("РљРѕРЅС„РёРі РјРµРЅРµРґР¶РµСЂ."))
 	end
 
 	configManager(var_0_87, 2)
-	var_0_1.Hint("COPY_MODE", var_0_5("Новая функция которая позволит быстро копировать что либо из конфига.\nПосле нажатия у вас откроется настройки функции."), false)
+	var_0_1.Hint("COPY_MODE", var_0_5("РќРѕРІР°СЏ С„СѓРЅРєС†РёСЏ РєРѕС‚РѕСЂР°СЏ РїРѕР·РІРѕР»РёС‚ Р±С‹СЃС‚СЂРѕ РєРѕРїРёСЂРѕРІР°С‚СЊ С‡С‚Рѕ Р»РёР±Рѕ РёР· РєРѕРЅС„РёРіР°.\nРџРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ Сѓ РІР°СЃ РѕС‚РєСЂРѕРµС‚СЃСЏ РЅР°СЃС‚СЂРѕР№РєРё С„СѓРЅРєС†РёРё."), false)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 5)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("download") .. "##", var_0_1.ImVec2(35, 27)) then
-		sendNotify("Вы начали скачку средних цен.")
+		sendNotify("Р’С‹ РЅР°С‡Р°Р»Рё СЃРєР°С‡РєСѓ СЃСЂРµРґРЅРёС… С†РµРЅ.")
 		get_prices()
 	end
 
-	var_0_1.Hint("download", var_0_5("Нажав кнопку Вы скачаете средние цены.\nОни будут доступны при выборе товара в самом меню скрипта или же на центральном рынке при выборе товара!\nТак же не забывайте вы можете добавить товар, затем навести на название товара курсор и вам откроется список средних цен!\nЕсли вы зажмете ЛКМ и будете листать вниз колесиком мыши - вы сможете прокрутить вниз."), false)
+	var_0_1.Hint("download", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ СЃРєР°С‡Р°РµС‚Рµ СЃСЂРµРґРЅРёРµ С†РµРЅС‹.\nРћРЅРё Р±СѓРґСѓС‚ РґРѕСЃС‚СѓРїРЅС‹ РїСЂРё РІС‹Р±РѕСЂРµ С‚РѕРІР°СЂР° РІ СЃР°РјРѕРј РјРµРЅСЋ СЃРєСЂРёРїС‚Р° РёР»Рё Р¶Рµ РЅР° С†РµРЅС‚СЂР°Р»СЊРЅРѕРј СЂС‹РЅРєРµ РїСЂРё РІС‹Р±РѕСЂРµ С‚РѕРІР°СЂР°!\nРўР°Рє Р¶Рµ РЅРµ Р·Р°Р±С‹РІР°Р№С‚Рµ РІС‹ РјРѕР¶РµС‚Рµ РґРѕР±Р°РІРёС‚СЊ С‚РѕРІР°СЂ, Р·Р°С‚РµРј РЅР°РІРµСЃС‚Рё РЅР° РЅР°Р·РІР°РЅРёРµ С‚РѕРІР°СЂР° РєСѓСЂСЃРѕСЂ Рё РІР°Рј РѕС‚РєСЂРѕРµС‚СЃСЏ СЃРїРёСЃРѕРє СЃСЂРµРґРЅРёС… С†РµРЅ!\nР•СЃР»Рё РІС‹ Р·Р°Р¶РјРµС‚Рµ Р›РљРњ Рё Р±СѓРґРµС‚Рµ Р»РёСЃС‚Р°С‚СЊ РІРЅРёР· РєРѕР»РµСЃРёРєРѕРј РјС‹С€Рё - РІС‹ СЃРјРѕР¶РµС‚Рµ РїСЂРѕРєСЂСѓС‚РёС‚СЊ РІРЅРёР·."), false)
 	var_0_1.SameLine()
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("trash") .. "##", var_0_1.ImVec2(35, 27)) then
 		var_0_87 = {}
 	end
 
-	var_0_1.Hint("trash", var_0_5("Нажав кнопку Вы удалите все добавленные товары в списке ниже. (В правой колонке)"), false)
+	var_0_1.Hint("trash", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ СѓРґР°Р»РёС‚Рµ РІСЃРµ РґРѕР±Р°РІР»РµРЅРЅС‹Рµ С‚РѕРІР°СЂС‹ РІ СЃРїРёСЃРєРµ РЅРёР¶Рµ. (Р’ РїСЂР°РІРѕР№ РєРѕР»РѕРЅРєРµ)"), false)
 	var_0_1.SameLine()
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("FOLDER") .. "##", var_0_1.ImVec2(35, 27)) then
 		var_0_1.SelectMenu(var_0_97, 3)
 	end
 
-	var_0_1.Hint("FOLDER", var_0_5("Нажав кнопку Вы быстро переместитесь во вкладку \"Настройки\".\nТам вы сможете изменить настройки скрипта, а так же загрузить конфиг.\nП-сссс. Открою секрет, у нас работает конфиг от палатки! Только никому не говори!"), false)
+	var_0_1.Hint("FOLDER", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р±С‹СЃС‚СЂРѕ РїРµСЂРµРјРµСЃС‚РёС‚РµСЃСЊ РІРѕ РІРєР»Р°РґРєСѓ \"РќР°СЃС‚СЂРѕР№РєРё\".\nРўР°Рј РІС‹ СЃРјРѕР¶РµС‚Рµ РёР·РјРµРЅРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё СЃРєСЂРёРїС‚Р°, Р° С‚Р°Рє Р¶Рµ Р·Р°РіСЂСѓР·РёС‚СЊ РєРѕРЅС„РёРі.\nРџ-СЃСЃСЃСЃ. РћС‚РєСЂРѕСЋ СЃРµРєСЂРµС‚, Сѓ РЅР°СЃ СЂР°Р±РѕС‚Р°РµС‚ РєРѕРЅС„РёРі РѕС‚ РїР°Р»Р°С‚РєРё! РўРѕР»СЊРєРѕ РЅРёРєРѕРјСѓ РЅРµ РіРѕРІРѕСЂРё!"), false)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 2)
 
@@ -10422,7 +10737,7 @@ function buy(arg_210_0)
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.PopFont()
 
 	if json_vlad ~= nil and #json_vlad ~= 0 then
@@ -10774,7 +11089,7 @@ function buy(arg_210_0)
 						var_0_1.TextColoredRGB("{808080} " .. var_210_13[iter_210_11 + 1].count_maximum)
 						var_0_1.SameLine()
 						var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() / 1.234)
-						var_0_1.Text(var_0_5("шт."))
+						var_0_1.Text(var_0_5("С€С‚."))
 					else
 						var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
 
@@ -10789,7 +11104,7 @@ function buy(arg_210_0)
 
 						var_0_103.buy[iter_210_11 + 1] = var_0_11.char[32]("" .. var_210_13[iter_210_11 + 1].count)
 
-						if var_0_1.InputTextD(var_0_5("    шт.##1") .. iter_210_11 + 1, var_0_103.buy[iter_210_11 + 1], 32, var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_103.buy[iter_210_11 + 1]):match("^%d+$") and tonumber(var_0_45.string(var_0_103.buy[iter_210_11 + 1])) ~= 0 then
+						if var_0_1.InputTextD(var_0_5("    С€С‚.##1") .. iter_210_11 + 1, var_0_103.buy[iter_210_11 + 1], 32, var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_103.buy[iter_210_11 + 1]):match("^%d+$") and tonumber(var_0_45.string(var_0_103.buy[iter_210_11 + 1])) ~= 0 then
 							var_210_13[iter_210_11 + 1].count = var_0_45.string(var_0_103.buy[iter_210_11 + 1])
 							var_210_13[iter_210_11 + 1].continue = var_210_13[iter_210_11 + 1].count
 						end
@@ -10816,7 +11131,7 @@ function buy(arg_210_0)
 						end
 
 						var_0_1.SameLine()
-						var_0_1.TextColoredRGB(var_0_120 and "{FFFFFF} Продолжаю скупку: " .. var_210_13[iter_210_11 + 1].continue .. " шт." or "{808080} Продолжить скупку? " .. var_210_13[iter_210_11 + 1].continue .. " шт.")
+						var_0_1.TextColoredRGB(var_0_120 and "{FFFFFF} РџСЂРѕРґРѕР»Р¶Р°СЋ СЃРєСѓРїРєСѓ: " .. var_210_13[iter_210_11 + 1].continue .. " С€С‚." or "{808080} РџСЂРѕРґРѕР»Р¶РёС‚СЊ СЃРєСѓРїРєСѓ? " .. var_210_13[iter_210_11 + 1].continue .. " С€С‚.")
 					end
 
 					var_0_1.GetStyle().FrameBorderSize = 0
@@ -10835,7 +11150,7 @@ function buy(arg_210_0)
 
 			local var_210_16 = var_210_5 < 100000000 and "(-" .. moneySeparator(var_210_5) .. var_0_5(")") or "(-......)"
 
-			var_0_1.CenterText(var_0_5("Остаток: ") .. moneySeparator(getPlayerMoney() - var_210_5) .. " " .. var_210_16 .. var_0_5(" | Предметов: ") .. #var_0_87)
+			var_0_1.CenterText(var_0_5("РћСЃС‚Р°С‚РѕРє: ") .. moneySeparator(getPlayerMoney() - var_210_5) .. " " .. var_210_16 .. var_0_5(" | РџСЂРµРґРјРµС‚РѕРІ: ") .. #var_0_87)
 
 			if var_210_5 > 100000000 and var_0_1.IsItemHovered() then
 				var_0_1.BeginTooltip()
@@ -10843,12 +11158,12 @@ function buy(arg_210_0)
 				var_0_1.EndTooltip()
 			end
 
-			if var_0_1.Button(var_0_93.buy and var_0_5("Отмена") or var_0_5("Выставить на скуп"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2 - 7, 27)) then
+			if var_0_1.Button(var_0_93.buy and var_0_5("РћС‚РјРµРЅР°") or var_0_5("Р’С‹СЃС‚Р°РІРёС‚СЊ РЅР° СЃРєСѓРї"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2 - 7, 27)) then
 				if not var_0_93.buy then
 					local var_210_17, var_210_18 = sampGetCurrentServerAddress()
 
 					if var_0_28[var_210_17] == 0 and var_0_167 or var_0_28[var_210_17] ~= 0 and not var_0_167 then
-						AFKMessage("ВНИМАНИЕ! У вас установлен не тот режим продажи. Зайдите в скупку и проверьте валюту в которой выставляете.")
+						AFKMessage("Р’РќРРњРђРќРР•! РЈ РІР°СЃ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РЅРµ С‚РѕС‚ СЂРµР¶РёРј РїСЂРѕРґР°Р¶Рё. Р—Р°Р№РґРёС‚Рµ РІ СЃРєСѓРїРєСѓ Рё РїСЂРѕРІРµСЂСЊС‚Рµ РІР°Р»СЋС‚Сѓ РІ РєРѕС‚РѕСЂРѕР№ РІС‹СЃС‚Р°РІР»СЏРµС‚Рµ.")
 					else
 						local var_210_19 = math.floor(getPlayerMoney() - var_210_5)
 
@@ -10861,7 +11176,7 @@ function buy(arg_210_0)
 							score_from = 1
 						}
 
-						AFKMessage("Начинаем выставлять товары.")
+						AFKMessage("РќР°С‡РёРЅР°РµРј РІС‹СЃС‚Р°РІР»СЏС‚СЊ С‚РѕРІР°СЂС‹.")
 
 						for iter_210_12, iter_210_13 in pairs(var_0_87) do
 							if tostring(iter_210_13.continue) == "nil" or var_0_120 == false then
@@ -10870,7 +11185,7 @@ function buy(arg_210_0)
 								deAFKMessage(debug.getinfo(1, "l"), "[con dbug start func] nil in cfg OR continue_buy == false")
 							end
 
-							saveLog("[" .. tostring(iter_210_13.enabled) .. "] [buy] Товар: [" .. iter_210_12 .. "|" .. #var_0_87 .. "] [" .. iter_210_13.name .. "] [" .. iter_210_13.count .. "] [" .. iter_210_13.price .. "|" .. iter_210_13.price_vc .. "] [" .. tostring(var_0_167) .. "] ")
+							saveLog("[" .. tostring(iter_210_13.enabled) .. "] [buy] РўРѕРІР°СЂ: [" .. iter_210_12 .. "|" .. #var_0_87 .. "] [" .. iter_210_13.name .. "] [" .. iter_210_13.count .. "] [" .. iter_210_13.price .. "|" .. iter_210_13.price_vc .. "] [" .. tostring(var_0_167) .. "] ")
 
 							var_0_93.score_from = iter_210_12
 						end
@@ -10887,20 +11202,20 @@ function buy(arg_210_0)
 						score_from = 1
 					}
 
-					AFKMessage("Выставление товаров было отменено.")
+					AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р±С‹Р»Рѕ РѕС‚РјРµРЅРµРЅРѕ.")
 				end
 			end
 
 			var_0_1.SameLine()
 
-			if var_0_1.Button(var_0_5("Распределить вирты##0"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2 - 7, 27)) then
+			if var_0_1.Button(var_0_5("Р Р°СЃРїСЂРµРґРµР»РёС‚СЊ РІРёСЂС‚С‹##0"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2 - 7, 27)) then
 				var_0_80.page = 0
 				var_0_67[0] = not var_0_67[0]
 			end
 
 			if var_0_156 == "" then
 				if var_0_84[2] == true then
-					if var_0_1.Button(var_0_5("Отменить создание"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2 - 10, 27)) then
+					if var_0_1.Button(var_0_5("РћС‚РјРµРЅРёС‚СЊ СЃРѕР·РґР°РЅРёРµ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2 - 10, 27)) then
 						var_0_84[2] = false
 					end
 
@@ -10908,21 +11223,21 @@ function buy(arg_210_0)
 					var_0_1.PushItemWidth(98)
 					var_0_1.PushFont(fonts[222])
 					var_0_1.PushStyleVarVec2(var_0_1.StyleVar.FramePadding, var_0_1.ImVec2(6, 6.5))
-					var_0_1.InputTextWithHintD("##search_cfg_sell", var_0_5(" Имя конфига"), var_0_173, var_0_45.sizeof(var_0_173), var_0_1.InputTextFlags.EnterReturnsTrue)
+					var_0_1.InputTextWithHintD("##search_cfg_sell", var_0_5(" РРјСЏ РєРѕРЅС„РёРіР°"), var_0_173, var_0_45.sizeof(var_0_173), var_0_1.InputTextFlags.EnterReturnsTrue)
 					var_0_1.PopFont()
 					var_0_1.PopStyleVar()
 					var_0_1.SameLine()
 
-					if var_0_1.Button(var_0_5("Создать"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 3.99 - 15, 27)) then
+					if var_0_1.Button(var_0_5("РЎРѕР·РґР°С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 3.99 - 15, 27)) then
 						var_0_90.buy = var_0_5:decode(var_0_45.string(var_0_173)):gsub("[\"<|:>]", "")
 
 						if var_0_90.buy == "" or var_0_90.buy == nil or var_0_90.buy:match("^%s*$") ~= nil then
-							AFKMessage("{ff3535}[Error]:{ffffff} Вы не можете создать {505050}безымянный {ffffff}конфиг.")
+							AFKMessage("{ff3535}[Error]:{ffffff} Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРѕР·РґР°С‚СЊ {505050}Р±РµР·С‹РјСЏРЅРЅС‹Р№ {ffffff}РєРѕРЅС„РёРі.")
 						else
 							var_0_84[2] = false
 
 							createConfig("buy-cfg/" .. var_0_90.buy .. ".json", {}, "buy-cfg", var_0_90.buy)
-							AFKMessage("[Скупка] Конфиг {505050}" .. tostring(var_0_90.buy) .. "{ffffff} создан.")
+							AFKMessage("[РЎРєСѓРїРєР°] РљРѕРЅС„РёРі {505050}" .. tostring(var_0_90.buy) .. "{ffffff} СЃРѕР·РґР°РЅ.")
 
 							var_0_156 = var_0_90.buy .. ".json"
 							var_0_106.cfg.load_config_buy = var_0_156
@@ -10930,14 +11245,14 @@ function buy(arg_210_0)
 							save_all()
 						end
 					end
-				elseif var_0_1.Button(var_0_5("Создать конфиг"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
+				elseif var_0_1.Button(var_0_5("РЎРѕР·РґР°С‚СЊ РєРѕРЅС„РёРі"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
 					var_0_84[2] = true
 				end
-			elseif var_0_1.Button(var_0_5("Сохранить конфиг"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
+			elseif var_0_1.Button(var_0_5("РЎРѕС…СЂР°РЅРёС‚СЊ РєРѕРЅС„РёРі"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
 				var_0_90.buy = var_0_156:match("(.+)%.json") and var_0_156 or var_0_156 .. ".json"
 
 				createConfig("buy-cfg/" .. var_0_90.buy, var_0_87, "buy-cfg", var_0_90.buy)
-				AFKMessage("Конфиг " .. tostring(var_0_90.buy) .. " сохранен.")
+				AFKMessage("РљРѕРЅС„РёРі " .. tostring(var_0_90.buy) .. " СЃРѕС…СЂР°РЅРµРЅ.")
 			end
 
 			var_0_1.GetStyle().FrameBorderSize = 0
@@ -10947,9 +11262,9 @@ function buy(arg_210_0)
 	else
 		var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 15, sizeY / 2))
 		var_0_1.PushFont(fonts[18])
-		var_0_1.TextDisabled(var_0_5("Для продолжения вам нужно отсканировать все предметы у СЕБЯ В ЛАВКЕ...\n                                                      ...нажав на кнопку   ") .. var_0_48("magnifying_glass"))
+		var_0_1.TextDisabled(var_0_5("Р”Р»СЏ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ РІР°Рј РЅСѓР¶РЅРѕ РѕС‚СЃРєР°РЅРёСЂРѕРІР°С‚СЊ РІСЃРµ РїСЂРµРґРјРµС‚С‹ Сѓ РЎР•Р‘РЇ Р’ Р›РђР’РљР•...\n                                                      ...РЅР°Р¶Р°РІ РЅР° РєРЅРѕРїРєСѓ   ") .. var_0_48("magnifying_glass"))
 		var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 3.7, sizeY / 1.7))
-		var_0_1.Link("https://youtu.be/l9HWWrG-XWQ", "https://rutube.ru/video/private/6d8efd091fdfde747476c2a512e8fb00/?p=aL4DTMmBxDPOsYMcl9tSpw", var_0_5("[Инструкция] Как это сделать?"), nil, arg_210_0, "Ютуб", "Рутуб")
+		var_0_1.Link("https://youtu.be/l9HWWrG-XWQ", "https://rutube.ru/video/private/6d8efd091fdfde747476c2a512e8fb00/?p=aL4DTMmBxDPOsYMcl9tSpw", var_0_5("[РРЅСЃС‚СЂСѓРєС†РёСЏ] РљР°Рє СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ?"), nil, arg_210_0, "Р®С‚СѓР±", "Р СѓС‚СѓР±")
 		var_0_1.PopFont()
 	end
 end
@@ -11002,6 +11317,7 @@ function window_marketAuth(arg_213_0)
 	var_0_1.PushFont(fonts[18])
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("ARROWS_ROTATE"), var_0_1.ImVec2(30, 27)) then
+		marketplaceBridgeRequestCurrentServer()
 		var_0_56[38][2] = 0
 		var_0_56[39][2] = 0
 		var_0_56[30] = os.time() - 25
@@ -11009,7 +11325,7 @@ function window_marketAuth(arg_213_0)
 		var_0_115.searchStorage.marketPlaceBuy[2] = ""
 		var_0_115.searchStorage.marketPlaceSell[2] = ""
 
-		AFKMessage("Обновление лавок...")
+		AFKMessage("РћР±РЅРѕРІР»РµРЅРёРµ Р»Р°РІРѕРє...")
 	end
 
 	var_0_1.PopFont()
@@ -11026,9 +11342,9 @@ function window_marketAuth(arg_213_0)
 	var_0_1.PushStyleColor(var_0_1.Col.Text, var_0_1.ImVec4(1, 1, 1, 1))
 	var_0_1.PushFont(fonts[24])
 
-	if var_0_1.Button(var_0_5("Привязать Telegram"), var_0_1.ImVec2(320, 61)) then
+	if var_0_1.Button(var_0_5("РџСЂРёРІСЏР·Р°С‚СЊ Telegram"), var_0_1.ImVec2(320, 61)) then
 		deAFKMessage("click auth")
-		var_0_1.OpenPopup(var_0_5("Авторизация в маркетплейсе."))
+		var_0_1.OpenPopup(var_0_5("РђРІС‚РѕСЂРёР·Р°С†РёСЏ РІ РјР°СЂРєРµС‚РїР»РµР№СЃРµ."))
 		openUrl("https://t.me/ArzMarketManager_bot")
 	end
 
@@ -11045,9 +11361,9 @@ function window_marketAuth(arg_213_0)
 	var_0_1.PushStyleColor(var_0_1.Col.Text, var_0_1.ImVec4(1, 1, 1, 1))
 	var_0_1.PushFont(fonts[24])
 
-	if var_0_1.Button(var_0_5("Привязать Вконтакте"), var_0_1.ImVec2(320, 61)) then
+	if var_0_1.Button(var_0_5("РџСЂРёРІСЏР·Р°С‚СЊ Р’РєРѕРЅС‚Р°РєС‚Рµ"), var_0_1.ImVec2(320, 61)) then
 		deAFKMessage("click vk auth")
-		var_0_1.OpenPopup(var_0_5("Авторизация в маркетплейсе."))
+		var_0_1.OpenPopup(var_0_5("РђРІС‚РѕСЂРёР·Р°С†РёСЏ РІ РјР°СЂРєРµС‚РїР»РµР№СЃРµ."))
 		openUrl("https://vk.com/im/convo/-237814015")
 	end
 
@@ -11059,7 +11375,7 @@ function window_marketAuth(arg_213_0)
 	var_0_1.Spinner("##spinner2", 45, 2, var_0_1.GetColorU32Vec4(var_0_1.ImVec4(arg_213_0[1], arg_213_0[2], arg_213_0[3], arg_213_0[4])))
 	var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 470) / 2, sizeY / 1.65))
 	var_0_1.PushFont(fonts[18])
-	var_0_1.TextDisabled(var_0_5("На данный момент включен режим маркетплейса по авторизации. \n        Вам нужно авторизоваться через Telegram или Вконтакте."))
+	var_0_1.TextDisabled(var_0_5("РќР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РІРєР»СЋС‡РµРЅ СЂРµР¶РёРј РјР°СЂРєРµС‚РїР»РµР№СЃР° РїРѕ Р°РІС‚РѕСЂРёР·Р°С†РёРё. \n        Р’Р°Рј РЅСѓР¶РЅРѕ Р°РІС‚РѕСЂРёР·РѕРІР°С‚СЊСЃСЏ С‡РµСЂРµР· Telegram РёР»Рё Р’РєРѕРЅС‚Р°РєС‚Рµ."))
 	var_0_1.PopFont()
 end
 
@@ -11083,7 +11399,7 @@ function window_marketPlace_lavka()
 		return
 	end
 
-	var_0_1.Hint("ARROW_LEFTdownload_marketplace", var_0_5("Нажмите сюда что бы вернуться в главное меню маркет-плейса."), false)
+	var_0_1.Hint("ARROW_LEFTdownload_marketplace", var_0_5("РќР°Р¶РјРёС‚Рµ СЃСЋРґР° С‡С‚Рѕ Р±С‹ РІРµСЂРЅСѓС‚СЊСЃСЏ РІ РіР»Р°РІРЅРѕРµ РјРµРЅСЋ РјР°СЂРєРµС‚-РїР»РµР№СЃР°."), false)
 	var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 300) / 2, 5))
 	var_0_1.SameLine(635)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 2)
@@ -11098,7 +11414,7 @@ function window_marketPlace_lavka()
 	end
 
 	var_0_1.PopFont()
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 
 	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
@@ -11130,7 +11446,7 @@ function window_marketPlace_lavka()
 	local var_214_8 = var_0_1.ImVec2(var_214_7.x + 5, var_214_7.y + 6)
 
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 10, var_0_1.GetCursorPos().y + 5))
-	var_0_1.TextColoredRGB("{cccccc} Вы открыли лавку игрока: " .. changeExtraSim(var_0_10[2].username, 23))
+	var_0_1.TextColoredRGB("{cccccc} Р’С‹ РѕС‚РєСЂС‹Р»Рё Р»Р°РІРєСѓ РёРіСЂРѕРєР°: " .. changeExtraSim(var_0_10[2].username, 23))
 
 	if var_0_1.IsItemHovered() then
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
@@ -11147,16 +11463,16 @@ function window_marketPlace_lavka()
 	end
 
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 4, var_0_1.GetCursorPos().y))
-	var_0_1.TextColoredRGB("{cccccc}Предметов в лавке: " .. #var_0_10[2].items_sell + #var_0_10[2].items_buy .. " шт.")
+	var_0_1.TextColoredRGB("{cccccc}РџСЂРµРґРјРµС‚РѕРІ РІ Р»Р°РІРєРµ: " .. #var_0_10[2].items_sell + #var_0_10[2].items_buy .. " С€С‚.")
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 3, var_0_1.GetCursorPos().y))
-	var_0_1.TextColoredRGB("{cccccc}Номер лавки: " .. var_0_10[2].LavkaUid)
+	var_0_1.TextColoredRGB("{cccccc}РќРѕРјРµСЂ Р»Р°РІРєРё: " .. var_0_10[2].LavkaUid)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 2)
 	var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 45, var_0_1.GetCursorPos().y + 5))
-	var_0_1.TextColoredRGB("{cccccc}Предметов на скупке: " .. #var_0_10[2].items_buy)
+	var_0_1.TextColoredRGB("{cccccc}РџСЂРµРґРјРµС‚РѕРІ РЅР° СЃРєСѓРїРєРµ: " .. #var_0_10[2].items_buy)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
-	var_0_1.TextColoredRGB("{cccccc}Предметов на Продаже: " .. #var_0_10[2].items_sell)
+	var_0_1.TextColoredRGB("{cccccc}РџСЂРµРґРјРµС‚РѕРІ РЅР° РџСЂРѕРґР°Р¶Рµ: " .. #var_0_10[2].items_sell)
 	var_0_1.GetWindowDrawList():AddRect(var_0_1.ImVec2(var_214_7.x + 1, var_214_7.y), var_0_1.ImVec2(var_214_7.x + var_214_5 / 2, var_214_7.y + var_214_6), var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_0_114.Border[1], var_0_114.Border[2], var_0_114.Border[3], var_0_114.Border[4])), 5, 0, 1.8)
 	var_0_1.EndCustomInvisibleChild()
 
@@ -11232,7 +11548,7 @@ function window_marketPlace_lavka()
 				var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 3)
 				var_0_1.PopFont()
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 4)
-				var_0_1.Text(var_0_5(" шт."))
+				var_0_1.Text(var_0_5(" С€С‚."))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 4)
 
 				var_0_1.GetStyle().FrameBorderSize = 0
@@ -11304,7 +11620,7 @@ function window_marketPlace_lavka()
 				var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 3)
 				var_0_1.PopFont()
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 4)
-				var_0_1.Text(var_0_5(" шт."))
+				var_0_1.Text(var_0_5(" С€С‚."))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 4)
 
 				var_0_1.GetStyle().FrameBorderSize = 0
@@ -11345,6 +11661,7 @@ function none_market()
 	var_0_1.PushFont(fonts[18])
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("ARROWS_ROTATE"), var_0_1.ImVec2(30, 27)) then
+		marketplaceBridgeRequestCurrentServer()
 		var_0_56[38][2] = 0
 		var_0_56[39][2] = 0
 		var_0_56[30] = os.time() - 25
@@ -11352,14 +11669,14 @@ function none_market()
 		var_0_115.searchStorage.marketPlaceBuy[2] = ""
 		var_0_115.searchStorage.marketPlaceSell[2] = ""
 
-		AFKMessage("Обновление лавок...")
+		AFKMessage("РћР±РЅРѕРІР»РµРЅРёРµ Р»Р°РІРѕРє...")
 	end
 
 	if download_marketplace == nil then
 		return
 	end
 
-	var_0_1.Hint("ARROWS_ROTATE", var_0_5("Нажмите сюда что бы обновить список лавок сейчас."), false)
+	var_0_1.Hint("ARROWS_ROTATE", var_0_5("РќР°Р¶РјРёС‚Рµ СЃСЋРґР° С‡С‚Рѕ Р±С‹ РѕР±РЅРѕРІРёС‚СЊ СЃРїРёСЃРѕРє Р»Р°РІРѕРє СЃРµР№С‡Р°СЃ."), false)
 	var_0_1.SameLine(var_0_106.cfg.menuSize == 1 and 445 or var_0_106.cfg.menuSize == 2 and 460 or 0)
 	var_0_1.PushItemWidth(var_0_106.cfg.menuSize == 1 and 185 or var_0_106.cfg.menuSize == 2 and 200 or 0)
 
@@ -11371,6 +11688,7 @@ function none_market()
 
 	if var_0_1.Combo(var_0_5("##menu_settings_marketplaceserver"), var_0_115.marketplace_serversSelected, var_0_115.ImMarketplace_servers, #var_0_115.marketplace_servers, var_0_1.ComboFlags.NoArrowButton) then
 		var_0_106.cfg.marketplaceSelectedItem = var_0_115.marketplace_serversSelected[0]
+		marketplaceBridgeRequestCurrentServer()
 		var_0_56[38][2] = 0
 		var_0_56[39][2] = 0
 		var_0_56[30] = os.time() - 25
@@ -11381,14 +11699,14 @@ function none_market()
 		var_0_115.searchStorage.marketPlaceBuy[2] = ""
 		var_0_115.searchStorage.marketPlaceSell[2] = ""
 
-		AFKMessage("Обновление лавок...")
+		AFKMessage("РћР±РЅРѕРІР»РµРЅРёРµ Р»Р°РІРѕРє...")
 	end
 
 	if download_marketplace == nil then
 		return
 	end
 
-	var_0_1.Hint("menu_settings_marketplaceserver", var_0_5("Вы можете просматривать лавки игроков на всех серверах, а так же выбрать конкретно какой-то.\nНажмите ЛКМ для того что бы открыть список, затем выберите сервер."), false)
+	var_0_1.Hint("menu_settings_marketplaceserver", var_0_5("Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРѕСЃРјР°С‚СЂРёРІР°С‚СЊ Р»Р°РІРєРё РёРіСЂРѕРєРѕРІ РЅР° РІСЃРµС… СЃРµСЂРІРµСЂР°С…, Р° С‚Р°Рє Р¶Рµ РІС‹Р±СЂР°С‚СЊ РєРѕРЅРєСЂРµС‚РЅРѕ РєР°РєРѕР№-С‚Рѕ.\nРќР°Р¶РјРёС‚Рµ Р›РљРњ РґР»СЏ С‚РѕРіРѕ С‡С‚Рѕ Р±С‹ РѕС‚РєСЂС‹С‚СЊ СЃРїРёСЃРѕРє, Р·Р°С‚РµРј РІС‹Р±РµСЂРёС‚Рµ СЃРµСЂРІРµСЂ."), false)
 
 	var_0_1.GetStyle().FrameBorderSize = 0
 	var_0_1.GetStyle().PopupBorderSize = 1
@@ -11405,9 +11723,9 @@ function none_market()
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 7, sizeY / 2.05))
-	var_0_1.TextDisabled(var_0_5("На данный момент отсутствуют лавки на сервере ") .. var_0_115.marketplace_servers[var_0_106.cfg.marketplaceSelectedItem + 1] .. ".")
+	var_0_1.TextDisabled(var_0_5("РќР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ Р»Р°РІРєРё РЅР° СЃРµСЂРІРµСЂРµ ") .. var_0_115.marketplace_servers[var_0_106.cfg.marketplaceSelectedItem + 1] .. ".")
 	var_0_1.PopFont()
 end
 
@@ -11415,6 +11733,7 @@ function block_access_market()
 	var_0_1.PushFont(fonts[18])
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("ARROWS_ROTATE"), var_0_1.ImVec2(30, 27)) then
+		marketplaceBridgeRequestCurrentServer()
 		var_0_56[38][2] = 0
 		var_0_56[39][2] = 0
 		var_0_56[30] = os.time() - 25
@@ -11422,10 +11741,10 @@ function block_access_market()
 		var_0_115.searchStorage.marketPlaceBuy[2] = ""
 		var_0_115.searchStorage.marketPlaceSell[2] = ""
 
-		AFKMessage("Обновление лавок...")
+		AFKMessage("РћР±РЅРѕРІР»РµРЅРёРµ Р»Р°РІРѕРє...")
 	end
 
-	var_0_1.Hint("ARROWS_ROTATE", var_0_5("Нажмите сюда что бы обновить список лавок сейчас."), false)
+	var_0_1.Hint("ARROWS_ROTATE", var_0_5("РќР°Р¶РјРёС‚Рµ СЃСЋРґР° С‡С‚Рѕ Р±С‹ РѕР±РЅРѕРІРёС‚СЊ СЃРїРёСЃРѕРє Р»Р°РІРѕРє СЃРµР№С‡Р°СЃ."), false)
 	var_0_1.SameLine(var_0_106.cfg.menuSize == 1 and 445 or var_0_106.cfg.menuSize == 2 and 460 or 0)
 	var_0_1.PushItemWidth(var_0_106.cfg.menuSize == 1 and 185 or var_0_106.cfg.menuSize == 2 and 200 or 0)
 
@@ -11437,6 +11756,7 @@ function block_access_market()
 
 	if var_0_1.Combo(var_0_5("##menu_settings_marketplaceserver2"), var_0_115.marketplace_serversSelected, var_0_115.ImMarketplace_servers, #var_0_115.marketplace_servers, var_0_1.ComboFlags.NoArrowButton) then
 		var_0_106.cfg.marketplaceSelectedItem = var_0_115.marketplace_serversSelected[0]
+		marketplaceBridgeRequestCurrentServer()
 		var_0_56[38][2] = 0
 		var_0_56[39][2] = 0
 		var_0_56[30] = os.time() - 25
@@ -11447,10 +11767,10 @@ function block_access_market()
 		var_0_115.searchStorage.marketPlaceBuy[2] = ""
 		var_0_115.searchStorage.marketPlaceSell[2] = ""
 
-		AFKMessage("Обновление лавок...")
+		AFKMessage("РћР±РЅРѕРІР»РµРЅРёРµ Р»Р°РІРѕРє...")
 	end
 
-	var_0_1.Hint("menu_settings_marketplaceserver", var_0_5("Вы можете просматривать лавки игроков на всех серверах, а так же выбрать конкретно какой-то.\nНажмите ЛКМ для того что бы открыть список, затем выберите сервер."), false)
+	var_0_1.Hint("menu_settings_marketplaceserver", var_0_5("Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРѕСЃРјР°С‚СЂРёРІР°С‚СЊ Р»Р°РІРєРё РёРіСЂРѕРєРѕРІ РЅР° РІСЃРµС… СЃРµСЂРІРµСЂР°С…, Р° С‚Р°Рє Р¶Рµ РІС‹Р±СЂР°С‚СЊ РєРѕРЅРєСЂРµС‚РЅРѕ РєР°РєРѕР№-С‚Рѕ.\nРќР°Р¶РјРёС‚Рµ Р›РљРњ РґР»СЏ С‚РѕРіРѕ С‡С‚Рѕ Р±С‹ РѕС‚РєСЂС‹С‚СЊ СЃРїРёСЃРѕРє, Р·Р°С‚РµРј РІС‹Р±РµСЂРёС‚Рµ СЃРµСЂРІРµСЂ."), false)
 
 	var_0_1.GetStyle().FrameBorderSize = 0
 	var_0_1.GetStyle().PopupBorderSize = 1
@@ -11467,20 +11787,18 @@ function block_access_market()
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 12, sizeY / 2.05))
-	var_0_1.TextDisabled(var_0_5("На данный момент просмотр лавок на сервере ") .. var_0_115.marketplace_servers[var_0_106.cfg.marketplaceSelectedItem + 1] .. var_0_5(" недоступен для вас."))
+	var_0_1.TextDisabled(var_0_5("РќР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РїСЂРѕСЃРјРѕС‚СЂ Р»Р°РІРѕРє РЅР° СЃРµСЂРІРµСЂРµ ") .. var_0_115.marketplace_servers[var_0_106.cfg.marketplaceSelectedItem + 1] .. var_0_5(" РЅРµРґРѕСЃС‚СѓРїРµРЅ РґР»СЏ РІР°СЃ."))
 	var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 20, sizeY / 1.85))
-	var_0_1.TextDisabled(var_0_5("Причиной может быть маленький игровой уровень или блокировка от разработчика."))
+	var_0_1.TextDisabled(var_0_5("РџСЂРёС‡РёРЅРѕР№ РјРѕР¶РµС‚ Р±С‹С‚СЊ РјР°Р»РµРЅСЊРєРёР№ РёРіСЂРѕРІРѕР№ СѓСЂРѕРІРµРЅСЊ РёР»Рё Р±Р»РѕРєРёСЂРѕРІРєР° РѕС‚ СЂР°Р·СЂР°Р±РѕС‚С‡РёРєР°."))
 	var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 10, sizeY - 45))
-	var_0_1.TextDisabled(var_0_5("Также необходимо быть на сервере во время просмотра Маркет-Плейса."))
+	var_0_1.TextDisabled(var_0_5("РўР°РєР¶Рµ РЅРµРѕР±С…РѕРґРёРјРѕ Р±С‹С‚СЊ РЅР° СЃРµСЂРІРµСЂРµ РІРѕ РІСЂРµРјСЏ РїСЂРѕСЃРјРѕС‚СЂР° РњР°СЂРєРµС‚-РџР»РµР№СЃР°."))
 	var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 5.5, sizeY - 25))
-	var_0_1.TextDisabled(var_0_5("Возможно ваш игровой уровень меньше 15 лвл!"))
+	var_0_1.TextDisabled(var_0_5("Р’РѕР·РјРѕР¶РЅРѕ РІР°С€ РёРіСЂРѕРІРѕР№ СѓСЂРѕРІРµРЅСЊ РјРµРЅСЊС€Рµ 15 Р»РІР»!"))
 	var_0_1.PopFont()
 end
 
--- The profitable-sales window works only with the snapshot that Marketplace
--- has already loaded.  It never sends a request by itself.
 function marketplaceDealItemName(arg_218_0)
 	local var_218_0 = tostring(arg_218_0 or "")
 
@@ -11646,6 +11964,7 @@ function marketplaceDealWindow()
 		var_224_6 = var_0_1.GetForegroundDrawList()
 		var_224_6:AddRect(var_224_7, var_0_1.ImVec2(var_224_7.x + var_224_0, var_224_7.y + var_224_1), var_224_12, 5, 0, var_0_100[0])
 		var_0_1.PushFont(fonts[18])
+		var_0_1.PushStyleVarFloat(var_0_1.StyleVar.FrameBorderSize, 1)
 		var_0_1.SetCursorPos(var_0_1.ImVec2((var_224_0 - var_0_1.CalcTextSize(var_0_5("\xC2\xFB\xE3\xEE\xE4\xED\xE0\xFF\x20\xEF\xF0\xEE\xE4\xE0\xE6\xE0")).x) / 2, 12))
 		var_0_1.TextColored(var_0_1.ImVec4(var_224_9.x, var_224_9.y, var_224_9.z, 1), var_0_5("\xC2\xFB\xE3\xEE\xE4\xED\xE0\xFF\x20\xEF\xF0\xEE\xE4\xE0\xE6\xE0"))
 		var_0_1.SetCursorPos(var_0_1.ImVec2(var_224_0 - 40, 5))
@@ -11748,7 +12067,7 @@ function marketplaceDealWindow()
 			var_0_1.CenterText("\xCD\xE5\xF2\x20\xE7\xE0\xE3\xF0\xF3\xE6\xE5\xED\xED\xFB\xF5\x20\xE4\xE0\xED\xED\xFB\xF5\x20\x4D\x61\x72\x6B\x65\x74\x70\x6C\x61\x63\x65\x2E\x20\xCE\xF2\xEA\xF0\xEE\xE9\xF2\xE5\x20\xCC\xE0\xF0\xEA\xE5\xF2\x2D\xCF\xEB\xE5\xE9\xF1\x20\xE8\x20\xEE\xE1\xED\xEE\xE2\xE8\xF2\xE5\x20\xF1\xEF\xE8\xF1\xEE\xEA\x20\xEB\xE0\xE2\xEE\xEA\x2E", true)
 		else
 			local var_224_13 = marketplaceDealGetResults()
-			local var_224_15 = var_0_28[sampGetCurrentServerAddress()]
+			local var_224_15 = marketplaceBridgeCurrentServerId()
 
 			var_0_1.SetCursorPos(var_0_1.ImVec2(10, 163))
 			var_0_1.TextColoredRGB("{cccccc}\xCD\xE0\xE9\xE4\xE5\xED\xEE\x20\xEF\xF0\xE5\xE4\xEB\xEE\xE6\xE5\xED\xE8\xE9\x3A\x20" .. #var_224_13)
@@ -11756,8 +12075,11 @@ function marketplaceDealWindow()
 			var_0_1.BeginChild("marketDealResults", var_0_1.ImVec2(var_224_0 - 20, var_224_1 - 230), false)
 
 			if #var_224_13 == 0 then
+				local var_224_20 = var_0_5("\xCF\xEE\xE4\xF5\xEE\xE4\xFF\xF9\xE8\xF5\x20\xEF\xF0\xE5\xE4\xEB\xEE\xE6\xE5\xED\xE8\xE9\x20\xED\xE5\xF2\x2E\x20\xD3\xEC\xE5\xED\xFC\xF8\xE8\xF2\xE5\x20\xF4\xE8\xEB\xFC\xF2\xF0\xFB\x20\xE8\xEB\xE8\x20\xEE\xE1\xED\xEE\xE2\xE8\xF2\xE5\x20\xEB\xE0\xE2\xEA\xE8\x2E")
+				local var_224_21 = var_0_1.CalcTextSize(var_224_20).x
+				var_0_1.SetCursorPosX(math.max(8, (var_0_1.GetWindowWidth() - var_224_21) / 2))
 				var_0_1.SetCursorPosY(118)
-				var_0_1.CenterText("\xCF\xEE\xE4\xF5\xEE\xE4\xFF\xF9\xE8\xF5\x20\xEF\xF0\xE5\xE4\xEB\xEE\xE6\xE5\xED\xE8\xE9\x20\xED\xE5\xF2\x2E\x20\xD3\xEC\xE5\xED\xFC\xF8\xE8\xF2\xE5\x20\xF4\xE8\xEB\xFC\xF2\xF0\xFB\x20\xE8\xEB\xE8\x20\xEE\xE1\xED\xEE\xE2\xE8\xF2\xE5\x20\xEB\xE0\xE2\xEA\xE8\x2E", true)
+				var_0_1.TextDisabled(var_224_20)
 			else
 				for iter_224_0 = 1, #var_224_13 do
 					local iter_224_1 = var_224_13[iter_224_0]
@@ -11796,12 +12118,15 @@ function marketplaceDealWindow()
 		end
 
 		var_0_1.PopFont()
+		var_0_1.PopStyleVar(1)
 	end
 
 	var_0_1.End()
 end
 
 function window_marketPlace(arg_218_0)
+	marketplaceBridgeLoadMarketplaceTextures()
+
 	local var_218_0 = var_0_1.Col
 
 	var_0_1.PushStyleColor(var_218_0.Button, var_0_1.ImVec4(0, 0, 0, 0))
@@ -11812,6 +12137,7 @@ function window_marketPlace(arg_218_0)
 	var_0_1.PushFont(fonts[18])
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("ARROWS_ROTATE"), var_0_1.ImVec2(30, 27)) then
+		marketplaceBridgeRequestCurrentServer()
 		var_0_56[38][2] = 0
 		var_0_56[39][2] = 0
 		var_0_56[30] = os.time() - 25
@@ -11819,14 +12145,14 @@ function window_marketPlace(arg_218_0)
 		var_0_115.searchStorage.marketPlaceBuy[2] = ""
 		var_0_115.searchStorage.marketPlaceSell[2] = ""
 
-		AFKMessage("Обновление лавок...")
+		AFKMessage("РћР±РЅРѕРІР»РµРЅРёРµ Р»Р°РІРѕРє...")
 	end
 
 	if download_marketplace == nil then
 		return
 	end
 
-	var_0_1.Hint("ARROWS_ROTATE", var_0_5("Нажмите сюда что бы обновить список лавок сейчас."), false)
+	var_0_1.Hint("ARROWS_ROTATE", var_0_5("РќР°Р¶РјРёС‚Рµ СЃСЋРґР° С‡С‚Рѕ Р±С‹ РѕР±РЅРѕРІРёС‚СЊ СЃРїРёСЃРѕРє Р»Р°РІРѕРє СЃРµР№С‡Р°СЃ."), false)
 	var_0_1.SameLine()
 
 	if var_0_56[34][1] + 1 <= os.time() then
@@ -11840,34 +12166,45 @@ function window_marketPlace(arg_218_0)
 		deAFKMessage("+ " .. var_0_56[34][2])
 	end
 
-	local var_218_1 = var_0_56[34][2] < 6 and "{cccccc} Лавок сейчас: " .. var_0_115.lavka_summ or "{cccccc} Очередь Vice: " .. tostring(var_0_115.marketplaceQueue)
+	local var_218_1 = var_0_56[34][2] < 6 and "{cccccc} \xCB\xE0\xE2\xEE\xEA: " .. var_0_115.lavka_summ or "{cccccc} \xCE\xF7\xE5\xF0\xE5\xE4\xFC: " .. tostring(var_0_115.marketplaceQueue)
+	local var_218_2 = var_0_56[34][2] < 6 and var_0_5("\xCB\xE0\xE2\xEE\xEA: " .. tostring(var_0_115.lavka_summ)) or var_0_5("\xCE\xF7\xE5\xF0\xE5\xE4\xFC: " .. tostring(var_0_115.marketplaceQueue))
+	local var_218_3 = var_0_106.cfg.menuSize == 1 and 185 or var_0_106.cfg.menuSize == 2 and 200 or 200
+	local var_218_4 = math.max(0, var_0_1.GetWindowWidth() - 40)
+	local var_218_5 = math.max(0, var_218_4 - var_218_3 - 7)
+	local var_218_6 = 42 + var_0_1.CalcTextSize(var_0_5("\xCE\xF7\xE5\xF0\xE5\xE4\xFC: 999")).x + 8
+	local var_218_7 = var_0_106.cfg.menuSize == 1 and 225 or 245
+	local var_218_8 = math.max(var_218_6 + 8, var_218_5 - var_218_7 - 5)
 
+	var_0_1.SetCursorPos(var_0_1.ImVec2(42, 5))
 	var_0_1.TextColoredRGB(var_218_1)
-	var_0_1.SameLine()
+	var_0_1.Hint("ARROWS_ROTATEsssssssd", var_0_5("\xCB\xE0\xE2\xEE\xEA \xF1\xE5\xE9\xF7\xE0\xF1: " .. var_0_115.lavka_summ) .. "\n" .. var_0_5("\xCE\xF7\xE5\xF0\xE5\xE4\xFC Vice: " .. tostring(var_0_115.marketplaceQueue)), false)
+	var_0_1.SetCursorPos(var_0_1.ImVec2(var_218_6, 5))
 	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
-	if var_0_1.Button(var_0_5("\xC2\xFB\xE3\xEE\xE4\xE0") .. "##marketDealOpen", var_0_1.ImVec2(70, 27)) then
+	if var_0_1.Button(var_0_5("\xC2\xFB\xE3\xEE\xE4\xE0") .. "##marketDealOpen", var_0_1.ImVec2(64, 27)) then
 		var_0_115.marketDealOpen[0] = not var_0_115.marketDealOpen[0]
 	end
 
 	var_0_1.GetStyle().FrameBorderSize = 0
-	var_0_1.Hint("marketDealOpen", var_0_5("\xCE\xF2\xEA\xF0\xFB\xF2\xFC \xF1\xEF\xE8\xF1\xEE\xEA \xE2\xFB\xE3\xEE\xE4\xED\xFB\xF5 \xEF\xF0\xE5\xE4\xEB\xEE\xE6\xE5\xED\xE8\xE9."), false)
-	var_0_1.Hint("ARROWS_ROTATEsssssssd", var_0_5("Лавок сейчас: " .. var_0_115.lavka_summ) .. "\n" .. var_0_5("Очередь Vice: " .. tostring(var_0_115.marketplaceQueue)), false)
-	var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 300) / 2, 5))
-	var_0_1.PushItemWidth(255)
+	var_0_1.Hint("marketDealOpen", var_0_5("\xCE\xF2\xEA\xF0\xFB\xF2\xFC \xF1\xEF\xE8\xF1\xEE\xEA \xE2\xFB\xE3\xEE\xE4\xED\xFB\xF5 \xEF\xF0\xE5\xE4\xEB\xEE\xE6\xE5\xED\xE8\xE9\x2E"), false)
+	var_0_1.SetCursorPos(var_0_1.ImVec2(var_218_8, 5))
 	var_0_1.PopFont()
+	local var_218_9 = var_0_5(" \xCF\xEE\xE8\xF1\xEA \xEF\xF0\xE5\xE4\xEC\xE5\xF2\xEE\xE2")
+	local var_218_10 = math.floor((var_218_7 - var_0_1.CalcTextSize(var_218_9).x) / 2 - (var_0_1.GetWindowWidth() - 220) / 6)
 
 	var_0_1.GetStyle().FramePadding = var_0_1.ImVec2(5, 7)
 
-	var_0_1.NewInput(var_0_5(" Поиск предметов"), var_0_115.SearchMarket, 255, "SearchMarket", {
-		x = 0,
+	var_0_1.PushItemWidth(var_218_7)
+	var_0_1.NewInput(var_218_9, var_0_115.SearchMarket, 255, "SearchMarket", {
+		x = var_218_10,
 		y = 2
 	})
+	var_0_1.PopItemWidth()
 
 	var_0_1.GetStyle().FramePadding = var_0_1.ImVec2(5, 5)
 
 	var_0_1.PushFont(fonts[18])
-	var_0_1.Hint("window_marketPlaceSearch", var_0_5("Данная функция ищет предметы во всех доступных лавках.\nЧто бы начать поиск впишите товар который хотите найти."), false)
+	var_0_1.Hint("window_marketPlaceSearch", var_0_5("Р”Р°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ РёС‰РµС‚ РїСЂРµРґРјРµС‚С‹ РІРѕ РІСЃРµС… РґРѕСЃС‚СѓРїРЅС‹С… Р»Р°РІРєР°С….\nР§С‚Рѕ Р±С‹ РЅР°С‡Р°С‚СЊ РїРѕРёСЃРє РІРїРёС€РёС‚Рµ С‚РѕРІР°СЂ РєРѕС‚РѕСЂС‹Р№ С…РѕС‚РёС‚Рµ РЅР°Р№С‚Рё."), false)
 	var_0_1.SameLine()
 	var_0_1.PushItemWidth(var_0_106.cfg.menuSize == 1 and 185 or var_0_106.cfg.menuSize == 2 and 200 or 0)
 
@@ -11879,6 +12216,7 @@ function window_marketPlace(arg_218_0)
 
 	if var_0_1.Combo(var_0_5("##menu_settings_marketplaceserver"), var_0_115.marketplace_serversSelected, var_0_115.ImMarketplace_servers, #var_0_115.marketplace_servers, var_0_1.ComboFlags.NoArrowButton) then
 		var_0_106.cfg.marketplaceSelectedItem = var_0_115.marketplace_serversSelected[0]
+		marketplaceBridgeRequestCurrentServer()
 		var_0_56[38][2] = 0
 		var_0_56[39][2] = 0
 		var_0_56[30] = os.time() - 25
@@ -11889,14 +12227,14 @@ function window_marketPlace(arg_218_0)
 		var_0_115.searchStorage.marketPlaceBuy[2] = ""
 		var_0_115.searchStorage.marketPlaceSell[2] = ""
 
-		AFKMessage("Обновление лавок...")
+		AFKMessage("РћР±РЅРѕРІР»РµРЅРёРµ Р»Р°РІРѕРє...")
 	end
 
 	if download_marketplace == nil then
 		return
 	end
 
-	var_0_1.Hint("menu_settings_marketplaceserver", var_0_5("Вы можете просматривать лавки игроков на всех серверах, а так же выбрать конкретно какой-то.\nНажмите ЛКМ для того что бы открыть список, затем выберите сервер."), false)
+	var_0_1.Hint("menu_settings_marketplaceserver", var_0_5("Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРѕСЃРјР°С‚СЂРёРІР°С‚СЊ Р»Р°РІРєРё РёРіСЂРѕРєРѕРІ РЅР° РІСЃРµС… СЃРµСЂРІРµСЂР°С…, Р° С‚Р°Рє Р¶Рµ РІС‹Р±СЂР°С‚СЊ РєРѕРЅРєСЂРµС‚РЅРѕ РєР°РєРѕР№-С‚Рѕ.\nРќР°Р¶РјРёС‚Рµ Р›РљРњ РґР»СЏ С‚РѕРіРѕ С‡С‚Рѕ Р±С‹ РѕС‚РєСЂС‹С‚СЊ СЃРїРёСЃРѕРє, Р·Р°С‚РµРј РІС‹Р±РµСЂРёС‚Рµ СЃРµСЂРІРµСЂ."), false)
 
 	var_0_1.GetStyle().FrameBorderSize = 0
 	var_0_1.GetStyle().PopupBorderSize = 1
@@ -11914,7 +12252,7 @@ function window_marketPlace(arg_218_0)
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.PopFont()
 
 	var_0_1.GetStyle().FrameBorderSize = 1
@@ -11957,12 +12295,12 @@ function window_marketPlace(arg_218_0)
 				local var_218_9 = false
 
 				if var_218_3[iter_218_0 + 1].userStatus > 1 then
-					var_218_9 = var_0_1.TextColoredRGB(rainbowText(tostring("  Лавка номер: " .. var_218_3[iter_218_0 + 1].LavkaUid), 1))
+					var_218_9 = var_0_1.TextColoredRGB(rainbowText(tostring("  Р›Р°РІРєР° РЅРѕРјРµСЂ: " .. var_218_3[iter_218_0 + 1].LavkaUid), 1))
 				else
-					var_0_1.TextColoredRGB("{cccccc} Лавка номер: " .. var_218_3[iter_218_0 + 1].LavkaUid)
+					var_0_1.TextColoredRGB("{cccccc} Р›Р°РІРєР° РЅРѕРјРµСЂ: " .. var_218_3[iter_218_0 + 1].LavkaUid)
 				end
 
-				var_0_1.Hint("LavkaUid" .. iter_218_0, var_0_28[ip] == var_218_3[iter_218_0 + 1].serverId and var_0_5("Если вы нажмете ЛКМ\nВы поставите чекпоинт на лавку номер: ") .. var_218_3[iter_218_0 + 1].LavkaUid .. var_0_5("\nВсего товаров в лавке: [Скупка: ") .. #var_218_3[iter_218_0 + 1].items_buy .. var_0_5(" | Продажа: ") .. #var_218_3[iter_218_0 + 1].items_sell .. var_0_5("]\nБыла обновлена в: [") .. os.date("%H:%M:%S", var_218_3[iter_218_0 + 1].ostime) .. " | " .. os.time() - var_218_3[iter_218_0 + 1].ostime .. var_0_5(" секунд назад]\nСервер: ") .. var_218_3[iter_218_0 + 1].serverId or var_0_5("Всего товаров в лавке: [Скупка: ") .. #var_218_3[iter_218_0 + 1].items_buy .. var_0_5(" | Продажа: ") .. #var_218_3[iter_218_0 + 1].items_sell .. var_0_5("]\nБыла обновлена в: [") .. os.date("%H:%M:%S", var_218_3[iter_218_0 + 1].ostime) .. " | " .. os.time() - var_218_3[iter_218_0 + 1].ostime .. var_0_5(" секунд назад]\nСервер: ") .. var_218_3[iter_218_0 + 1].serverId, false, nil, var_218_9)
+				var_0_1.Hint("LavkaUid" .. iter_218_0, var_0_28[ip] == var_218_3[iter_218_0 + 1].serverId and var_0_5("Р•СЃР»Рё РІС‹ РЅР°Р¶РјРµС‚Рµ Р›РљРњ\nР’С‹ РїРѕСЃС‚Р°РІРёС‚Рµ С‡РµРєРїРѕРёРЅС‚ РЅР° Р»Р°РІРєСѓ РЅРѕРјРµСЂ: ") .. var_218_3[iter_218_0 + 1].LavkaUid .. var_0_5("\nР’СЃРµРіРѕ С‚РѕРІР°СЂРѕРІ РІ Р»Р°РІРєРµ: [РЎРєСѓРїРєР°: ") .. #var_218_3[iter_218_0 + 1].items_buy .. var_0_5(" | РџСЂРѕРґР°Р¶Р°: ") .. #var_218_3[iter_218_0 + 1].items_sell .. var_0_5("]\nР‘С‹Р»Р° РѕР±РЅРѕРІР»РµРЅР° РІ: [") .. os.date("%H:%M:%S", var_218_3[iter_218_0 + 1].ostime) .. " | " .. os.time() - var_218_3[iter_218_0 + 1].ostime .. var_0_5(" СЃРµРєСѓРЅРґ РЅР°Р·Р°Рґ]\nРЎРµСЂРІРµСЂ: ") .. var_218_3[iter_218_0 + 1].serverId or var_0_5("Р’СЃРµРіРѕ С‚РѕРІР°СЂРѕРІ РІ Р»Р°РІРєРµ: [РЎРєСѓРїРєР°: ") .. #var_218_3[iter_218_0 + 1].items_buy .. var_0_5(" | РџСЂРѕРґР°Р¶Р°: ") .. #var_218_3[iter_218_0 + 1].items_sell .. var_0_5("]\nР‘С‹Р»Р° РѕР±РЅРѕРІР»РµРЅР° РІ: [") .. os.date("%H:%M:%S", var_218_3[iter_218_0 + 1].ostime) .. " | " .. os.time() - var_218_3[iter_218_0 + 1].ostime .. var_0_5(" СЃРµРєСѓРЅРґ РЅР°Р·Р°Рґ]\nРЎРµСЂРІРµСЂ: ") .. var_218_3[iter_218_0 + 1].serverId, false, nil, var_218_9)
 
 				if (var_218_9 or var_0_1.IsItemHovered()) and var_0_1.IsMouseClicked(0) and var_0_28[ip] == var_218_3[iter_218_0 + 1].serverId then
 					deAFKMessage(debug.getinfo(1, "l"), "+ " .. iter_218_0)
@@ -11974,10 +12312,10 @@ function window_marketPlace(arg_218_0)
 				var_0_1.PopFont()
 				var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.4, 57))
 				var_0_1.PushFont(fonts[17])
-				var_0_1.TextDisabled(var_0_5("Владелец лавки: \n" .. var_218_3[iter_218_0 + 1].username))
+				var_0_1.TextDisabled(var_0_5("Р’Р»Р°РґРµР»РµС† Р»Р°РІРєРё: \n" .. var_218_3[iter_218_0 + 1].username))
 				var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 135)
 
-				if var_0_1.Button(var_0_5("Просмотреть лавку игрока."), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 1.76, 27)) then
+				if var_0_1.Button(var_0_5("РџСЂРѕСЃРјРѕС‚СЂРµС‚СЊ Р»Р°РІРєСѓ РёРіСЂРѕРєР°."), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 1.76, 27)) then
 					deAFKMessage(debug.getinfo(1, "l"), "select lavka slot=" .. iter_218_0 .. "|username=" .. var_218_3[iter_218_0 + 1].username)
 
 					var_0_10[2] = var_218_3[iter_218_0 + 1]
@@ -11997,6 +12335,7 @@ function window_marketPlace(arg_218_0)
 
 	var_0_1.EndCustomInvisibleChild()
 	var_0_1.PopStyleColor(4)
+	marketplaceDealWindow()
 
 	var_0_1.GetStyle().FrameBorderSize = 0
 end
@@ -12013,7 +12352,7 @@ function script_Page()
 	var_0_1.CustomInvisibleChild("scripts", var_0_1.ImVec2(sizeX - (var_0_106.cfg.menuSize == 1 and 160 or var_0_106.cfg.menuSize == 2 and 180 or 0), sizeY - 10), false, var_0_1.WindowFlags.NoScrollbar)
 	var_0_1.PushFont(fonts[24])
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.8, var_0_1.GetCursorPos().y + 5))
-	var_0_1.TextColoredRGB("{cccccc} Модификации: ")
+	var_0_1.TextColoredRGB("{cccccc} РњРѕРґРёС„РёРєР°С†РёРё: ")
 	var_0_1.PopFont()
 
 	for iter_219_0, iter_219_1 in pairs(download_scripts[2]) do
@@ -12097,9 +12436,9 @@ function script_Page()
 
 				var_0_56[15][1][tostring(iter_219_0)] = os.time() - 100
 
-				AFKMessage("Удаляем мод [" .. iter_219_0 .. "]. Перезайдите в игру что бы удаление прошло корректно.")
+				AFKMessage("РЈРґР°Р»СЏРµРј РјРѕРґ [" .. iter_219_0 .. "]. РџРµСЂРµР·Р°Р№РґРёС‚Рµ РІ РёРіСЂСѓ С‡С‚Рѕ Р±С‹ СѓРґР°Р»РµРЅРёРµ РїСЂРѕС€Р»Рѕ РєРѕСЂСЂРµРєС‚РЅРѕ.")
 			else
-				AFKMessage("Начинаю установку мода " .. iter_219_0)
+				AFKMessage("РќР°С‡РёРЅР°СЋ СѓСЃС‚Р°РЅРѕРІРєСѓ РјРѕРґР° " .. iter_219_0)
 
 				for iter_219_4, iter_219_5 in pairs(iter_219_1.link) do
 					deAFKMessage(debug.getinfo(1, "l"), "[download mod] " .. iter_219_4)
@@ -12120,8 +12459,8 @@ function script_Page()
 							if arg_220_1 == var_219_8.STATUS_ENDDOWNLOADDATA then
 								var_0_56[15][1][tostring(iter_219_0)] = os.time() - 100
 
-								AFKMessage("Установили скрипт. " .. iter_219_4 .. " Для безопасной работы скрипта, перезайдите в игру. ")
-								AFKMessage("После перезахода в игру скрипт будет успешно загружен.")
+								AFKMessage("РЈСЃС‚Р°РЅРѕРІРёР»Рё СЃРєСЂРёРїС‚. " .. iter_219_4 .. " Р”Р»СЏ Р±РµР·РѕРїР°СЃРЅРѕР№ СЂР°Р±РѕС‚С‹ СЃРєСЂРёРїС‚Р°, РїРµСЂРµР·Р°Р№РґРёС‚Рµ РІ РёРіСЂСѓ. ")
+								AFKMessage("РџРѕСЃР»Рµ РїРµСЂРµР·Р°С…РѕРґР° РІ РёРіСЂСѓ СЃРєСЂРёРїС‚ Р±СѓРґРµС‚ СѓСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅ.")
 							end
 						end)
 					end
@@ -12137,7 +12476,7 @@ function script_Page()
 
 	var_0_1.PushFont(fonts[24])
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.5, var_0_1.GetCursorPos().y + 5))
-	var_0_1.TextColoredRGB("{cccccc} Скрипты: ")
+	var_0_1.TextColoredRGB("{cccccc} РЎРєСЂРёРїС‚С‹: ")
 	var_0_1.PopFont()
 
 	for iter_219_6, iter_219_7 in pairs(download_scripts[1]) do
@@ -12173,7 +12512,7 @@ function script_Page()
 
 		if var_0_1.Button(doesFileExist(getWorkingDirectory() .. "/" .. iter_219_6 .. ".lua") and var_0_48("TRASH") .. "##" .. iter_219_6 or var_0_48("DOWNLOAD") .. "##" .. iter_219_6, var_0_1.ImVec2(50, 27)) then
 			if doesFileExist(getWorkingDirectory() .. "/" .. iter_219_6 .. ".lua") then
-				AFKMessage("Скрипт " .. iter_219_6 .. " успешно удален.")
+				AFKMessage("РЎРєСЂРёРїС‚ " .. iter_219_6 .. " СѓСЃРїРµС€РЅРѕ СѓРґР°Р»РµРЅ.")
 
 				for iter_219_8, iter_219_9 in pairs(script.list()) do
 					if iter_219_9.filename == iter_219_6 .. ".lua" then
@@ -12183,7 +12522,7 @@ function script_Page()
 
 				os.remove(getWorkingDirectory() .. "/" .. iter_219_6 .. ".lua")
 			else
-				AFKMessage("Начинаю установку скрипта " .. iter_219_6)
+				AFKMessage("РќР°С‡РёРЅР°СЋ СѓСЃС‚Р°РЅРѕРІРєСѓ СЃРєСЂРёРїС‚Р° " .. iter_219_6)
 				asyncHttpRequest("GET", iter_219_7.link, {}, function(arg_221_0)
 					if arg_221_0.status_code == 200 or arg_221_0.status_code == 304 or arg_221_0.status_code == 201 then
 						local var_221_0, var_221_1 = io.open(getWorkingDirectory() .. "/" .. iter_219_6 .. ".lua", "w")
@@ -12195,10 +12534,10 @@ function script_Page()
 						end
 
 						script.load(getWorkingDirectory() .. "/" .. iter_219_6 .. ".lua")
-						sendNotify("Скрипт " .. iter_219_6 .. " успешно установлен и загружен!")
+						sendNotify("РЎРєСЂРёРїС‚ " .. iter_219_6 .. " СѓСЃРїРµС€РЅРѕ СѓСЃС‚Р°РЅРѕРІР»РµРЅ Рё Р·Р°РіСЂСѓР¶РµРЅ!")
 					end
 				end, function(arg_222_0)
-					sendNotify("Произошла ошибка при скачивании скрипта " .. iter_219_6)
+					sendNotify("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё СЃРєР°С‡РёРІР°РЅРёРё СЃРєСЂРёРїС‚Р° " .. iter_219_6)
 				end)
 			end
 		end
@@ -12229,7 +12568,7 @@ function Medal_page()
 		show_medal = nil
 	end
 
-	var_0_1.Hint("ARROW_LEFTMedal_page", var_0_5("Нажмите сюда что бы вернуться в главное меню рейтинга."), false)
+	var_0_1.Hint("ARROW_LEFTMedal_page", var_0_5("РќР°Р¶РјРёС‚Рµ СЃСЋРґР° С‡С‚Рѕ Р±С‹ РІРµСЂРЅСѓС‚СЊСЃСЏ РІ РіР»Р°РІРЅРѕРµ РјРµРЅСЋ СЂРµР№С‚РёРЅРіР°."), false)
 	var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 300) / 2, 5))
 	var_0_1.SameLine(635)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 2)
@@ -12243,7 +12582,7 @@ function Medal_page()
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 15)
 
@@ -12283,13 +12622,13 @@ function Medal_page()
 
 		var_0_1.PushFont(fonts[24])
 		var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.9, 10))
-		var_0_1.TextColoredRGB("{cccccc}Медаль олда 2024")
+		var_0_1.TextColoredRGB("{cccccc}РњРµРґР°Р»СЊ РѕР»РґР° 2024")
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 1.5)
 		var_0_1.CustomSeparator(490)
 		var_0_1.PopFont()
 		var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 32, 50))
 		var_0_1.PushFont(fonts[18])
-		var_0_1.TextColoredRGB("{cccccc}Вы очень старый и мудрый барыга.{cccccc} Вы давно играете с нашим...\n    {cccccc}продуктом, поэтому мы решили наградить вас этой наградой.\n    {cccccc}Спасибо, что вы с нами.")
+		var_0_1.TextColoredRGB("{cccccc}Р’С‹ РѕС‡РµРЅСЊ СЃС‚Р°СЂС‹Р№ Рё РјСѓРґСЂС‹Р№ Р±Р°СЂС‹РіР°.{cccccc} Р’С‹ РґР°РІРЅРѕ РёРіСЂР°РµС‚Рµ СЃ РЅР°С€РёРј...\n    {cccccc}РїСЂРѕРґСѓРєС‚РѕРј, РїРѕСЌС‚РѕРјСѓ РјС‹ СЂРµС€РёР»Рё РЅР°РіСЂР°РґРёС‚СЊ РІР°СЃ СЌС‚РѕР№ РЅР°РіСЂР°РґРѕР№.\n    {cccccc}РЎРїР°СЃРёР±Рѕ, С‡С‚Рѕ РІС‹ СЃ РЅР°РјРё.")
 		var_0_1.GetWindowDrawList():AddRect(var_0_1.ImVec2(var_223_5.x + 1, var_223_5.y), var_0_1.ImVec2(var_223_5.x + 490, var_223_5.y + 140), var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_0_114.Border[1], var_0_114.Border[2], var_0_114.Border[3], var_0_114.Border[4])), 5, 0, 1.8)
 		var_0_1.EndCustomInvisibleChild()
 	end
@@ -12326,13 +12665,13 @@ function Medal_page()
 
 		var_0_1.PushFont(fonts[24])
 		var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 7, 10))
-		var_0_1.TextColoredRGB("{cccccc}Медаль премиум пользователя 2025")
+		var_0_1.TextColoredRGB("{cccccc}РњРµРґР°Р»СЊ РїСЂРµРјРёСѓРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ 2025")
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 1.5)
 		var_0_1.CustomSeparator(490)
 		var_0_1.PopFont()
 		var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 32, 50))
 		var_0_1.PushFont(fonts[18])
-		var_0_1.TextColoredRGB("{cccccc}Вы поддержали наш проект, Спасибо!\n    {cccccc}Заслужили награду в виде этой медали.\n    {cccccc}Спасибо что вы с нами и помогаете нам в развитии проекта.\n    {cccccc}Данная медаль в будующем даст вам большой буст.")
+		var_0_1.TextColoredRGB("{cccccc}Р’С‹ РїРѕРґРґРµСЂР¶Р°Р»Рё РЅР°С€ РїСЂРѕРµРєС‚, РЎРїР°СЃРёР±Рѕ!\n    {cccccc}Р—Р°СЃР»СѓР¶РёР»Рё РЅР°РіСЂР°РґСѓ РІ РІРёРґРµ СЌС‚РѕР№ РјРµРґР°Р»Рё.\n    {cccccc}РЎРїР°СЃРёР±Рѕ С‡С‚Рѕ РІС‹ СЃ РЅР°РјРё Рё РїРѕРјРѕРіР°РµС‚Рµ РЅР°Рј РІ СЂР°Р·РІРёС‚РёРё РїСЂРѕРµРєС‚Р°.\n    {cccccc}Р”Р°РЅРЅР°СЏ РјРµРґР°Р»СЊ РІ Р±СѓРґСѓСЋС‰РµРј РґР°СЃС‚ РІР°Рј Р±РѕР»СЊС€РѕР№ Р±СѓСЃС‚.")
 		var_0_1.GetWindowDrawList():AddRect(var_0_1.ImVec2(var_223_11.x + 1, var_223_11.y), var_0_1.ImVec2(var_223_11.x + 490, var_223_11.y + 150), var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_0_114.Border[1], var_0_114.Border[2], var_0_114.Border[3], var_0_114.Border[4])), 5, 0, 1.8)
 		var_0_1.EndCustomInvisibleChild()
 	end
@@ -12340,7 +12679,7 @@ function Medal_page()
 	if var_0_115.isPremiumAuthedStatus == false and IsMedalOld == nil then
 		var_0_1.PushFont(fonts[18])
 		var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 9, sizeY / 2.5))
-		var_0_1.TextDisabled(var_0_5("К сожалению, на данный момент у вас нет медалей и наград."))
+		var_0_1.TextDisabled(var_0_5("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ, РЅР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ Сѓ РІР°СЃ РЅРµС‚ РјРµРґР°Р»РµР№ Рё РЅР°РіСЂР°Рґ."))
 		var_0_1.PopFont()
 	end
 
@@ -12423,12 +12762,12 @@ function get_buyList()
 				var_0_111 = {}
 
 				writeJsonFile(var_0_111, "moonloader/ArzMarket/white_list.json")
-				sendNotify("Установка товаров прошла успешна! Список обновлен!")
+				sendNotify("РЈСЃС‚Р°РЅРѕРІРєР° С‚РѕРІР°СЂРѕРІ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅР°! РЎРїРёСЃРѕРє РѕР±РЅРѕРІР»РµРЅ!")
 			else
-				sendNotify("[1] Ошибка обновления списка скупки!")
+				sendNotify("[1] РћС€РёР±РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ СЃРїРёСЃРєР° СЃРєСѓРїРєРё!")
 			end
 		else
-			sendNotify("[2] Ошибка обновления списка скупки!")
+			sendNotify("[2] РћС€РёР±РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ СЃРїРёСЃРєР° СЃРєСѓРїРєРё!")
 		end
 	end, function(arg_227_0)
 		return
@@ -12452,13 +12791,13 @@ function getItemList()
 					download_marketplace = nil
 				end
 			else
-				print("[1] Ошибка обновления списка предметов!")
+				print("[1] РћС€РёР±РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ СЃРїРёСЃРєР° РїСЂРµРґРјРµС‚РѕРІ!")
 			end
 		else
-			print("[2] Ошибка обновления списка предметов!")
+			print("[2] РћС€РёР±РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ СЃРїРёСЃРєР° РїСЂРµРґРјРµС‚РѕРІ!")
 		end
 	end, function(arg_230_0)
-		print("[3] Ошибка обновления списка предметов!")
+		print("[3] РћС€РёР±РєР° РѕР±РЅРѕРІР»РµРЅРёСЏ СЃРїРёСЃРєР° РїСЂРµРґРјРµС‚РѕРІ!")
 	end)
 end
 
@@ -12497,13 +12836,13 @@ function get_prices()
 
 					var_231_5 = var_231_5 + 1
 
-					sendNotify("Загрузка цен... " .. var_231_5 .. "/4")
+					sendNotify("Р—Р°РіСЂСѓР·РєР° С†РµРЅ... " .. var_231_5 .. "/4")
 				else
-					AFKMessage("Произошла ошибка загрузки цен. Обновите цены еще раз.")
+					AFKMessage("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё С†РµРЅ. РћР±РЅРѕРІРёС‚Рµ С†РµРЅС‹ РµС‰Рµ СЂР°Р·.")
 				end
 			else
 				deAFKMessage(debug.getinfo(1, "l"), "error1 " .. tostring(arg_232_0.status_code))
-				sendNotify("Загрузка цен... Ошибка: " .. tostring(arg_232_0.status_code))
+				sendNotify("Р—Р°РіСЂСѓР·РєР° С†РµРЅ... РћС€РёР±РєР°: " .. tostring(arg_232_0.status_code))
 			end
 		end, function(arg_233_0)
 			return
@@ -12529,12 +12868,12 @@ function get_prices()
 
 					var_231_5 = var_231_5 + 1
 
-					sendNotify("Загрузка цен... " .. var_231_5 .. "/4")
+					sendNotify("Р—Р°РіСЂСѓР·РєР° С†РµРЅ... " .. var_231_5 .. "/4")
 				else
-					AFKMessage("Произошла ошибка загрузки цен. Обновите цены еще раз.")
+					AFKMessage("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё С†РµРЅ. РћР±РЅРѕРІРёС‚Рµ С†РµРЅС‹ РµС‰Рµ СЂР°Р·.")
 				end
 			else
-				sendNotify("Загрузка цен... Ошибка: " .. tostring(arg_234_0.status_code))
+				sendNotify("Р—Р°РіСЂСѓР·РєР° С†РµРЅ... РћС€РёР±РєР°: " .. tostring(arg_234_0.status_code))
 				deAFKMessage(debug.getinfo(1, "l"), "error1 " .. tostring(arg_234_0.status_code))
 			end
 		end, function(arg_235_0)
@@ -12561,13 +12900,13 @@ function get_prices()
 
 					var_231_5 = var_231_5 + 1
 
-					sendNotify("Загрузка цен... " .. var_231_5 .. "/4")
+					sendNotify("Р—Р°РіСЂСѓР·РєР° С†РµРЅ... " .. var_231_5 .. "/4")
 				else
-					AFKMessage("Произошла ошибка загрузки цен. Обновите цены еще раз.")
+					AFKMessage("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё С†РµРЅ. РћР±РЅРѕРІРёС‚Рµ С†РµРЅС‹ РµС‰Рµ СЂР°Р·.")
 				end
 			else
 				deAFKMessage(debug.getinfo(1, "l"), "error1 " .. tostring(arg_236_0.status_code))
-				sendNotify("Загрузка цен... Ошибка: " .. tostring(arg_236_0.status_code))
+				sendNotify("Р—Р°РіСЂСѓР·РєР° С†РµРЅ... РћС€РёР±РєР°: " .. tostring(arg_236_0.status_code))
 			end
 		end, function(arg_237_0)
 			return
@@ -12593,19 +12932,19 @@ function get_prices()
 
 					var_231_5 = var_231_5 + 1
 
-					sendNotify("Загрузка цен... " .. var_231_5 .. "/4")
+					sendNotify("Р—Р°РіСЂСѓР·РєР° С†РµРЅ... " .. var_231_5 .. "/4")
 				else
-					AFKMessage("Произошла ошибка загрузки цен. Обновите цены еще раз.")
+					AFKMessage("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё С†РµРЅ. РћР±РЅРѕРІРёС‚Рµ С†РµРЅС‹ РµС‰Рµ СЂР°Р·.")
 				end
 			else
 				deAFKMessage(debug.getinfo(1, "l"), "error1 " .. tostring(arg_238_0.status_code))
-				sendNotify("Загрузка цен... Ошибка: " .. tostring(arg_238_0.status_code))
+				sendNotify("Р—Р°РіСЂСѓР·РєР° С†РµРЅ... РћС€РёР±РєР°: " .. tostring(arg_238_0.status_code))
 			end
 		end, function(arg_239_0)
 			return
 		end)
 	else
-		AFKMessage("Вы не на Аризона Рп!")
+		AFKMessage("Р’С‹ РЅРµ РЅР° РђСЂРёР·РѕРЅР° Р Рї!")
 	end
 end
 
@@ -12658,7 +12997,7 @@ function M_Enable()
 	if var_0_1.Button(var_0_5("Mobile"), var_0_1.ImVec2(var_244_2 - 20, var_244_3 - 20)) then
 		var_0_73[0] = not var_0_73[0]
 
-		sendNotify("Вы " .. (var_0_73[0] and "включили" or "выключили") .. " мобильный режим!")
+		sendNotify("Р’С‹ " .. (var_0_73[0] and "РІРєР»СЋС‡РёР»Рё" or "РІС‹РєР»СЋС‡РёР»Рё") .. " РјРѕР±РёР»СЊРЅС‹Р№ СЂРµР¶РёРј!")
 	end
 
 	var_0_1.PopFont()
@@ -12687,6 +13026,27 @@ function marketplace_Manager()
 		end
 	end
 
+	if type(AMBridge.settings) == "table" and AMBridge.settings.enabled == true and not marketplaceBridgeIsSource() and not (marketplaceBridgeIsTarget() and marketplaceBridgeHasSharedAuth()) then
+		return
+	end
+
+	if not var_0_115.marketplaceManualRefreshPending then
+		return
+	end
+
+	-- Do not start a parallel request and respect the original five-second
+	-- limit.  The pending flag remains true until a request can really start.
+	if var_0_115.marketplaceRequestInFlight or type(AMBridge.marketplaceActiveRequest) == "table" then
+		return
+	end
+
+	if os.clock() < var_0_115.marketplaceQueuedAt or var_0_56[30] + 5 > os.time() or var_0_56[22] + 5 > os.time() then
+		return
+	end
+
+	var_0_115.marketplaceManualRefreshPending = false
+	var_0_115.marketplaceQueuedRefresh = false
+	var_0_115.marketplaceManualLastFetch = os.time()
 	print("load asyncHttpRequest > " .. tostring(var_0_115.marketplaceTimeOut) .. " | " .. tostring(var_0_106.cfg.bannedByRkn))
 
 	if var_0_56[30] + 5 <= os.time() then
@@ -12695,34 +13055,53 @@ function marketplace_Manager()
 
 			print("set timer")
 
+			AMBridge.targetServerId = var_0_106.cfg.marketplaceSelectedItem - 1
+			AMBridge.marketplaceActiveRequest = {
+				startedAt = os.clock(),
+				serverId = AMBridge.targetServerId
+			}
+			var_0_115.marketplaceRequestInFlight = true
+			local var_245_1 = AMBridge.marketplaceActiveRequest
+
 			local var_245_0 = encodeJson({
-				authKey = tostring(var_0_115.premiumKeys[3]),
-				authToken = tostring(var_0_106.cfg.myServerToken),
+				authKey = tostring(marketplaceBridgeIsTarget() and AMBridge.sharedAuth.authKey or var_0_115.premiumKeys[3]),
+				authToken = tostring(marketplaceBridgeIsTarget() and AMBridge.sharedAuth.authToken or var_0_106.cfg.myServerToken),
 				scriptVersion = tostring(var_0_115.scriptVersion[1]),
-				serverId = tostring(var_0_106.cfg.myServerId),
-				authClient = tostring(var_0_115.premiumKeys[1])
+				serverId = tostring(marketplaceBridgeIsTarget() and AMBridge.sharedAuth.serverId or var_0_106.cfg.myServerId),
+				authClient = tostring(marketplaceBridgeIsTarget() and AMBridge.sharedAuth.authClient or var_0_115.premiumKeys[1])
 			})
 
-			asyncHttpRequest("GET", var_0_115.marketplaceTimeOut == nil and var_0_115.marketplaceUrl[1] .. "/" .. var_0_106.cfg.marketplaceSelectedItem - 1 or var_0_115.marketplaceTimeOut == true and var_0_115.marketplaceUrl[2] .. "/" .. var_0_106.cfg.marketplaceSelectedItem - 1 or var_0_115.marketplaceUrl[3], {
+			asyncHttpRequest("GET", var_0_115.marketplaceTimeOut == nil and var_0_115.marketplaceUrl[1] .. "/" .. var_245_1.serverId or var_0_115.marketplaceTimeOut == true and var_0_115.marketplaceUrl[2] .. "/" .. var_245_1.serverId or var_0_115.marketplaceUrl[3], {
 				headers = {
 					["content-type"] = "application/json"
 				},
 				data = var_0_5(var_245_0)
 			}, function(arg_246_0)
+				if AMBridge.marketplaceActiveRequest ~= var_245_1 then
+					print("Marketplace stale response ignored")
+					return
+				end
+
+				-- A newer server was selected while this request was running.  Ignore
+				-- its old list and keep the queued latest selection for the next pass.
+				if var_0_115.marketplaceQueuedRefresh and var_0_115.marketplaceQueuedServerId ~= var_245_1.serverId then
+					AMBridge.marketplaceActiveRequest = nil
+					var_0_115.marketplaceRequestInFlight = false
+					var_0_115.marketplaceManualRefreshPending = true
+					print("Marketplace response superseded by a newer server selection")
+					return
+				end
+
+				var_0_115.marketplaceQueuedRefresh = false
+
 				if arg_246_0.status_code == 200 or arg_246_0.status_code == 304 or arg_246_0.status_code == 400 or arg_246_0.status_code == 401 then
 					print("marketplace loaded")
 
-					if var_0_10[1] == nil then
-						var_0_115.ImMarketplace_servers = var_0_1.new["const char*"][#var_0_115.marketplace_servers](var_0_115.marketplace_servers)
-
-						wait(300)
-
-						var_0_10[3] = var_0_1.CreateTextureFromFileInMemory(var_0_1.new("const char*", marketPhoto3), #marketPhoto3)
-
-						wait(200)
-
-						var_0_10[1] = var_0_1.CreateTextureFromFileInMemory(var_0_1.new("const char*", marketPhoto4), #marketPhoto4)
+					if marketplaceBridgeIsTarget() and arg_246_0.status_code ~= 200 and arg_246_0.status_code ~= 304 then
+						print("Bridge marketplace response " .. tostring(arg_246_0.status_code) .. ": " .. tostring(arg_246_0.text or ""):sub(1, 500))
 					end
+
+					marketplaceBridgeEnsureServerList()
 
 					wait(100)
 
@@ -12765,7 +13144,7 @@ function marketplace_Manager()
 											if var_0_28[ip] == download_marketplace[iter_246_0].serverId then
 												-- block empty
 											else
-												download_marketplace[iter_246_0].username = "Незнакомец"
+												download_marketplace[iter_246_0].username = "\xCD\xE5\xE7\xED\xE0\xEA\xEE\xEC\xE5\xF6"
 											end
 										else
 											table.remove(download_marketplace, iter_246_0)
@@ -12795,7 +13174,7 @@ function marketplace_Manager()
 											end
 
 											if var_246_2 == false and iter_246_2.items_buy[iter_246_3] then
-												iter_246_2.items_buy[iter_246_3] = var_0_5("Неизвестный предмет")
+												iter_246_2.items_buy[iter_246_3] = var_0_5("\xCD\xE5\xE8\xE7\xE2\xE5\xF1\xF2\xED\xFB\xE9 \xEF\xF0\xE5\xE4\xEC\xE5\xF2")
 											end
 										end
 
@@ -12822,7 +13201,7 @@ function marketplace_Manager()
 											end
 
 											if var_246_6 == false and iter_246_2.items_sell[iter_246_5] then
-												iter_246_2.items_sell[iter_246_5] = var_0_5("Неизвестный предмет")
+												iter_246_2.items_sell[iter_246_5] = var_0_5("\xCD\xE5\xE8\xE7\xE2\xE5\xF1\xF2\xED\xFB\xE9 \xEF\xF0\xE5\xE4\xEC\xE5\xF2")
 											end
 										end
 									end
@@ -12838,6 +13217,8 @@ function marketplace_Manager()
 							download_marketplace = true
 						end
 					end
+
+					marketplaceBridgeSaveSourceData()
 				else
 					print("result error ")
 					print("result error " .. tostring(arg_246_0.status_code))
@@ -12849,11 +13230,27 @@ function marketplace_Manager()
 
 					download_marketplace = nil
 				end
+
+				if AMBridge.marketplaceActiveRequest == var_245_1 then
+					AMBridge.marketplaceActiveRequest = nil
+					var_0_115.marketplaceRequestInFlight = false
+				end
 			end, function(arg_247_0)
+				if AMBridge.marketplaceActiveRequest ~= var_245_1 then
+					return
+				end
+
+				AMBridge.marketplaceActiveRequest = nil
+				var_0_115.marketplaceRequestInFlight = false
+
 				deAFKMessage(debug.getinfo(1, "l"), "error ")
 				print("timer error " .. tostring(arg_247_0))
 
-				download_marketplace = nil
+				if var_0_115.marketplaceQueuedRefresh then
+					var_0_115.marketplaceManualRefreshPending = true
+				else
+					download_marketplace = "blocked"
+				end
 			end)
 		else
 			print("timer limit")
@@ -12868,7 +13265,7 @@ function marketplace_Manager()
 				if var_0_28[ip] == download_marketplace[iter_245_0].serverId then
 					-- block empty
 				else
-					download_marketplace[iter_245_0].username = "Незнакомец"
+					download_marketplace[iter_245_0].username = "\xCD\xE5\xE7\xED\xE0\xEA\xEE\xEC\xE5\xF6"
 				end
 			else
 				table.remove(download_marketplace, iter_245_0)
@@ -12900,7 +13297,7 @@ function marketplace_Manager()
 				end
 
 				if var_245_1 == false and iter_245_2.items_buy[iter_245_3] then
-					iter_245_2.items_buy[iter_245_3] = var_0_5("Неизвестный предмет")
+					iter_245_2.items_buy[iter_245_3] = var_0_5("\xCD\xE5\xE8\xE7\xE2\xE5\xF1\xF2\xED\xFB\xE9 \xEF\xF0\xE5\xE4\xEC\xE5\xF2")
 				end
 			end
 
@@ -12927,7 +13324,7 @@ function marketplace_Manager()
 				end
 
 				if var_245_5 == false and iter_245_2.items_sell[iter_245_5] then
-					iter_245_2.items_sell[iter_245_5] = var_0_5("Неизвестный предмет")
+					iter_245_2.items_sell[iter_245_5] = var_0_5("\xCD\xE5\xE8\xE7\xE2\xE5\xF1\xF2\xED\xFB\xE9 \xEF\xF0\xE5\xE4\xEC\xE5\xF2")
 				end
 			end
 		end
@@ -13133,13 +13530,13 @@ function sell(arg_269_0)
 			var_0_89 = {}
 
 			SendToServer("/stats")
-			AFKMessage("Проходит сканирование инвентаря. Подождите...")
+			AFKMessage("РџСЂРѕС…РѕРґРёС‚ СЃРєР°РЅРёСЂРѕРІР°РЅРёРµ РёРЅРІРµРЅС‚Р°СЂСЏ. РџРѕРґРѕР¶РґРёС‚Рµ...")
 		else
-			AFKMessage("Сканирование было {505050}отменено{ffffff}.")
+			AFKMessage("РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ Р±С‹Р»Рѕ {505050}РѕС‚РјРµРЅРµРЅРѕ{ffffff}.")
 		end
 	end
 
-	var_0_1.Hint("MAGNIFYING_GLASS_LOCATION", var_0_5("Данная функция используется для сканирования инвентаря!"), false)
+	var_0_1.Hint("MAGNIFYING_GLASS_LOCATION", var_0_5("Р”Р°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ РёРЅРІРµРЅС‚Р°СЂСЏ!"), false)
 	var_0_1.SameLine(36)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_166 and var_0_48("ARROW_UP_SHORT_WIDE") or var_0_48("ARROW_DOWN_WIDE_SHORT"), var_0_1.ImVec2(30, 27)) then
@@ -13149,15 +13546,15 @@ function sell(arg_269_0)
 		save_all()
 	end
 
-	var_0_1.Hint("ARROW_UP_SHORT_WIDE", var_0_5("Функция заполнения предметов в правый столбец.\n Если стрелка кнопки смотрит вниз то при добавлении предмета, он будет добавлен вниз."), false)
+	var_0_1.Hint("ARROW_UP_SHORT_WIDE", var_0_5("Р¤СѓРЅРєС†РёСЏ Р·Р°РїРѕР»РЅРµРЅРёСЏ РїСЂРµРґРјРµС‚РѕРІ РІ РїСЂР°РІС‹Р№ СЃС‚РѕР»Р±РµС†.\n Р•СЃР»Рё СЃС‚СЂРµР»РєР° РєРЅРѕРїРєРё СЃРјРѕС‚СЂРёС‚ РІРЅРёР· С‚Рѕ РїСЂРё РґРѕР±Р°РІР»РµРЅРёРё РїСЂРµРґРјРµС‚Р°, РѕРЅ Р±СѓРґРµС‚ РґРѕР±Р°РІР»РµРЅ РІРЅРёР·."), false)
 	var_0_1.SameLine(67)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("FILTER"), var_0_1.ImVec2(30, 27)) then
-		var_0_1.OpenPopup(var_0_5("Фильтры."))
+		var_0_1.OpenPopup(var_0_5("Р¤РёР»СЊС‚СЂС‹."))
 	end
 
 	newFilter(1)
-	var_0_1.Hint("FILTER", var_0_5("Функция фильтрации предметов в правом меню.\nПри нажатии откроется меню в котором можно будет отсортировать предметы в вашем правом меню."), false)
+	var_0_1.Hint("FILTER", var_0_5("Р¤СѓРЅРєС†РёСЏ С„РёР»СЊС‚СЂР°С†РёРё РїСЂРµРґРјРµС‚РѕРІ РІ РїСЂР°РІРѕРј РјРµРЅСЋ.\nРџСЂРё РЅР°Р¶Р°С‚РёРё РѕС‚РєСЂРѕРµС‚СЃСЏ РјРµРЅСЋ РІ РєРѕС‚РѕСЂРѕРј РјРѕР¶РЅРѕ Р±СѓРґРµС‚ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°С‚СЊ РїСЂРµРґРјРµС‚С‹ РІ РІР°С€РµРј РїСЂР°РІРѕРј РјРµРЅСЋ."), false)
 	var_0_1.SameLine(98)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("PLUS"), var_0_1.ImVec2(30, 27)) then
@@ -13170,15 +13567,15 @@ function sell(arg_269_0)
 		resetIO()
 	end
 
-	var_0_1.Hint("PLUS", var_0_5("Раздел для добавления товара которого у вас еще нет в инвентаре.\nДобавьте товар на будущее."), false)
+	var_0_1.Hint("PLUS", var_0_5("Р Р°Р·РґРµР» РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ С‚РѕРІР°СЂР° РєРѕС‚РѕСЂРѕРіРѕ Сѓ РІР°СЃ РµС‰Рµ РЅРµС‚ РІ РёРЅРІРµРЅС‚Р°СЂРµ.\nР”РѕР±Р°РІСЊС‚Рµ С‚РѕРІР°СЂ РЅР° Р±СѓРґСѓС‰РµРµ."), false)
 	var_0_1.SameLine(129)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("FACE_SMILE_HEARTS"), var_0_1.ImVec2(30, 27)) then
-		var_0_1.OpenPopup(var_0_5("Личный кабинет."))
+		var_0_1.OpenPopup(var_0_5("Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚."))
 	end
 
 	premiumPage(arg_269_0)
-	var_0_1.Hint("FACE_SMILE_HEARTS", var_0_5("Личный кабинет.\nЗдесь вы можете авторизоваться в вашем кабинете если вы купили ключ.\nЕсли нет - мы можем рассказать о плюсах подписки, нажав сюда."), false)
+	var_0_1.Hint("FACE_SMILE_HEARTS", var_0_5("Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚.\nР—РґРµСЃСЊ РІС‹ РјРѕР¶РµС‚Рµ Р°РІС‚РѕСЂРёР·РѕРІР°С‚СЊСЃСЏ РІ РІР°С€РµРј РєР°Р±РёРЅРµС‚Рµ РµСЃР»Рё РІС‹ РєСѓРїРёР»Рё РєР»СЋС‡.\nР•СЃР»Рё РЅРµС‚ - РјС‹ РјРѕР¶РµРј СЂР°СЃСЃРєР°Р·Р°С‚СЊ Рѕ РїР»СЋСЃР°С… РїРѕРґРїРёСЃРєРё, РЅР°Р¶Р°РІ СЃСЋРґР°."), false)
 	var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 355) / 2, 5))
 
 	if #var_0_45.string(var_0_172) ~= 0 then
@@ -13186,16 +13583,16 @@ function sell(arg_269_0)
 			var_0_172 = var_0_11.char[256]()
 		end
 
-		var_0_1.Hint("TRASH_CAN_UNDO", var_0_5("Очищает поле ввода (Поиск)"), false)
+		var_0_1.Hint("TRASH_CAN_UNDO", var_0_5("РћС‡РёС‰Р°РµС‚ РїРѕР»Рµ РІРІРѕРґР° (РџРѕРёСЃРє)"), false)
 		var_0_1.SameLine()
 	end
 
 	var_0_1.SetCursorPos(var_0_1.ImVec2((var_0_1.GetWindowWidth() - 300) / 2, 5))
 	var_0_1.PushItemWidth(255)
 	var_0_1.PopFont()
-	var_0_1.NewInput(var_0_5(" Поиск предметов"), var_0_172, 255, "sell_function")
+	var_0_1.NewInput(var_0_5(" РџРѕРёСЃРє РїСЂРµРґРјРµС‚РѕРІ"), var_0_172, 255, "sell_function")
 	var_0_1.PushFont(fonts[18])
-	var_0_1.Hint("search_sell", var_0_5("Данная функция ведет поиск в двух столбцах, в правом и левом.\nВы можете найти какой-то товар, добавить.\nТак же не забывайте что вы можете найти товар, затем выбрать для переноса, очистить поиск и перетащить куда вам нужно."), false)
+	var_0_1.Hint("search_sell", var_0_5("Р”Р°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ РІРµРґРµС‚ РїРѕРёСЃРє РІ РґРІСѓС… СЃС‚РѕР»Р±С†Р°С…, РІ РїСЂР°РІРѕРј Рё Р»РµРІРѕРј.\nР’С‹ РјРѕР¶РµС‚Рµ РЅР°Р№С‚Рё РєР°РєРѕР№-С‚Рѕ С‚РѕРІР°СЂ, РґРѕР±Р°РІРёС‚СЊ.\nРўР°Рє Р¶Рµ РЅРµ Р·Р°Р±С‹РІР°Р№С‚Рµ С‡С‚Рѕ РІС‹ РјРѕР¶РµС‚Рµ РЅР°Р№С‚Рё С‚РѕРІР°СЂ, Р·Р°С‚РµРј РІС‹Р±СЂР°С‚СЊ РґР»СЏ РїРµСЂРµРЅРѕСЃР°, РѕС‡РёСЃС‚РёС‚СЊ РїРѕРёСЃРє Рё РїРµСЂРµС‚Р°С‰РёС‚СЊ РєСѓРґР° РІР°Рј РЅСѓР¶РЅРѕ."), false)
 	var_0_1.SameLine(var_0_106.cfg.menuSize == 1 and 445 or var_0_106.cfg.menuSize == 2 and 470 or 0)
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetCursorPos().x - 5, var_0_1.GetCursorPos().y - 1))
 
@@ -13207,39 +13604,39 @@ function sell(arg_269_0)
 		vc_converter()
 	end
 
-	var_0_1.Hint("vice_city_mode", var_0_5("Нажав кнопку Вы смените режим цен на [ViceCity].\nТак же во вкладке \"Настройки\" Вы можете изменить функцию конвертации. Внимательно изучите ее!"), false)
+	var_0_1.Hint("vice_city_mode", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ СЃРјРµРЅРёС‚Рµ СЂРµР¶РёРј С†РµРЅ РЅР° [ViceCity].\nРўР°Рє Р¶Рµ РІРѕ РІРєР»Р°РґРєРµ \"РќР°СЃС‚СЂРѕР№РєРё\" Р’С‹ РјРѕР¶РµС‚Рµ РёР·РјРµРЅРёС‚СЊ С„СѓРЅРєС†РёСЋ РєРѕРЅРІРµСЂС‚Р°С†РёРё. Р’РЅРёРјР°С‚РµР»СЊРЅРѕ РёР·СѓС‡РёС‚Рµ РµРµ!"), false)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetCursorPos().x, var_0_1.GetCursorPos().y + 1))
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("COPY"), var_0_1.ImVec2(35, 27)) then
-		var_0_1.OpenPopup(var_0_5("Конфиг менеджер."))
+		var_0_1.OpenPopup(var_0_5("РљРѕРЅС„РёРі РјРµРЅРµРґР¶РµСЂ."))
 	end
 
 	configManager(var_0_88, 1)
-	var_0_1.Hint("COPY_MODE", var_0_5("Новая функция которая позволит быстро копировать что либо из конфига.\nПосле нажатия у вас откроется настройки функции."), false)
+	var_0_1.Hint("COPY_MODE", var_0_5("РќРѕРІР°СЏ С„СѓРЅРєС†РёСЏ РєРѕС‚РѕСЂР°СЏ РїРѕР·РІРѕР»РёС‚ Р±С‹СЃС‚СЂРѕ РєРѕРїРёСЂРѕРІР°С‚СЊ С‡С‚Рѕ Р»РёР±Рѕ РёР· РєРѕРЅС„РёРіР°.\nРџРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ Сѓ РІР°СЃ РѕС‚РєСЂРѕРµС‚СЃСЏ РЅР°СЃС‚СЂРѕР№РєРё С„СѓРЅРєС†РёРё."), false)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 5)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("download") .. "##", var_0_1.ImVec2(35, 27)) then
 		get_prices()
-		sendNotify("Вы начали скачку средних цен.")
+		sendNotify("Р’С‹ РЅР°С‡Р°Р»Рё СЃРєР°С‡РєСѓ СЃСЂРµРґРЅРёС… С†РµРЅ.")
 	end
 
-	var_0_1.Hint("download", var_0_5("Нажав кнопку Вы скачаете средние цены.\nОни будут доступны при выборе товара в самом меню скрипта или же на центральном рынке при выборе товара!\nТак же не забывайте вы можете добавить товар, затем навести на название товара курсор и вам откроется список средних цен!\nЕсли вы зажмете ЛКМ и будете листать вниз колесиком мыши - вы сможете прокрутить вниз."), false)
+	var_0_1.Hint("download", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ СЃРєР°С‡Р°РµС‚Рµ СЃСЂРµРґРЅРёРµ С†РµРЅС‹.\nРћРЅРё Р±СѓРґСѓС‚ РґРѕСЃС‚СѓРїРЅС‹ РїСЂРё РІС‹Р±РѕСЂРµ С‚РѕРІР°СЂР° РІ СЃР°РјРѕРј РјРµРЅСЋ СЃРєСЂРёРїС‚Р° РёР»Рё Р¶Рµ РЅР° С†РµРЅС‚СЂР°Р»СЊРЅРѕРј СЂС‹РЅРєРµ РїСЂРё РІС‹Р±РѕСЂРµ С‚РѕРІР°СЂР°!\nРўР°Рє Р¶Рµ РЅРµ Р·Р°Р±С‹РІР°Р№С‚Рµ РІС‹ РјРѕР¶РµС‚Рµ РґРѕР±Р°РІРёС‚СЊ С‚РѕРІР°СЂ, Р·Р°С‚РµРј РЅР°РІРµСЃС‚Рё РЅР° РЅР°Р·РІР°РЅРёРµ С‚РѕРІР°СЂР° РєСѓСЂСЃРѕСЂ Рё РІР°Рј РѕС‚РєСЂРѕРµС‚СЃСЏ СЃРїРёСЃРѕРє СЃСЂРµРґРЅРёС… С†РµРЅ!\nР•СЃР»Рё РІС‹ Р·Р°Р¶РјРµС‚Рµ Р›РљРњ Рё Р±СѓРґРµС‚Рµ Р»РёСЃС‚Р°С‚СЊ РІРЅРёР· РєРѕР»РµСЃРёРєРѕРј РјС‹С€Рё - РІС‹ СЃРјРѕР¶РµС‚Рµ РїСЂРѕРєСЂСѓС‚РёС‚СЊ РІРЅРёР·."), false)
 	var_0_1.SameLine()
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("trash") .. "##", var_0_1.ImVec2(35, 27)) then
 		var_0_88 = {}
 	end
 
-	var_0_1.Hint("trash", var_0_5("Нажав кнопку Вы удалите все добавленные товары в списке ниже. (В правой колонке)"), false)
+	var_0_1.Hint("trash", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ СѓРґР°Р»РёС‚Рµ РІСЃРµ РґРѕР±Р°РІР»РµРЅРЅС‹Рµ С‚РѕРІР°СЂС‹ РІ СЃРїРёСЃРєРµ РЅРёР¶Рµ. (Р’ РїСЂР°РІРѕР№ РєРѕР»РѕРЅРєРµ)"), false)
 	var_0_1.SameLine()
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("FOLDER") .. "##", var_0_1.ImVec2(35, 27)) then
 		var_0_1.SelectMenu(var_0_97, 3)
 	end
 
-	var_0_1.Hint("FOLDER", var_0_5("Нажав кнопку Вы быстро переместитесь во вкладку \"Настройки\".\nТам вы сможете изменить настройки скрипта, а так же загрузить конфиг.\nП-сссс. Открою секрет, у нас работает конфиг от палатки! Только никому не говори!"), false)
+	var_0_1.Hint("FOLDER", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р±С‹СЃС‚СЂРѕ РїРµСЂРµРјРµСЃС‚РёС‚РµСЃСЊ РІРѕ РІРєР»Р°РґРєСѓ \"РќР°СЃС‚СЂРѕР№РєРё\".\nРўР°Рј РІС‹ СЃРјРѕР¶РµС‚Рµ РёР·РјРµРЅРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё СЃРєСЂРёРїС‚Р°, Р° С‚Р°Рє Р¶Рµ Р·Р°РіСЂСѓР·РёС‚СЊ РєРѕРЅС„РёРі.\nРџ-СЃСЃСЃСЃ. РћС‚РєСЂРѕСЋ СЃРµРєСЂРµС‚, Сѓ РЅР°СЃ СЂР°Р±РѕС‚Р°РµС‚ РєРѕРЅС„РёРі РѕС‚ РїР°Р»Р°С‚РєРё! РўРѕР»СЊРєРѕ РЅРёРєРѕРјСѓ РЅРµ РіРѕРІРѕСЂРё!"), false)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 2)
 
@@ -13252,7 +13649,7 @@ function sell(arg_269_0)
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.PopFont()
 
 	if json_vlads ~= nil and #json_vlads ~= 0 then
@@ -13267,17 +13664,17 @@ function sell(arg_269_0)
 					var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 2)
 
 					if containsItem(var_0_88, iter_269_3.item) then
-						var_0_1.TextColoredRGB("{808080}" .. changeExtraSim(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. tostring(iter_269_3.all_count) .. " шт. ", 35))
+						var_0_1.TextColoredRGB("{808080}" .. changeExtraSim(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. tostring(iter_269_3.all_count) .. " С€С‚. ", 35))
 
 						if var_0_1.IsItemHovered() then
 							var_0_1.SameLine()
 							var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 2)
 							var_0_1.TextDisabled(var_0_48("CIRCLE_XMARK"))
 
-							if #(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. iter_269_3.all_count .. " шт.") > 1 then
+							if #(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. iter_269_3.all_count .. " С€С‚.") > 1 then
 								var_0_1.BeginTooltip()
 								var_0_1.PushFont(fonts[18])
-								var_0_1.Text(var_0_5(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. iter_269_3.all_count .. " шт. "))
+								var_0_1.Text(var_0_5(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. iter_269_3.all_count .. " С€С‚. "))
 								var_0_1.PopFont()
 								var_0_1.EndTooltip()
 							end
@@ -13285,7 +13682,7 @@ function sell(arg_269_0)
 							var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 2)
 						end
 					else
-						var_0_1.TextColoredRGB(ImVec3ToHEX(var_0_114.color_text_market) .. changeExtraSim(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. tostring(iter_269_3.all_count) .. " шт. ", 35))
+						var_0_1.TextColoredRGB(ImVec3ToHEX(var_0_114.color_text_market) .. changeExtraSim(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. tostring(iter_269_3.all_count) .. " С€С‚. ", 35))
 
 						if var_0_1.IsItemClicked() then
 							local var_269_0 = false
@@ -13324,10 +13721,10 @@ function sell(arg_269_0)
 							var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
 							var_0_1.TextDisabled(var_0_48("CART_ARROW_UP"))
 
-							if #(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. iter_269_3.all_count .. " шт.") > 1 then
+							if #(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. iter_269_3.all_count .. " С€С‚.") > 1 then
 								var_0_1.BeginTooltip()
 								var_0_1.PushFont(fonts[18])
-								var_0_1.Text(var_0_5(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. iter_269_3.all_count .. " шт."))
+								var_0_1.Text(var_0_5(iter_269_2 .. ". " .. iter_269_3.item .. " - " .. iter_269_3.all_count .. " С€С‚."))
 								var_0_1.PopFont()
 								var_0_1.EndTooltip()
 							end
@@ -13471,7 +13868,7 @@ function sell(arg_269_0)
 
 						var_0_1.BeginTooltip()
 						var_0_1.PushFont(var_0_85[17])
-						var_0_1.Text(var_0_5((var_269_5[iter_269_8 + 1].name:gsub("%(%+%d+%)", ""))) .. var_0_5(" (") .. var_269_5[iter_269_8 + 1].all_count .. var_0_5(" шт.)"))
+						var_0_1.Text(var_0_5((var_269_5[iter_269_8 + 1].name:gsub("%(%+%d+%)", ""))) .. var_0_5(" (") .. var_269_5[iter_269_8 + 1].all_count .. var_0_5(" С€С‚.)"))
 						show_prices(var_269_5[iter_269_8 + 1].name:gsub("%(%+%d+%)", ""), iter_269_8)
 						var_0_1.PopFont()
 						var_0_1.EndTooltip()
@@ -13548,10 +13945,10 @@ function sell(arg_269_0)
 						var_0_1.SameLine()
 						var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 1)
 						var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 2)
-						var_0_1.TextColoredRGB("{808080} Максимум")
+						var_0_1.TextColoredRGB("{808080} РњР°РєСЃРёРјСѓРј")
 						var_0_1.SameLine()
 						var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 14)
-						var_0_1.Text(var_0_5("шт."))
+						var_0_1.Text(var_0_5("С€С‚."))
 					else
 						var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
 
@@ -13566,7 +13963,7 @@ function sell(arg_269_0)
 
 						var_0_103.sell[iter_269_8 + 1] = var_0_11.char[32]("" .. var_269_5[iter_269_8 + 1].count)
 
-						if var_0_1.InputTextD(var_0_5(" шт.##2 ") .. iter_269_8 + 1, var_0_103.sell[iter_269_8 + 1], 32, var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_103.sell[iter_269_8 + 1]):match("^%d+$") and tonumber(var_0_45.string(var_0_103.sell[iter_269_8 + 1])) ~= 0 then
+						if var_0_1.InputTextD(var_0_5(" С€С‚.##2 ") .. iter_269_8 + 1, var_0_103.sell[iter_269_8 + 1], 32, var_0_1.InputTextFlags.CharsDecimal) and var_0_45.string(var_0_103.sell[iter_269_8 + 1]):match("^%d+$") and tonumber(var_0_45.string(var_0_103.sell[iter_269_8 + 1])) ~= 0 then
 							var_269_5[iter_269_8 + 1].count = var_0_45.string(var_0_103.sell[iter_269_8 + 1])
 						end
 
@@ -13595,7 +13992,7 @@ function sell(arg_269_0)
 			local var_269_10 = Percent(var_269_2, var_0_106.cfg.sell_percent)
 			local var_269_11 = var_269_10 < 100000000 and "(+" .. moneySeparator(var_269_10) .. var_0_5(")") or "(+......)"
 
-			var_0_1.CenterText(var_0_5("Остаток: ") .. moneySeparator(getPlayerMoney() + var_269_10) .. " " .. var_269_11 .. var_0_5(" | Предметов: ") .. (var_0_136[0] and #var_269_3 or #var_0_88))
+			var_0_1.CenterText(var_0_5("РћСЃС‚Р°С‚РѕРє: ") .. moneySeparator(getPlayerMoney() + var_269_10) .. " " .. var_269_11 .. var_0_5(" | РџСЂРµРґРјРµС‚РѕРІ: ") .. (var_0_136[0] and #var_269_3 or #var_0_88))
 
 			if var_269_10 > 99999999 and var_0_1.IsItemHovered() then
 				var_0_1.BeginTooltip()
@@ -13603,16 +14000,16 @@ function sell(arg_269_0)
 				var_0_1.EndTooltip()
 			end
 
-			if var_0_1.Button(var_0_93.sell and var_0_5("Отмена") or var_0_5("Выставить на продажу"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
+			if var_0_1.Button(var_0_93.sell and var_0_5("РћС‚РјРµРЅР°") or var_0_5("Р’С‹СЃС‚Р°РІРёС‚СЊ РЅР° РїСЂРѕРґР°Р¶Сѓ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
 				if not var_0_93.sell then
 					if is_invent_open ~= nil or var_0_115.custom_is_invent_open[1] ~= nil then
 						sampSendClickTextdraw(65535)
-						AFKMessage("С открытым инвентарем не работает. Нужно переоткрыть. Запустите повторно.")
+						AFKMessage("РЎ РѕС‚РєСЂС‹С‚С‹Рј РёРЅРІРµРЅС‚Р°СЂРµРј РЅРµ СЂР°Р±РѕС‚Р°РµС‚. РќСѓР¶РЅРѕ РїРµСЂРµРѕС‚РєСЂС‹С‚СЊ. Р—Р°РїСѓСЃС‚РёС‚Рµ РїРѕРІС‚РѕСЂРЅРѕ.")
 					else
 						local var_269_12, var_269_13 = sampGetCurrentServerAddress()
 
 						if var_0_28[var_269_12] == 0 and var_0_167 or var_0_28[var_269_12] ~= 0 and not var_0_167 then
-							AFKMessage("ВНИМАНИЕ! У вас установлен не тот режим продажи. Зайдите в продажу и проверьте валюту в которой выставляете.")
+							AFKMessage("Р’РќРРњРђРќРР•! РЈ РІР°СЃ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РЅРµ С‚РѕС‚ СЂРµР¶РёРј РїСЂРѕРґР°Р¶Рё. Р—Р°Р№РґРёС‚Рµ РІ РїСЂРѕРґР°Р¶Сѓ Рё РїСЂРѕРІРµСЂСЊС‚Рµ РІР°Р»СЋС‚Сѓ РІ РєРѕС‚РѕСЂРѕР№ РІС‹СЃС‚Р°РІР»СЏРµС‚Рµ.")
 						else
 							var_0_115.available_items_custom = {}
 							var_0_115.custom_is_invent_open = {
@@ -13627,7 +14024,7 @@ function sell(arg_269_0)
 							var_0_89 = {}
 
 							SendToServer("/stats")
-							AFKMessage("Подготовка к выставке товара...")
+							AFKMessage("РџРѕРґРіРѕС‚РѕРІРєР° Рє РІС‹СЃС‚Р°РІРєРµ С‚РѕРІР°СЂР°...")
 
 							sell_check = true
 							var_0_72[0] = true
@@ -13647,7 +14044,7 @@ function sell(arg_269_0)
 									deAFKMessage(debug.getinfo(1, "l"), "nil slot_count.")
 								end
 
-								saveLog("[" .. tostring(iter_269_10.enabled) .. "] Товар: [" .. iter_269_9 .. "|" .. #var_0_88 .. "] [" .. iter_269_10.name .. "] [" .. iter_269_10.count .. "] [" .. iter_269_10.price .. "|" .. iter_269_10.price_vc .. "] [" .. tostring(var_0_167) .. "] [" .. tostring(var_0_137[0]) .. "]")
+								saveLog("[" .. tostring(iter_269_10.enabled) .. "] РўРѕРІР°СЂ: [" .. iter_269_9 .. "|" .. #var_0_88 .. "] [" .. iter_269_10.name .. "] [" .. iter_269_10.count .. "] [" .. iter_269_10.price .. "|" .. iter_269_10.price_vc .. "] [" .. tostring(var_0_167) .. "] [" .. tostring(var_0_137[0]) .. "]")
 
 								var_0_93.score_from = iter_269_9
 							end
@@ -13665,7 +14062,7 @@ function sell(arg_269_0)
 						score_from = 1
 					}
 
-					AFKMessage("Выставление товаров было отменено.")
+					AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р±С‹Р»Рѕ РѕС‚РјРµРЅРµРЅРѕ.")
 
 					if sell_alitems_d ~= nil then
 						lets_gooo = false
@@ -13679,7 +14076,7 @@ function sell(arg_269_0)
 
 			if var_0_155 == "" then
 				if var_0_84[1] == true then
-					if var_0_1.Button(var_0_5("Отменить создание"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2 - 10, 27)) then
+					if var_0_1.Button(var_0_5("РћС‚РјРµРЅРёС‚СЊ СЃРѕР·РґР°РЅРёРµ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2 - 10, 27)) then
 						var_0_84[1] = false
 					end
 
@@ -13687,21 +14084,21 @@ function sell(arg_269_0)
 					var_0_1.PushItemWidth(98)
 					var_0_1.PushFont(fonts[222])
 					var_0_1.PushStyleVarVec2(var_0_1.StyleVar.FramePadding, var_0_1.ImVec2(6, 6.5))
-					var_0_1.InputTextWithHintD("##search_cfg_sell", var_0_5(" Имя конфига"), var_0_174, var_0_45.sizeof(var_0_174), var_0_1.InputTextFlags.EnterReturnsTrue)
+					var_0_1.InputTextWithHintD("##search_cfg_sell", var_0_5(" РРјСЏ РєРѕРЅС„РёРіР°"), var_0_174, var_0_45.sizeof(var_0_174), var_0_1.InputTextFlags.EnterReturnsTrue)
 					var_0_1.PopFont()
 					var_0_1.PopStyleVar()
 					var_0_1.SameLine()
 
-					if var_0_1.Button(var_0_5("Создать"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 3.99 - 15, 27)) then
+					if var_0_1.Button(var_0_5("РЎРѕР·РґР°С‚СЊ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 3.99 - 15, 27)) then
 						var_0_90.sell = var_0_5:decode(var_0_45.string(var_0_174)):gsub("[\"<|:>]", "")
 
 						if var_0_90.sell == "" or var_0_90.sell == nil or var_0_90.sell:match("^%s*$") ~= nil then
-							AFKMessage("{ff3535}[Error]:{ffffff} Вы не можете создать {505050}безымянный {ffffff}конфиг.")
+							AFKMessage("{ff3535}[Error]:{ffffff} Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРѕР·РґР°С‚СЊ {505050}Р±РµР·С‹РјСЏРЅРЅС‹Р№ {ffffff}РєРѕРЅС„РёРі.")
 						else
 							var_0_84[1] = false
 
 							createConfig("sell-cfg/" .. var_0_90.sell .. ".json", {}, "sell-cfg", var_0_90.sell)
-							AFKMessage("[Продажа] Конфиг {505050}" .. tostring(var_0_90.sell) .. "{ffffff} создан.")
+							AFKMessage("[РџСЂРѕРґР°Р¶Р°] РљРѕРЅС„РёРі {505050}" .. tostring(var_0_90.sell) .. "{ffffff} СЃРѕР·РґР°РЅ.")
 
 							var_0_155 = var_0_90.sell .. ".json"
 							var_0_106.cfg.load_config_sell = var_0_155
@@ -13709,17 +14106,17 @@ function sell(arg_269_0)
 							save_all()
 						end
 					end
-				elseif var_0_1.Button(var_0_5("Создать конфиг"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
+				elseif var_0_1.Button(var_0_5("РЎРѕР·РґР°С‚СЊ РєРѕРЅС„РёРі"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
 					var_0_84[1] = true
 				end
-			elseif var_0_1.Button(var_0_5("Сохранить конфиг"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
+			elseif var_0_1.Button(var_0_5("РЎРѕС…СЂР°РЅРёС‚СЊ РєРѕРЅС„РёРі"), var_0_1.ImVec2(var_0_1.GetWindowWidth() - 9, 27)) then
 				if var_0_155 ~= "" then
 					var_0_90.sell = var_0_155:match("(.+)%.json") and var_0_155 or var_0_155 .. ".json"
 
 					createConfig("sell-cfg/" .. var_0_90.sell, var_0_88, "sell-cfg", var_0_90.sell)
-					AFKMessage("Конфиг " .. tostring(var_0_90.sell) .. " сохранен.")
+					AFKMessage("РљРѕРЅС„РёРі " .. tostring(var_0_90.sell) .. " СЃРѕС…СЂР°РЅРµРЅ.")
 				else
-					AFKMessage("К сожалению вы не загрузили не один конфиг. Создайте и загрузите конфиг для его сохранения.")
+					AFKMessage("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РІС‹ РЅРµ Р·Р°РіСЂСѓР·РёР»Рё РЅРµ РѕРґРёРЅ РєРѕРЅС„РёРі. РЎРѕР·РґР°Р№С‚Рµ Рё Р·Р°РіСЂСѓР·РёС‚Рµ РєРѕРЅС„РёРі РґР»СЏ РµРіРѕ СЃРѕС…СЂР°РЅРµРЅРёСЏ.")
 				end
 			end
 
@@ -13730,7 +14127,7 @@ function sell(arg_269_0)
 	else
 		var_0_1.SetCursorPos(var_0_1.ImVec2(sizeX / 14, sizeY / 2))
 		var_0_1.PushFont(fonts[18])
-		var_0_1.TextDisabled(var_0_5("Для продолжения вам нужно отсканировать инвентарь нажав на кнопку   ") .. var_0_48("magnifying_glass"))
+		var_0_1.TextDisabled(var_0_5("Р”Р»СЏ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ РІР°Рј РЅСѓР¶РЅРѕ РѕС‚СЃРєР°РЅРёСЂРѕРІР°С‚СЊ РёРЅРІРµРЅС‚Р°СЂСЊ РЅР°Р¶Р°РІ РЅР° РєРЅРѕРїРєСѓ   ") .. var_0_48("magnifying_glass"))
 		var_0_1.PopFont()
 	end
 end
@@ -13777,15 +14174,15 @@ function show_pricesz(arg_270_0, arg_270_1)
 
 	var_0_1.PushFont(fonts[17])
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
-	var_0_1.TextDisabled(var_0_5("Покупка VC$ за ") .. var_0_45.string(var_0_181) .. " $")
+	var_0_1.TextDisabled(var_0_5("РџРѕРєСѓРїРєР° VC$ Р·Р° ") .. var_0_45.string(var_0_181) .. " $")
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 	var_0_1.SameLine(219)
-	var_0_1.TextDisabled(var_0_5("Продажа VC$ за ") .. var_0_45.string(var_0_180) .. " $")
+	var_0_1.TextDisabled(var_0_5("РџСЂРѕРґР°Р¶Р° VC$ Р·Р° ") .. var_0_45.string(var_0_180) .. " $")
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
-	var_0_1.Text(var_0_5("$ ") .. moneySeparator(var_270_5) .. var_0_5(" скупаю"))
+	var_0_1.Text(var_0_5("$ ") .. moneySeparator(var_270_5) .. var_0_5(" СЃРєСѓРїР°СЋ"))
 	var_0_1.SameLine(219)
-	var_0_1.Text(var_0_5("$ ") .. moneySeparator(var_270_4) .. var_0_5(" продаю"))
+	var_0_1.Text(var_0_5("$ ") .. moneySeparator(var_270_4) .. var_0_5(" РїСЂРѕРґР°СЋ"))
 	var_0_1.CustomSeparator(var_0_1.GetWindowWidth() - 10)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 4)
 	var_0_1.Scroller("vvvvvv##" .. arg_270_1 + 1, 100, 600, var_0_1.IsMouseDown(0) and 0 or var_0_1.HoveredFlags.AllowWhenBlockedByActiveItem)
@@ -13802,9 +14199,9 @@ function show_pricesz(arg_270_0, arg_270_1)
 	end
 
 	var_0_1.SetColumnWidth(0, 215)
-	var_0_1.TextDisabled(var_0_5("Статистика покупок"))
+	var_0_1.TextDisabled(var_0_5("РЎС‚Р°С‚РёСЃС‚РёРєР° РїРѕРєСѓРїРѕРє"))
 	var_0_1.NextColumn()
-	var_0_1.TextDisabled(var_0_5("Статистика продаж"))
+	var_0_1.TextDisabled(var_0_5("РЎС‚Р°С‚РёСЃС‚РёРєР° РїСЂРѕРґР°Р¶"))
 	var_0_1.NextColumn()
 
 	for iter_270_7, iter_270_8 in pairs(var_270_8) do
@@ -13820,7 +14217,7 @@ function show_pricesz(arg_270_0, arg_270_1)
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 15)
 					var_0_1.TextDisabled(var_0_5(var_0_42.buy_[arg_270_0].list[iter_270_9][1] .. " | SA$ " .. moneySeparator(var_0_42.buy_[arg_270_0].list[iter_270_9][3]) .. " "))
 					var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
-					var_0_1.Text(var_0_5("SA$ " .. moneySeparator(math.floor(var_0_42.buy_[arg_270_0].list[iter_270_9][3] / var_0_42.buy_[arg_270_0].list[iter_270_9][2])) .. " (" .. moneySeparator(var_0_42.buy_[arg_270_0].list[iter_270_9][2]) .. " шт)"))
+					var_0_1.Text(var_0_5("SA$ " .. moneySeparator(math.floor(var_0_42.buy_[arg_270_0].list[iter_270_9][3] / var_0_42.buy_[arg_270_0].list[iter_270_9][2])) .. " (" .. moneySeparator(var_0_42.buy_[arg_270_0].list[iter_270_9][2]) .. " С€С‚)"))
 				end
 			end
 		end
@@ -13834,7 +14231,7 @@ function show_pricesz(arg_270_0, arg_270_1)
 					end
 
 					var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
-					var_0_1.Text(var_0_5("VC$ " .. moneySeparator(math.floor(var_0_42.buy_vc[arg_270_0].list[iter_270_10][3] / var_0_42.buy_vc[arg_270_0].list[iter_270_10][2])) .. " (" .. moneySeparator(var_0_42.buy_vc[arg_270_0].list[iter_270_10][2]) .. " шт)"))
+					var_0_1.Text(var_0_5("VC$ " .. moneySeparator(math.floor(var_0_42.buy_vc[arg_270_0].list[iter_270_10][3] / var_0_42.buy_vc[arg_270_0].list[iter_270_10][2])) .. " (" .. moneySeparator(var_0_42.buy_vc[arg_270_0].list[iter_270_10][2]) .. " С€С‚)"))
 
 					if var_0_45.string(var_0_181) ~= "1" then
 						var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
@@ -13865,7 +14262,7 @@ function show_pricesz(arg_270_0, arg_270_1)
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 15)
 					var_0_1.TextDisabled(var_0_5(var_0_42.sell_[arg_270_0].list[iter_270_13][1] .. " | SA$ " .. moneySeparator(var_0_42.sell_[arg_270_0].list[iter_270_13][3]) .. " "))
 					var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
-					var_0_1.Text(var_0_5("SA$ " .. moneySeparator(math.floor(var_0_42.sell_[arg_270_0].list[iter_270_13][3] / var_0_42.sell_[arg_270_0].list[iter_270_13][2])) .. " (" .. moneySeparator(var_0_42.sell_[arg_270_0].list[iter_270_13][2]) .. " шт)"))
+					var_0_1.Text(var_0_5("SA$ " .. moneySeparator(math.floor(var_0_42.sell_[arg_270_0].list[iter_270_13][3] / var_0_42.sell_[arg_270_0].list[iter_270_13][2])) .. " (" .. moneySeparator(var_0_42.sell_[arg_270_0].list[iter_270_13][2]) .. " С€С‚)"))
 				end
 			end
 		end
@@ -13879,7 +14276,7 @@ function show_pricesz(arg_270_0, arg_270_1)
 					end
 
 					var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
-					var_0_1.Text(var_0_5("VC$ " .. moneySeparator(math.floor(var_0_42.sell_vc[arg_270_0].list[iter_270_14][3] / var_0_42.sell_vc[arg_270_0].list[iter_270_14][2])) .. " (" .. moneySeparator(var_0_42.sell_vc[arg_270_0].list[iter_270_14][2]) .. " шт)"))
+					var_0_1.Text(var_0_5("VC$ " .. moneySeparator(math.floor(var_0_42.sell_vc[arg_270_0].list[iter_270_14][3] / var_0_42.sell_vc[arg_270_0].list[iter_270_14][2])) .. " (" .. moneySeparator(var_0_42.sell_vc[arg_270_0].list[iter_270_14][2]) .. " С€С‚)"))
 
 					if var_0_45.string(var_0_180) ~= "1" then
 						var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
@@ -13946,15 +14343,15 @@ function show_prices(arg_271_0, arg_271_1)
 	var_0_1.PushFont(var_0_85[17])
 	var_0_1.CustomSeparator(400)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
-	var_0_1.TextDisabled(var_0_5("Покупка VC$ за ") .. var_0_45.string(var_0_181) .. " $")
+	var_0_1.TextDisabled(var_0_5("РџРѕРєСѓРїРєР° VC$ Р·Р° ") .. var_0_45.string(var_0_181) .. " $")
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 	var_0_1.SameLine(213)
-	var_0_1.TextDisabled(var_0_5("Продажа VC$ за ") .. var_0_45.string(var_0_180) .. " $")
+	var_0_1.TextDisabled(var_0_5("РџСЂРѕРґР°Р¶Р° VC$ Р·Р° ") .. var_0_45.string(var_0_180) .. " $")
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 5)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
-	var_0_1.Text(var_0_5("$ ") .. moneySeparator(var_271_9) .. var_0_5(" скупаю"))
+	var_0_1.Text(var_0_5("$ ") .. moneySeparator(var_271_9) .. var_0_5(" СЃРєСѓРїР°СЋ"))
 	var_0_1.SameLine(213)
-	var_0_1.Text(var_0_5("$ ") .. moneySeparator(var_271_8) .. var_0_5(" продаю"))
+	var_0_1.Text(var_0_5("$ ") .. moneySeparator(var_271_8) .. var_0_5(" РїСЂРѕРґР°СЋ"))
 	var_0_1.CustomSeparator(400)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 4)
 	var_0_1.CustomInvisibleChild("sredcena##" .. arg_271_1 + 1, var_0_1.ImVec2(400, 250), true, var_0_1.WindowFlags.NoScrollWithMouse)
@@ -13972,9 +14369,9 @@ function show_prices(arg_271_0, arg_271_1)
 	end
 
 	var_0_1.SetColumnWidth(0, 200)
-	var_0_1.TextDisabled(var_0_5("Статистика покупок"))
+	var_0_1.TextDisabled(var_0_5("РЎС‚Р°С‚РёСЃС‚РёРєР° РїРѕРєСѓРїРѕРє"))
 	var_0_1.NextColumn()
-	var_0_1.TextDisabled(var_0_5("Статистика продаж"))
+	var_0_1.TextDisabled(var_0_5("РЎС‚Р°С‚РёСЃС‚РёРєР° РїСЂРѕРґР°Р¶"))
 	var_0_1.NextColumn()
 
 	for iter_271_7, iter_271_8 in pairs(var_271_12) do
@@ -13990,7 +14387,7 @@ function show_prices(arg_271_0, arg_271_1)
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 15)
 					var_0_1.TextDisabled(var_0_5(var_0_42.buy_[arg_271_0].list[iter_271_9][1] .. " | SA$ " .. moneySeparator(var_0_42.buy_[arg_271_0].list[iter_271_9][3]) .. " "))
 					var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
-					var_0_1.Text(var_0_5("SA$ " .. moneySeparator(math.floor(var_0_42.buy_[arg_271_0].list[iter_271_9][3] / var_0_42.buy_[arg_271_0].list[iter_271_9][2])) .. " (" .. moneySeparator(var_0_42.buy_[arg_271_0].list[iter_271_9][2]) .. " шт)"))
+					var_0_1.Text(var_0_5("SA$ " .. moneySeparator(math.floor(var_0_42.buy_[arg_271_0].list[iter_271_9][3] / var_0_42.buy_[arg_271_0].list[iter_271_9][2])) .. " (" .. moneySeparator(var_0_42.buy_[arg_271_0].list[iter_271_9][2]) .. " С€С‚)"))
 				end
 			end
 		end
@@ -14004,7 +14401,7 @@ function show_prices(arg_271_0, arg_271_1)
 					end
 
 					var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
-					var_0_1.Text(var_0_5("VC$ " .. moneySeparator(math.floor(var_0_42.buy_vc[arg_271_0].list[iter_271_10][3] / var_0_42.buy_vc[arg_271_0].list[iter_271_10][2])) .. " (" .. moneySeparator(var_0_42.buy_vc[arg_271_0].list[iter_271_10][2]) .. " шт)"))
+					var_0_1.Text(var_0_5("VC$ " .. moneySeparator(math.floor(var_0_42.buy_vc[arg_271_0].list[iter_271_10][3] / var_0_42.buy_vc[arg_271_0].list[iter_271_10][2])) .. " (" .. moneySeparator(var_0_42.buy_vc[arg_271_0].list[iter_271_10][2]) .. " С€С‚)"))
 
 					if var_0_45.string(var_0_181) ~= "1" then
 						var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
@@ -14035,7 +14432,7 @@ function show_prices(arg_271_0, arg_271_1)
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 15)
 					var_0_1.TextDisabled(var_0_5(var_0_42.sell_[arg_271_0].list[iter_271_13][1] .. " | SA$ " .. moneySeparator(var_0_42.sell_[arg_271_0].list[iter_271_13][3]) .. " "))
 					var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
-					var_0_1.Text(var_0_5("SA$ " .. moneySeparator(math.floor(var_0_42.sell_[arg_271_0].list[iter_271_13][3] / var_0_42.sell_[arg_271_0].list[iter_271_13][2])) .. " (" .. moneySeparator(var_0_42.sell_[arg_271_0].list[iter_271_13][2]) .. " шт)"))
+					var_0_1.Text(var_0_5("SA$ " .. moneySeparator(math.floor(var_0_42.sell_[arg_271_0].list[iter_271_13][3] / var_0_42.sell_[arg_271_0].list[iter_271_13][2])) .. " (" .. moneySeparator(var_0_42.sell_[arg_271_0].list[iter_271_13][2]) .. " С€С‚)"))
 				end
 			end
 		end
@@ -14049,7 +14446,7 @@ function show_prices(arg_271_0, arg_271_1)
 					end
 
 					var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
-					var_0_1.Text(var_0_5("VC$ " .. moneySeparator(math.floor(var_0_42.sell_vc[arg_271_0].list[iter_271_14][3] / var_0_42.sell_vc[arg_271_0].list[iter_271_14][2])) .. " (" .. moneySeparator(var_0_42.sell_vc[arg_271_0].list[iter_271_14][2]) .. " шт)"))
+					var_0_1.Text(var_0_5("VC$ " .. moneySeparator(math.floor(var_0_42.sell_vc[arg_271_0].list[iter_271_14][3] / var_0_42.sell_vc[arg_271_0].list[iter_271_14][2])) .. " (" .. moneySeparator(var_0_42.sell_vc[arg_271_0].list[iter_271_14][2]) .. " С€С‚)"))
 
 					if var_0_45.string(var_0_180) ~= "1" then
 						var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
@@ -14078,7 +14475,7 @@ function list_ArzMarket()
 		download_list = nil
 	end
 
-	var_0_1.Hint("ARROWS_ROTATE2", var_0_5("Обновить топ игроков."), false)
+	var_0_1.Hint("ARROWS_ROTATE2", var_0_5("РћР±РЅРѕРІРёС‚СЊ С‚РѕРї РёРіСЂРѕРєРѕРІ."), false)
 	var_0_1.SameLine()
 
 	if var_0_1.CustomOnlyBorderButton(var_0_115.rating and var_0_48("CALENDAR_DAYS") .. "##" or var_0_48("CALENDAR_WEEK") .. "##", var_0_1.ImVec2(35, 27)) then
@@ -14086,14 +14483,14 @@ function list_ArzMarket()
 		var_0_56[4] = os.time() - 400
 	end
 
-	var_0_1.Hint("CALENDAR_DAYS", var_0_115.rating and var_0_5("Вам показана статистика за [Все время]\nЧто бы изменить показ статистики на [7 дней] нажмите ЛКМ.\nЗдесь отображено колличество опыта который был заработан за все время.") or var_0_5("Вам показана статистика за [7 дней]\nЧто бы изменить показ статистики на [Все время] нажмите ЛКМ.\nЗдесь отображено колличество опыта который был заработан за 7 дней."), false)
+	var_0_1.Hint("CALENDAR_DAYS", var_0_115.rating and var_0_5("Р’Р°Рј РїРѕРєР°Р·Р°РЅР° СЃС‚Р°С‚РёСЃС‚РёРєР° Р·Р° [Р’СЃРµ РІСЂРµРјСЏ]\nР§С‚Рѕ Р±С‹ РёР·РјРµРЅРёС‚СЊ РїРѕРєР°Р· СЃС‚Р°С‚РёСЃС‚РёРєРё РЅР° [7 РґРЅРµР№] РЅР°Р¶РјРёС‚Рµ Р›РљРњ.\nР—РґРµСЃСЊ РѕС‚РѕР±СЂР°Р¶РµРЅРѕ РєРѕР»Р»РёС‡РµСЃС‚РІРѕ РѕРїС‹С‚Р° РєРѕС‚РѕСЂС‹Р№ Р±С‹Р» Р·Р°СЂР°Р±РѕС‚Р°РЅ Р·Р° РІСЃРµ РІСЂРµРјСЏ.") or var_0_5("Р’Р°Рј РїРѕРєР°Р·Р°РЅР° СЃС‚Р°С‚РёСЃС‚РёРєР° Р·Р° [7 РґРЅРµР№]\nР§С‚Рѕ Р±С‹ РёР·РјРµРЅРёС‚СЊ РїРѕРєР°Р· СЃС‚Р°С‚РёСЃС‚РёРєРё РЅР° [Р’СЃРµ РІСЂРµРјСЏ] РЅР°Р¶РјРёС‚Рµ Р›РљРњ.\nР—РґРµСЃСЊ РѕС‚РѕР±СЂР°Р¶РµРЅРѕ РєРѕР»Р»РёС‡РµСЃС‚РІРѕ РѕРїС‹С‚Р° РєРѕС‚РѕСЂС‹Р№ Р±С‹Р» Р·Р°СЂР°Р±РѕС‚Р°РЅ Р·Р° 7 РґРЅРµР№."), false)
 	var_0_1.SameLine()
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("MEDAL"), var_0_1.ImVec2(30, 27)) then
 		show_medal = true
 	end
 
-	var_0_1.Hint("MEDAL", var_0_5("В данном разделе отображаются награды которые вы получили за игру со скриптом."), false)
+	var_0_1.Hint("MEDAL", var_0_5("Р’ РґР°РЅРЅРѕРј СЂР°Р·РґРµР»Рµ РѕС‚РѕР±СЂР°Р¶Р°СЋС‚СЃСЏ РЅР°РіСЂР°РґС‹ РєРѕС‚РѕСЂС‹Рµ РІС‹ РїРѕР»СѓС‡РёР»Рё Р·Р° РёРіСЂСѓ СЃРѕ СЃРєСЂРёРїС‚РѕРј."), false)
 	var_0_1.SameLine(var_0_106.cfg.menuSize == 1 and 555 or var_0_106.cfg.menuSize == 2 and 580 or 0)
 
 	if var_0_1.CustomOnlyBorderButton(var_0_48("CART_ARROW_UP") .. "##", var_0_1.ImVec2(35, 27)) then
@@ -14118,7 +14515,7 @@ function list_ArzMarket()
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 
 	if var_0_56[4] + 50 <= os.time() or toplist == nil then
 		var_0_56[4] = os.time()
@@ -14189,11 +14586,11 @@ function vrSelected(arg_275_0)
 		var_0_115.vr_helper.isClicked = false
 	end
 
-	var_0_1.Hint("vrSelected", var_0_5("Нажмите сюда что бы вернуться в настройки скрипта."), false)
+	var_0_1.Hint("vrSelected", var_0_5("РќР°Р¶РјРёС‚Рµ СЃСЋРґР° С‡С‚Рѕ Р±С‹ РІРµСЂРЅСѓС‚СЊСЃСЏ РІ РЅР°СЃС‚СЂРѕР№РєРё СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX((var_0_1.GetWindowWidth() - 280) / 2)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
-	var_0_1.Link("https://youtu.be/l9HWWrG-XWQ", "https://rutube.ru/video/private/6d8efd091fdfde747476c2a512e8fb00/?p=aL4DTMmBxDPOsYMcl9tSpw", var_0_5("[!] Инструкция по разделу. Обучение."), nil, arg_275_0, "Ютуб", "Рутуб")
+	var_0_1.Link("https://youtu.be/l9HWWrG-XWQ", "https://rutube.ru/video/private/6d8efd091fdfde747476c2a512e8fb00/?p=aL4DTMmBxDPOsYMcl9tSpw", var_0_5("[!] РРЅСЃС‚СЂСѓРєС†РёСЏ РїРѕ СЂР°Р·РґРµР»Сѓ. РћР±СѓС‡РµРЅРёРµ."), nil, arg_275_0, "Р®С‚СѓР±", "Р СѓС‚СѓР±")
 	var_0_1.SameLine(var_0_106.cfg.menuSize == 1 and 635 or var_0_106.cfg.menuSize == 2 and 660 or 0)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 2)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 5)
@@ -14207,7 +14604,7 @@ function vrSelected(arg_275_0)
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 20)
 
@@ -14228,7 +14625,7 @@ function vrSelected(arg_275_0)
 	var_0_1.PushStyleColor(var_275_0.ButtonHovered, var_0_1.ImVec4(0.3, 0.3, 0.55, 0.85))
 	var_0_1.PushStyleColor(var_275_0.ButtonActive, var_0_1.ImVec4(0.2, 0.2, 0.35, 0.75))
 
-	if var_0_1.Button(var_0_5("Добавить авто-рекламу"), var_0_1.ImVec2(var_275_2 * 2, 40)) then
+	if var_0_1.Button(var_0_5("Р”РѕР±Р°РІРёС‚СЊ Р°РІС‚Рѕ-СЂРµРєР»Р°РјСѓ"), var_0_1.ImVec2(var_275_2 * 2, 40)) then
 		table.insert(var_0_112, {
 			isTimer = 0,
 			isPiarText = "",
@@ -14296,14 +14693,14 @@ function vrSelected(arg_275_0)
 
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 12)
 	var_0_1.SetCursorPosX(15)
-	var_0_1.TextColoredRGB("{ffffff}Статистика:")
+	var_0_1.TextColoredRGB("{ffffff}РЎС‚Р°С‚РёСЃС‚РёРєР°:")
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX(120)
-	var_0_1.TextColoredRGB(string.format("{00ff00}Активных: %d/%d", var_275_3, #var_0_112))
+	var_0_1.TextColoredRGB(string.format("{00ff00}РђРєС‚РёРІРЅС‹С…: %d/%d", var_275_3, #var_0_112))
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() - 210)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 2)
-	var_0_1.TextColoredRGB("{888888}Сохранение задержки: ")
+	var_0_1.TextColoredRGB("{888888}РЎРѕС…СЂР°РЅРµРЅРёРµ Р·Р°РґРµСЂР¶РєРё: ")
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() - 35)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 4)
@@ -14314,7 +14711,7 @@ function vrSelected(arg_275_0)
 		save_all()
 	end
 
-	var_0_1.Hint("savetimer1", var_0_5("Если функция включена - тайминг когда вы отправили сообщение будет оставаться сохраненным в системе.\nПоясняем, если вы отправили сообщение, затем в карточке изменили задержку, то...\nскрипт расчитает новый тайминг до следующего сообщения.\n\nЕсли функция Выключена - то задержка каждый раз будет обнуляться при изменениях задержек."), false)
+	var_0_1.Hint("savetimer1", var_0_5("Р•СЃР»Рё С„СѓРЅРєС†РёСЏ РІРєР»СЋС‡РµРЅР° - С‚Р°Р№РјРёРЅРі РєРѕРіРґР° РІС‹ РѕС‚РїСЂР°РІРёР»Рё СЃРѕРѕР±С‰РµРЅРёРµ Р±СѓРґРµС‚ РѕСЃС‚Р°РІР°С‚СЊСЃСЏ СЃРѕС…СЂР°РЅРµРЅРЅС‹Рј РІ СЃРёСЃС‚РµРјРµ.\nРџРѕСЏСЃРЅСЏРµРј, РµСЃР»Рё РІС‹ РѕС‚РїСЂР°РІРёР»Рё СЃРѕРѕР±С‰РµРЅРёРµ, Р·Р°С‚РµРј РІ РєР°СЂС‚РѕС‡РєРµ РёР·РјРµРЅРёР»Рё Р·Р°РґРµСЂР¶РєСѓ, С‚Рѕ...\nСЃРєСЂРёРїС‚ СЂР°СЃС‡РёС‚Р°РµС‚ РЅРѕРІС‹Р№ С‚Р°Р№РјРёРЅРі РґРѕ СЃР»РµРґСѓСЋС‰РµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ.\n\nР•СЃР»Рё С„СѓРЅРєС†РёСЏ Р’С‹РєР»СЋС‡РµРЅР° - С‚Рѕ Р·Р°РґРµСЂР¶РєР° РєР°Р¶РґС‹Р№ СЂР°Р· Р±СѓРґРµС‚ РѕР±РЅСѓР»СЏС‚СЊСЃСЏ РїСЂРё РёР·РјРµРЅРµРЅРёСЏС… Р·Р°РґРµСЂР¶РµРє."), false)
 	var_0_1.EndChild()
 	var_0_1.PopStyleColor()
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 20)
@@ -14323,11 +14720,11 @@ function vrSelected(arg_275_0)
 
 	if #var_0_112 == 0 then
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 50)
-		var_0_1.CenterText(var_0_5("Нет добавленных авто-реклам"))
-		var_0_1.CenterText(var_0_5("Добавьте первую рекламу чтобы начать"))
+		var_0_1.CenterText(var_0_5("РќРµС‚ РґРѕР±Р°РІР»РµРЅРЅС‹С… Р°РІС‚Рѕ-СЂРµРєР»Р°Рј"))
+		var_0_1.CenterText(var_0_5("Р”РѕР±Р°РІСЊС‚Рµ РїРµСЂРІСѓСЋ СЂРµРєР»Р°РјСѓ С‡С‚РѕР±С‹ РЅР°С‡Р°С‚СЊ"))
 	else
 		var_0_1.SetCursorPosX(20)
-		var_0_1.TextColoredRGB("{ffffff}Список авто-реклам:")
+		var_0_1.TextColoredRGB("{ffffff}РЎРїРёСЃРѕРє Р°РІС‚Рѕ-СЂРµРєР»Р°Рј:")
 		var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 10)
 
 		for iter_275_2, iter_275_3 in pairs(var_0_112) do
@@ -14337,8 +14734,8 @@ function vrSelected(arg_275_0)
 			var_0_1.PushStyleVarFloat(var_0_1.StyleVar.ChildBorderSize, 1)
 			var_0_1.BeginChild("ad_card_" .. iter_275_2, var_0_1.ImVec2(var_0_1.GetWindowWidth() - 30, 132), true)
 			var_0_1.SetCursorPos(var_0_1.ImVec2(15, 12))
-			var_0_1.TextColoredRGB(iter_275_3.isEnabled and "{00ff00}+ Активно" or "{ff0000}- Неактивно")
-			var_0_1.Hint("isEnabledP" .. iter_275_2, var_0_5("После нажатия вы ") .. (iter_275_3.isEnabled and var_0_5("выключите") or var_0_5("включите")) .. var_0_5(" статус пиара."), false)
+			var_0_1.TextColoredRGB(iter_275_3.isEnabled and "{00ff00}+ РђРєС‚РёРІРЅРѕ" or "{ff0000}- РќРµР°РєС‚РёРІРЅРѕ")
+			var_0_1.Hint("isEnabledP" .. iter_275_2, var_0_5("РџРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ РІС‹ ") .. (iter_275_3.isEnabled and var_0_5("РІС‹РєР»СЋС‡РёС‚Рµ") or var_0_5("РІРєР»СЋС‡РёС‚Рµ")) .. var_0_5(" СЃС‚Р°С‚СѓСЃ РїРёР°СЂР°."), false)
 
 			if var_0_1.IsItemClicked() then
 				if iter_275_3.isTimer > 0 and iter_275_3.isPiarText ~= "" then
@@ -14349,7 +14746,7 @@ function vrSelected(arg_275_0)
 							if not iter_275_3.isEnabled and iter_275_5.isEnabled and iter_275_5.isType == 1 then
 								var_275_4 = true
 
-								sendNotify("К сожалению одновременно 2 рекламы в /AD включить нельзя. Выключите одну.")
+								sendNotify("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РѕРґРЅРѕРІСЂРµРјРµРЅРЅРѕ 2 СЂРµРєР»Р°РјС‹ РІ /AD РІРєР»СЋС‡РёС‚СЊ РЅРµР»СЊР·СЏ. Р’С‹РєР»СЋС‡РёС‚Рµ РѕРґРЅСѓ.")
 
 								break
 							end
@@ -14364,7 +14761,7 @@ function vrSelected(arg_275_0)
 
 					writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 				else
-					sendNotify("Задержка не может быть меньше 1 секунды! Текст пиара не может быть пустой!")
+					sendNotify("Р—Р°РґРµСЂР¶РєР° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РјРµРЅСЊС€Рµ 1 СЃРµРєСѓРЅРґС‹! РўРµРєСЃС‚ РїРёР°СЂР° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№!")
 				end
 
 				if iter_275_3.isType == 1 then
@@ -14374,26 +14771,26 @@ function vrSelected(arg_275_0)
 
 			var_0_1.SameLine()
 			var_0_1.SetCursorPosX(103)
-			var_0_1.TextColoredRGB("{cccccc} | Авто-реклама отправится через: " .. math.max(0, iter_275_3.isTimer - (os.time() - iter_275_3.osTime)) .. " секунд.")
+			var_0_1.TextColoredRGB("{cccccc} | РђРІС‚Рѕ-СЂРµРєР»Р°РјР° РѕС‚РїСЂР°РІРёС‚СЃСЏ С‡РµСЂРµР·: " .. math.max(0, iter_275_3.isTimer - (os.time() - iter_275_3.osTime)) .. " СЃРµРєСѓРЅРґ.")
 			var_0_1.SetCursorPos(var_0_1.ImVec2(15, 45))
 			var_0_1.PushItemWidth(var_0_1.GetWindowWidth() - 180)
 
 			local var_275_5 = var_0_1.new.char[256](var_0_5(iter_275_3.isPiarText))
 
-			if var_0_1.InputTextWithHintD("##text_" .. iter_275_2, var_0_5("Текст рекламного сообщения..."), var_275_5, var_0_45.sizeof(var_275_5)) then
+			if var_0_1.InputTextWithHintD("##text_" .. iter_275_2, var_0_5("РўРµРєСЃС‚ СЂРµРєР»Р°РјРЅРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ..."), var_275_5, var_0_45.sizeof(var_275_5)) then
 				iter_275_3.isPiarText = var_0_5:decode(var_0_45.string(var_275_5))
 
 				writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 			end
 
-			var_0_1.Hint("text_p" .. iter_275_2, var_0_5("Текст для пиара в чате"), false)
+			var_0_1.Hint("text_p" .. iter_275_2, var_0_5("РўРµРєСЃС‚ РґР»СЏ РїРёР°СЂР° РІ С‡Р°С‚Рµ"), false)
 			var_0_1.SameLine()
 			var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() - 160)
 			var_0_1.PushItemWidth(70)
 
 			local var_275_6 = var_0_1.new.char[256]("" .. iter_275_3.isTimer)
 
-			if var_0_1.InputTextWithHintD("##timer_" .. iter_275_2, var_0_5("(сек)"), var_275_6, var_0_45.sizeof(var_275_6), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_6)):match("^%d+$") then
+			if var_0_1.InputTextWithHintD("##timer_" .. iter_275_2, var_0_5("(СЃРµРє)"), var_275_6, var_0_45.sizeof(var_275_6), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_6)):match("^%d+$") then
 				local var_275_7 = stringToCount(var_0_5:decode(var_0_45.string(var_275_6)))
 
 				if var_275_7 then
@@ -14404,11 +14801,11 @@ function vrSelected(arg_275_0)
 				end
 			end
 
-			var_0_1.Hint("timer_p" .. iter_275_2, var_0_5("Задержка пиара в секундах."), false)
+			var_0_1.Hint("timer_p" .. iter_275_2, var_0_5("Р—Р°РґРµСЂР¶РєР° РїРёР°СЂР° РІ СЃРµРєСѓРЅРґР°С…."), false)
 			var_0_1.SameLine()
 			var_0_1.SetCursorPosX(var_0_1.GetWindowWidth() - 80)
 			var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
-			var_0_1.TextColoredRGB("{888888}секунд.")
+			var_0_1.TextColoredRGB("{888888}СЃРµРєСѓРЅРґ.")
 
 			var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
@@ -14428,7 +14825,7 @@ function vrSelected(arg_275_0)
 				writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 			end
 
-			var_0_1.Hint("hintselectedvr" .. iter_275_2, var_0_5("Выберите чат для рекламы который вы хотите использовать"), false)
+			var_0_1.Hint("hintselectedvr" .. iter_275_2, var_0_5("Р’С‹Р±РµСЂРёС‚Рµ С‡Р°С‚ РґР»СЏ СЂРµРєР»Р°РјС‹ РєРѕС‚РѕСЂС‹Р№ РІС‹ С…РѕС‚РёС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ"), false)
 			var_0_1.PopItemWidth()
 
 			var_0_1.GetStyle().PopupBorderSize = 1
@@ -14446,7 +14843,7 @@ function vrSelected(arg_275_0)
 					writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 				end
 
-				var_0_1.Hint("adVip_Hint" .. iter_275_2, var_0_5("Отправлять с рекламой в /vr?"), false)
+				var_0_1.Hint("adVip_Hint" .. iter_275_2, var_0_5("РћС‚РїСЂР°РІР»СЏС‚СЊ СЃ СЂРµРєР»Р°РјРѕР№ РІ /vr?"), false)
 				var_0_1.SameLine()
 
 				if var_0_1.CustomCheckbox("##adVip1_" .. iter_275_2, var_0_11.bool(iter_275_3.settingsAd["0"].isCounter.status), 0.1, 29) then
@@ -14455,7 +14852,7 @@ function vrSelected(arg_275_0)
 					writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 				end
 
-				var_0_1.Hint("adVip1_Hint" .. iter_275_2, var_0_5("Отправлять ограниченное колличество реклам?"), false)
+				var_0_1.Hint("adVip1_Hint" .. iter_275_2, var_0_5("РћС‚РїСЂР°РІР»СЏС‚СЊ РѕРіСЂР°РЅРёС‡РµРЅРЅРѕРµ РєРѕР»Р»РёС‡РµСЃС‚РІРѕ СЂРµРєР»Р°Рј?"), false)
 				var_0_1.SameLine()
 
 				if iter_275_3.settingsAd["0"].isCounter.status then
@@ -14463,7 +14860,7 @@ function vrSelected(arg_275_0)
 
 					local var_275_8 = var_0_1.new.char[256]("" .. iter_275_3.settingsAd["0"].isCounter.count)
 
-					if var_0_1.InputTextWithHintD("##countervr_" .. iter_275_2, var_0_5("(раз отправить)"), var_275_8, var_0_45.sizeof(var_275_8), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_8)):match("^%d+$") then
+					if var_0_1.InputTextWithHintD("##countervr_" .. iter_275_2, var_0_5("(СЂР°Р· РѕС‚РїСЂР°РІРёС‚СЊ)"), var_275_8, var_0_45.sizeof(var_275_8), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_8)):match("^%d+$") then
 						local var_275_9 = stringToCount(var_0_5:decode(var_0_45.string(var_275_8)))
 
 						if var_275_9 then
@@ -14474,9 +14871,9 @@ function vrSelected(arg_275_0)
 					end
 
 					var_0_1.SameLine()
-					var_0_1.Hint("countsendvr" .. iter_275_2, var_0_5("Сколько раз будет отправлена реклама.\nЗатем авто-реклама будет выключена."), false)
+					var_0_1.Hint("countsendvr" .. iter_275_2, var_0_5("РЎРєРѕР»СЊРєРѕ СЂР°Р· Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»РµРЅР° СЂРµРєР»Р°РјР°.\nР—Р°С‚РµРј Р°РІС‚Рѕ-СЂРµРєР»Р°РјР° Р±СѓРґРµС‚ РІС‹РєР»СЋС‡РµРЅР°."), false)
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
-					var_0_1.TextColoredRGB("{888888}раз отправить " .. (iter_275_3.settingsAd["0"].isADVIP and "рекламу." or "сообщение."))
+					var_0_1.TextColoredRGB("{888888}СЂР°Р· РѕС‚РїСЂР°РІРёС‚СЊ " .. (iter_275_3.settingsAd["0"].isADVIP and "СЂРµРєР»Р°РјСѓ." or "СЃРѕРѕР±С‰РµРЅРёРµ."))
 				end
 			elseif iter_275_3.isType == 1 then
 				var_0_1.SameLine()
@@ -14499,7 +14896,7 @@ function vrSelected(arg_275_0)
 					writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 				end
 
-				var_0_1.Hint("hintsendads" .. iter_275_2, var_0_5("Выберите радио-станцию куда будет отправляться авто-реклама.\nЕсли вы выбрали \"Автоматически\" - сообщения будут попадать в радио-станцию где больший актив."), false)
+				var_0_1.Hint("hintsendads" .. iter_275_2, var_0_5("Р’С‹Р±РµСЂРёС‚Рµ СЂР°РґРёРѕ-СЃС‚Р°РЅС†РёСЋ РєСѓРґР° Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»СЏС‚СЊСЃСЏ Р°РІС‚Рѕ-СЂРµРєР»Р°РјР°.\nР•СЃР»Рё РІС‹ РІС‹Р±СЂР°Р»Рё \"РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё\" - СЃРѕРѕР±С‰РµРЅРёСЏ Р±СѓРґСѓС‚ РїРѕРїР°РґР°С‚СЊ РІ СЂР°РґРёРѕ-СЃС‚Р°РЅС†РёСЋ РіРґРµ Р±РѕР»СЊС€РёР№ Р°РєС‚РёРІ."), false)
 				var_0_1.PopItemWidth()
 
 				var_0_1.GetStyle().PopupBorderSize = 1
@@ -14516,7 +14913,7 @@ function vrSelected(arg_275_0)
 					writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 				end
 
-				var_0_1.Hint("adVip_Hint" .. iter_275_2, var_0_5("Отправлять рекламное сообщение с пометкой VIP-AD?"), false)
+				var_0_1.Hint("adVip_Hint" .. iter_275_2, var_0_5("РћС‚РїСЂР°РІР»СЏС‚СЊ СЂРµРєР»Р°РјРЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ СЃ РїРѕРјРµС‚РєРѕР№ VIP-AD?"), false)
 				var_0_1.SameLine()
 
 				if var_0_1.CustomCheckbox("##adVip1s_" .. iter_275_2, var_0_11.bool(iter_275_3.settingsAd["1"].isRetry.status), 0.1, 29) then
@@ -14525,7 +14922,7 @@ function vrSelected(arg_275_0)
 					writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 				end
 
-				var_0_1.Hint("adVip1_Hint" .. iter_275_2, var_0_5("Функция повторной переотправки сообщений...\nкогда у вас долго не принимают сообщение."), false)
+				var_0_1.Hint("adVip1_Hint" .. iter_275_2, var_0_5("Р¤СѓРЅРєС†РёСЏ РїРѕРІС‚РѕСЂРЅРѕР№ РїРµСЂРµРѕС‚РїСЂР°РІРєРё СЃРѕРѕР±С‰РµРЅРёР№...\nРєРѕРіРґР° Сѓ РІР°СЃ РґРѕР»РіРѕ РЅРµ РїСЂРёРЅРёРјР°СЋС‚ СЃРѕРѕР±С‰РµРЅРёРµ."), false)
 				var_0_1.SameLine()
 
 				if iter_275_3.settingsAd["1"].isRetry.status then
@@ -14533,7 +14930,7 @@ function vrSelected(arg_275_0)
 
 					local var_275_10 = var_0_1.new.char[256]("" .. iter_275_3.settingsAd["1"].isRetry.retryTime)
 
-					if var_0_1.InputTextWithHintD("##timerRetrys_" .. iter_275_2, var_0_5("(сек)"), var_275_10, var_0_45.sizeof(var_275_10), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_10)):match("^%d+$") then
+					if var_0_1.InputTextWithHintD("##timerRetrys_" .. iter_275_2, var_0_5("(СЃРµРє)"), var_275_10, var_0_45.sizeof(var_275_10), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_10)):match("^%d+$") then
 						local var_275_11 = stringToCount(var_0_5:decode(var_0_45.string(var_275_10)))
 
 						if var_275_11 then
@@ -14544,9 +14941,9 @@ function vrSelected(arg_275_0)
 					end
 
 					var_0_1.SameLine()
-					var_0_1.Hint("timerRetryads" .. iter_275_2, var_0_5("Таймер, через сколько будет переподано сообщение в радио-центр.\nСледующая авто-переподача через: ") .. math.max(0, iter_275_3.settingsAd["1"].isRetry.retryTime - (os.time() - iter_275_3.settingsAd["1"].isRetry.osTime)) .. var_0_5(" секунд"), false)
+					var_0_1.Hint("timerRetryads" .. iter_275_2, var_0_5("РўР°Р№РјРµСЂ, С‡РµСЂРµР· СЃРєРѕР»СЊРєРѕ Р±СѓРґРµС‚ РїРµСЂРµРїРѕРґР°РЅРѕ СЃРѕРѕР±С‰РµРЅРёРµ РІ СЂР°РґРёРѕ-С†РµРЅС‚СЂ.\nРЎР»РµРґСѓСЋС‰Р°СЏ Р°РІС‚Рѕ-РїРµСЂРµРїРѕРґР°С‡Р° С‡РµСЂРµР·: ") .. math.max(0, iter_275_3.settingsAd["1"].isRetry.retryTime - (os.time() - iter_275_3.settingsAd["1"].isRetry.osTime)) .. var_0_5(" СЃРµРєСѓРЅРґ"), false)
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
-					var_0_1.TextColoredRGB("{888888}сек")
+					var_0_1.TextColoredRGB("{888888}СЃРµРє")
 				end
 			elseif iter_275_3.isType == 2 then
 				var_0_1.SameLine()
@@ -14557,7 +14954,7 @@ function vrSelected(arg_275_0)
 					writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 				end
 
-				var_0_1.Hint("schat_hint" .. iter_275_2, var_0_5("Отправлять ограниченное колличество реклам?"), false)
+				var_0_1.Hint("schat_hint" .. iter_275_2, var_0_5("РћС‚РїСЂР°РІР»СЏС‚СЊ РѕРіСЂР°РЅРёС‡РµРЅРЅРѕРµ РєРѕР»Р»РёС‡РµСЃС‚РІРѕ СЂРµРєР»Р°Рј?"), false)
 				var_0_1.SameLine()
 
 				if iter_275_3.settingsAd["2"].isCounter.status then
@@ -14565,7 +14962,7 @@ function vrSelected(arg_275_0)
 
 					local var_275_12 = var_0_1.new.char[256]("" .. iter_275_3.settingsAd["2"].isCounter.count)
 
-					if var_0_1.InputTextWithHintD("##schat__" .. iter_275_2, var_0_5("(раз отправить)"), var_275_12, var_0_45.sizeof(var_275_12), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_12)):match("^%d+$") then
+					if var_0_1.InputTextWithHintD("##schat__" .. iter_275_2, var_0_5("(СЂР°Р· РѕС‚РїСЂР°РІРёС‚СЊ)"), var_275_12, var_0_45.sizeof(var_275_12), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_12)):match("^%d+$") then
 						local var_275_13 = stringToCount(var_0_5:decode(var_0_45.string(var_275_12)))
 
 						if var_275_13 then
@@ -14576,9 +14973,9 @@ function vrSelected(arg_275_0)
 					end
 
 					var_0_1.SameLine()
-					var_0_1.Hint("schat__hint" .. iter_275_2, var_0_5("Сколько раз вы будете кричать сообщение."), false)
+					var_0_1.Hint("schat__hint" .. iter_275_2, var_0_5("РЎРєРѕР»СЊРєРѕ СЂР°Р· РІС‹ Р±СѓРґРµС‚Рµ РєСЂРёС‡Р°С‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ."), false)
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
-					var_0_1.TextColoredRGB("{888888}раз крикнуть сообщение")
+					var_0_1.TextColoredRGB("{888888}СЂР°Р· РєСЂРёРєРЅСѓС‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ")
 				end
 			elseif iter_275_3.isType == 3 then
 				var_0_1.SameLine()
@@ -14589,7 +14986,7 @@ function vrSelected(arg_275_0)
 					writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 				end
 
-				var_0_1.Hint("alchat_hint" .. iter_275_2, var_0_5("Отправлять ограниченное колличество сообщений в альянс?"), false)
+				var_0_1.Hint("alchat_hint" .. iter_275_2, var_0_5("РћС‚РїСЂР°РІР»СЏС‚СЊ РѕРіСЂР°РЅРёС‡РµРЅРЅРѕРµ РєРѕР»Р»РёС‡РµСЃС‚РІРѕ СЃРѕРѕР±С‰РµРЅРёР№ РІ Р°Р»СЊСЏРЅСЃ?"), false)
 				var_0_1.SameLine()
 
 				if iter_275_3.settingsAd["3"].isCounter.status then
@@ -14597,7 +14994,7 @@ function vrSelected(arg_275_0)
 
 					local var_275_14 = var_0_1.new.char[256]("" .. iter_275_3.settingsAd["3"].isCounter.count)
 
-					if var_0_1.InputTextWithHintD("##alchat__" .. iter_275_2, var_0_5("(раз отправить)"), var_275_14, var_0_45.sizeof(var_275_14), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_14)):match("^%d+$") then
+					if var_0_1.InputTextWithHintD("##alchat__" .. iter_275_2, var_0_5("(СЂР°Р· РѕС‚РїСЂР°РІРёС‚СЊ)"), var_275_14, var_0_45.sizeof(var_275_14), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_14)):match("^%d+$") then
 						local var_275_15 = stringToCount(var_0_5:decode(var_0_45.string(var_275_14)))
 
 						if var_275_15 then
@@ -14608,9 +15005,9 @@ function vrSelected(arg_275_0)
 					end
 
 					var_0_1.SameLine()
-					var_0_1.Hint("alchat__hint" .. iter_275_2, var_0_5("Сколько раз вы будете отправлять сообщение в альянс."), false)
+					var_0_1.Hint("alchat__hint" .. iter_275_2, var_0_5("РЎРєРѕР»СЊРєРѕ СЂР°Р· РІС‹ Р±СѓРґРµС‚Рµ РѕС‚РїСЂР°РІР»СЏС‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ РІ Р°Р»СЊСЏРЅСЃ."), false)
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
-					var_0_1.TextColoredRGB("{888888}раз написать в альянс")
+					var_0_1.TextColoredRGB("{888888}СЂР°Р· РЅР°РїРёСЃР°С‚СЊ РІ Р°Р»СЊСЏРЅСЃ")
 				end
 			elseif iter_275_3.isType == 4 then
 				var_0_1.SameLine()
@@ -14621,7 +15018,7 @@ function vrSelected(arg_275_0)
 					writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 				end
 
-				var_0_1.Hint("famchat_hint" .. iter_275_2, var_0_5("Отправлять ограниченное колличество реклам в фам чат?"), false)
+				var_0_1.Hint("famchat_hint" .. iter_275_2, var_0_5("РћС‚РїСЂР°РІР»СЏС‚СЊ РѕРіСЂР°РЅРёС‡РµРЅРЅРѕРµ РєРѕР»Р»РёС‡РµСЃС‚РІРѕ СЂРµРєР»Р°Рј РІ С„Р°Рј С‡Р°С‚?"), false)
 				var_0_1.SameLine()
 
 				if iter_275_3.settingsAd["4"].isCounter.status then
@@ -14629,7 +15026,7 @@ function vrSelected(arg_275_0)
 
 					local var_275_16 = var_0_1.new.char[256]("" .. iter_275_3.settingsAd["4"].isCounter.count)
 
-					if var_0_1.InputTextWithHintD("##famchat__" .. iter_275_2, var_0_5("(раз отправить)"), var_275_16, var_0_45.sizeof(var_275_16), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_16)):match("^%d+$") then
+					if var_0_1.InputTextWithHintD("##famchat__" .. iter_275_2, var_0_5("(СЂР°Р· РѕС‚РїСЂР°РІРёС‚СЊ)"), var_275_16, var_0_45.sizeof(var_275_16), var_0_1.InputTextFlags.CharsDecimal) and var_0_5:decode(var_0_45.string(var_275_16)):match("^%d+$") then
 						local var_275_17 = stringToCount(var_0_5:decode(var_0_45.string(var_275_16)))
 
 						if var_275_17 then
@@ -14640,9 +15037,9 @@ function vrSelected(arg_275_0)
 					end
 
 					var_0_1.SameLine()
-					var_0_1.Hint("famchat__hint" .. iter_275_2, var_0_5("Сколько раз вы писать в fam чат."), false)
+					var_0_1.Hint("famchat__hint" .. iter_275_2, var_0_5("РЎРєРѕР»СЊРєРѕ СЂР°Р· РІС‹ РїРёСЃР°С‚СЊ РІ fam С‡Р°С‚."), false)
 					var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 1)
-					var_0_1.TextColoredRGB("{888888}раз отправить в семейный чат")
+					var_0_1.TextColoredRGB("{888888}СЂР°Р· РѕС‚РїСЂР°РІРёС‚СЊ РІ СЃРµРјРµР№РЅС‹Р№ С‡Р°С‚")
 				end
 			end
 
@@ -14653,7 +15050,7 @@ function vrSelected(arg_275_0)
 				writeJsonFile(var_0_112, "moonloader/ArzMarket/vrProfile.json")
 			end
 
-			var_0_1.Hint("vrSelectedtrash" .. iter_275_2, var_0_5("После нажатия ЛКМ вы удалите данный авто-пиар."), false)
+			var_0_1.Hint("vrSelectedtrash" .. iter_275_2, var_0_5("РџРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ Р›РљРњ РІС‹ СѓРґР°Р»РёС‚Рµ РґР°РЅРЅС‹Р№ Р°РІС‚Рѕ-РїРёР°СЂ."), false)
 			var_0_1.EndChild()
 			var_0_1.PopStyleVar(2)
 			var_0_1.PopStyleColor()
@@ -14682,11 +15079,11 @@ function sputnikSelection(arg_276_0)
 		var_0_115.isActiveChooseSputnik = false
 	end
 
-	var_0_1.Hint("sputnikSelection", var_0_5("Нажмите сюда что бы вернуться в главное меню."), false)
+	var_0_1.Hint("sputnikSelection", var_0_5("РќР°Р¶РјРёС‚Рµ СЃСЋРґР° С‡С‚Рѕ Р±С‹ РІРµСЂРЅСѓС‚СЊСЃСЏ РІ РіР»Р°РІРЅРѕРµ РјРµРЅСЋ."), false)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX((var_0_1.GetWindowWidth() - 280) / 2)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
-	var_0_1.Link("https://youtu.be/l9HWWrG-XWQ", "https://rutube.ru/video/private/6d8efd091fdfde747476c2a512e8fb00/?p=aL4DTMmBxDPOsYMcl9tSpw", var_0_5("[!] Инструкция по разделу. Обучение."), nil, arg_276_0, "Ютуб", "Рутуб")
+	var_0_1.Link("https://youtu.be/l9HWWrG-XWQ", "https://rutube.ru/video/private/6d8efd091fdfde747476c2a512e8fb00/?p=aL4DTMmBxDPOsYMcl9tSpw", var_0_5("[!] РРЅСЃС‚СЂСѓРєС†РёСЏ РїРѕ СЂР°Р·РґРµР»Сѓ. РћР±СѓС‡РµРЅРёРµ."), nil, arg_276_0, "Р®С‚СѓР±", "Р СѓС‚СѓР±")
 	var_0_1.SameLine(635)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 2)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 5)
@@ -14700,7 +15097,7 @@ function sputnikSelection(arg_276_0)
 		OnClose = true
 	end
 
-	var_0_1.Hint("xmark", var_0_5("Нажав кнопку Вы закроете меню скрипта."), false)
+	var_0_1.Hint("xmark", var_0_5("РќР°Р¶Р°РІ РєРЅРѕРїРєСѓ Р’С‹ Р·Р°РєСЂРѕРµС‚Рµ РјРµРЅСЋ СЃРєСЂРёРїС‚Р°."), false)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 15)
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 15)
 
@@ -14760,7 +15157,7 @@ function sputnikSelection(arg_276_0)
 					var_0_115.sputnikPng = var_0_1.CreateTextureFromFile(getWorkingDirectory() .. "/ArzMarket/resource/sputnik/" .. var_0_114.selectedSputnik .. ".png")
 
 					writeJsonFile(var_0_114, var_0_113)
-					sendNotify("Спутник " .. iter_276_0 .. " выбран!")
+					sendNotify("РЎРїСѓС‚РЅРёРє " .. iter_276_0 .. " РІС‹Р±СЂР°РЅ!")
 
 					var_0_115.sputnikJson = nil
 					var_0_56[28][1] = os.time() - 888
@@ -14770,7 +15167,7 @@ function sputnikSelection(arg_276_0)
 				end
 			end
 
-			var_0_1.Hint("sputnik" .. iter_276_0, var_0_5("Вы действительно хотите выбрать спутника ") .. iter_276_0 .. var_0_5("?\nНажмите ЛКМ что бы выбрать."), false, {
+			var_0_1.Hint("sputnik" .. iter_276_0, var_0_5("Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ РІС‹Р±СЂР°С‚СЊ СЃРїСѓС‚РЅРёРєР° ") .. iter_276_0 .. var_0_5("?\nРќР°Р¶РјРёС‚Рµ Р›РљРњ С‡С‚Рѕ Р±С‹ РІС‹Р±СЂР°С‚СЊ."), false, {
 				x = 0,
 				y = 85
 			})
@@ -14831,7 +15228,7 @@ function sputnikSelection(arg_276_0)
 				var_0_115.sputnikPng = var_0_1.CreateTextureFromFile(getWorkingDirectory() .. "/ArzMarket/resource/sputnik/" .. var_0_114.selectedSputnik .. ".png")
 
 				writeJsonFile(var_0_114, var_0_113)
-				sendNotify("Спутник " .. iter_276_2 .. " выбран!")
+				sendNotify("РЎРїСѓС‚РЅРёРє " .. iter_276_2 .. " РІС‹Р±СЂР°РЅ!")
 
 				var_0_115.sputnikJson = nil
 				var_0_56[28][1] = os.time() - 888
@@ -14865,12 +15262,12 @@ function sputnikSelection(arg_276_0)
 
 			local var_276_13 = 0
 
-			var_0_1.OpenPopup(var_0_5("Изменение/Добавления спутников."))
+			var_0_1.OpenPopup(var_0_5("РР·РјРµРЅРµРЅРёРµ/Р”РѕР±Р°РІР»РµРЅРёСЏ СЃРїСѓС‚РЅРёРєРѕРІ."))
 
 			var_0_115.isPopupActive = true
 		end
 
-		var_0_1.Hint("sputnikd" .. iter_276_2, var_0_5("Вы действительно хотите выбрать спутника ") .. iter_276_2 .. var_0_5("?\nНажмите ЛКМ что бы выбрать.\nДля редактирования нажмите на колесико мыши как на клавишу."), false, {
+		var_0_1.Hint("sputnikd" .. iter_276_2, var_0_5("Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ РІС‹Р±СЂР°С‚СЊ СЃРїСѓС‚РЅРёРєР° ") .. iter_276_2 .. var_0_5("?\nРќР°Р¶РјРёС‚Рµ Р›РљРњ С‡С‚Рѕ Р±С‹ РІС‹Р±СЂР°С‚СЊ.\nР”Р»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ РЅР°Р¶РјРёС‚Рµ РЅР° РєРѕР»РµСЃРёРєРѕ РјС‹С€Рё РєР°Рє РЅР° РєР»Р°РІРёС€Сѓ."), false, {
 			x = 0,
 			y = 85
 		})
@@ -14901,7 +15298,7 @@ function sputnikSelection(arg_276_0)
 		var_0_1.GetWindowDrawList():AddRectFilled(var_276_16, var_0_1.ImVec2(var_276_16.x + 140, var_276_16.y + 140), var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_0_114.input[1], var_0_114.input[2], var_0_114.input[3], 0.02)), 5, 0)
 		var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetCursorPos().x + 20, var_0_1.GetCursorPos().y + 145))
 		var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 17)
-		var_0_1.TextDisabled(var_0_5("Добавить спутника."))
+		var_0_1.TextDisabled(var_0_5("Р”РѕР±Р°РІРёС‚СЊ СЃРїСѓС‚РЅРёРєР°."))
 		var_0_1.EndCustomInvisibleChild()
 
 		if var_0_1.IsItemClicked() then
@@ -14912,13 +15309,13 @@ function sputnikSelection(arg_276_0)
 				""
 			}
 
-			var_0_1.OpenPopup(var_0_5("Изменение/Добавления спутников."))
+			var_0_1.OpenPopup(var_0_5("РР·РјРµРЅРµРЅРёРµ/Р”РѕР±Р°РІР»РµРЅРёСЏ СЃРїСѓС‚РЅРёРєРѕРІ."))
 
 			var_0_115.isPopupActive = true
 		end
 
 		sputnikCustomer()
-		var_0_1.Hint("sputnikPlus", var_0_5("Вы действительно хотите добавить своего спутника ?\nНажмите ЛКМ что бы добавить."), false, {
+		var_0_1.Hint("sputnikPlus", var_0_5("Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ РґРѕР±Р°РІРёС‚СЊ СЃРІРѕРµРіРѕ СЃРїСѓС‚РЅРёРєР° ?\nРќР°Р¶РјРёС‚Рµ Р›РљРњ С‡С‚Рѕ Р±С‹ РґРѕР±Р°РІРёС‚СЊ."), false, {
 			x = 0,
 			y = 85
 		})
@@ -14930,12 +15327,12 @@ function sputnikSelection(arg_276_0)
 
 	local var_276_17 = var_0_1.GetCursorScreenPos()
 
-	var_0_1.CenterText(var_0_5("Настройки \"Cпутников\"."))
+	var_0_1.CenterText(var_0_5("РќР°СЃС‚СЂРѕР№РєРё \"CРїСѓС‚РЅРёРєРѕРІ\"."))
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetCursorPos().x + 10, var_0_1.GetCursorPos().y + 5))
 	var_0_1.CustomInvisibleChild("sputniksettings", var_0_1.ImVec2(var_0_1.GetWindowWidth() / 1.08, 100), false)
 
-	if var_0_1.Button(var_0_5("Изменить позицию спутника при закрытом меню.")) then
-		AFKMessage("Для сохранения позиции нажмите ЛКМ.")
+	if var_0_1.Button(var_0_5("РР·РјРµРЅРёС‚СЊ РїРѕР·РёС†РёСЋ СЃРїСѓС‚РЅРёРєР° РїСЂРё Р·Р°РєСЂС‹С‚РѕРј РјРµРЅСЋ.")) then
+		AFKMessage("Р”Р»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ РїРѕР·РёС†РёРё РЅР°Р¶РјРёС‚Рµ Р›РљРњ.")
 
 		var_0_115.edit_sputnik = true
 
@@ -14951,7 +15348,7 @@ function sputnikSelection(arg_276_0)
 				}
 
 				if var_0_1.IsMouseClicked(0) then
-					AFKMessage("Сохранено.")
+					AFKMessage("РЎРѕС…СЂР°РЅРµРЅРѕ.")
 
 					var_0_115.edit_sputnik = false
 
@@ -14984,10 +15381,10 @@ function sputnikSelection(arg_276_0)
 	end
 
 	var_0_1.SameLine()
-	var_0_1.Text(var_0_5(" Размер Спутника."))
+	var_0_1.Text(var_0_5(" Р Р°Р·РјРµСЂ РЎРїСѓС‚РЅРёРєР°."))
 	var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 5)
 
-	if var_0_1.ToggleButton(var_0_5("Фразы над головой."), var_0_115.isEnabledSputnikWords) then
+	if var_0_1.ToggleButton(var_0_5("Р¤СЂР°Р·С‹ РЅР°Рґ РіРѕР»РѕРІРѕР№."), var_0_115.isEnabledSputnikWords) then
 		var_0_106.cfg.isEnabledSputnikWords = var_0_115.isEnabledSputnikWords[0]
 		var_0_56[28][1] = os.time() - 888
 		var_0_56[28][2] = 1
@@ -15012,87 +15409,87 @@ function menu_settings()
 
 	var_0_1.PushFont(fonts[18])
 
-	if var_0_1.ColorEdit4(var_0_5(" Цвет окна [Правая половина]"), var_0_184) then
+	if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ РѕРєРЅР° [РџСЂР°РІР°СЏ РїРѕР»РѕРІРёРЅР°]"), var_0_184) then
 		var_0_114.window[1], var_0_114.window[2], var_0_114.window[3], var_0_114.window[4] = var_0_184[0], var_0_184[1], var_0_184[2], var_0_184[3]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ColorEdit4(var_0_5(" Цвет окна [Левая половина]"), var_0_197) then
+	if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ РѕРєРЅР° [Р›РµРІР°СЏ РїРѕР»РѕРІРёРЅР°]"), var_0_197) then
 		var_0_114.left_menu[1], var_0_114.left_menu[2], var_0_114.left_menu[3], var_0_114.left_menu[4] = var_0_197[0], var_0_197[1], var_0_197[2], var_0_197[3]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if not var_0_165[0] and var_0_1.ColorEdit4(var_0_5(" Цвет обводки меню"), var_0_185) then
+	if not var_0_165[0] and var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ РѕР±РІРѕРґРєРё РјРµРЅСЋ"), var_0_185) then
 		var_0_114.rgb_window[1], var_0_114.rgb_window[2], var_0_114.rgb_window[3], var_0_114.rgb_window[4] = var_0_185[0], var_0_185[1], var_0_185[2], var_0_185[3]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ColorEdit4(var_0_5(" Цвет кнопок"), var_0_187) then
+	if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ РєРЅРѕРїРѕРє"), var_0_187) then
 		var_0_114.button[1], var_0_114.button[2], var_0_114.button[3], var_0_114.button[4] = var_0_187[0], var_0_187[1], var_0_187[2], var_0_187[3]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ColorEdit4(var_0_5(" Цвет плажки активного меню"), var_0_196) then
+	if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ РїР»Р°Р¶РєРё Р°РєС‚РёРІРЅРѕРіРѕ РјРµРЅСЋ"), var_0_196) then
 		var_0_114.active_selector_color[1], var_0_114.active_selector_color[2], var_0_114.active_selector_color[3], var_0_114.active_selector_color[4] = var_0_196[0], var_0_196[1], var_0_196[2], var_0_196[3]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ColorEdit4(var_0_5(" Цвет слайдера меню"), var_0_183) then
+	if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ СЃР»Р°Р№РґРµСЂР° РјРµРЅСЋ"), var_0_183) then
 		var_0_114.slider[1], var_0_114.slider[2], var_0_114.slider[3], var_0_114.slider[4] = var_0_183[0], var_0_183[1], var_0_183[2], var_0_183[3]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ColorEdit3(var_0_5(" Цвет переключателей [Вкл]"), var_0_200) then
+	if var_0_1.ColorEdit3(var_0_5(" Р¦РІРµС‚ РїРµСЂРµРєР»СЋС‡Р°С‚РµР»РµР№ [Р’РєР»]"), var_0_200) then
 		var_0_114.active_toggle_button[1], var_0_114.active_toggle_button[2], var_0_114.active_toggle_button[3] = var_0_200[0], var_0_200[1], var_0_200[2]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ColorEdit3(var_0_5(" Цвет переключателей [Выкл]"), var_0_201) then
+	if var_0_1.ColorEdit3(var_0_5(" Р¦РІРµС‚ РїРµСЂРµРєР»СЋС‡Р°С‚РµР»РµР№ [Р’С‹РєР»]"), var_0_201) then
 		var_0_114.deactive_toggle_button[1], var_0_114.deactive_toggle_button[2], var_0_114.deactive_toggle_button[3] = var_0_201[0], var_0_201[1], var_0_201[2]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ColorEdit4(var_0_5(" Цвет текста в меню"), var_0_195) then
+	if var_0_1.ColorEdit4(var_0_5(" Р¦РІРµС‚ С‚РµРєСЃС‚Р° РІ РјРµРЅСЋ"), var_0_195) then
 		var_0_114.text[1], var_0_114.text[2], var_0_114.text[3], var_0_114.text[4] = var_0_195[0], var_0_195[1], var_0_195[2], var_0_195[3]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ColorEdit3(var_0_5(" Цвет текста в меню [Товаров]"), var_0_202) then
+	if var_0_1.ColorEdit3(var_0_5(" Р¦РІРµС‚ С‚РµРєСЃС‚Р° РІ РјРµРЅСЋ [РўРѕРІР°СЂРѕРІ]"), var_0_202) then
 		var_0_114.color_text_market[1], var_0_114.color_text_market[2], var_0_114.color_text_market[3] = var_0_202[0], var_0_202[1], var_0_202[2]
 
 		writeJsonFile(var_0_114, var_0_113)
 		var_0_1.FrameTheme()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Система спутников"), var_0_115.isEnabledSputnik) then
+	if var_0_1.ToggleButton(var_0_5("РЎРёСЃС‚РµРјР° СЃРїСѓС‚РЅРёРєРѕРІ"), var_0_115.isEnabledSputnik) then
 		var_0_106.cfg.isEnabledSputnik = var_0_115.isEnabledSputnik[0]
 
 		save_all()
 	end
 
-	if var_0_115.isEnabledSputnik[0] and var_0_1.Button(var_0_5("Открыть настройки спутников"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.1, 27)) then
+	if var_0_115.isEnabledSputnik[0] and var_0_1.Button(var_0_5("РћС‚РєСЂС‹С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё СЃРїСѓС‚РЅРёРєРѕРІ"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.1, 27)) then
 		var_0_115.isActiveChooseSputnik = true
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Размытие фона меню"), var_0_157) then
+	if var_0_1.ToggleButton(var_0_5("Р Р°Р·РјС‹С‚РёРµ С„РѕРЅР° РјРµРЅСЋ"), var_0_157) then
 		var_0_106.cfg.left_menu_blur = var_0_157[0]
 		var_0_161[0] = var_0_157[0]
 		var_0_106.cfg.right_menu_blur = var_0_161[0]
@@ -15101,58 +15498,58 @@ function menu_settings()
 	end
 
 	if var_0_157[0] then
-		if var_0_1.ToggleButton(var_0_5("Размытие контура меню"), var_0_162) then
+		if var_0_1.ToggleButton(var_0_5("Р Р°Р·РјС‹С‚РёРµ РєРѕРЅС‚СѓСЂР° РјРµРЅСЋ"), var_0_162) then
 			var_0_106.cfg.blur_rgb_window = var_0_162[0]
 
 			save_all()
 		end
 
-		if var_0_1.ToggleButton(var_0_5("Размытие за меню когда оно открыто"), var_0_163) then
+		if var_0_1.ToggleButton(var_0_5("Р Р°Р·РјС‹С‚РёРµ Р·Р° РјРµРЅСЋ РєРѕРіРґР° РѕРЅРѕ РѕС‚РєСЂС‹С‚Рѕ"), var_0_163) then
 			var_0_106.cfg.background_blure = var_0_163[0]
 
 			save_all()
 		end
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Летающие частицы"), var_0_164) then
+	if var_0_1.ToggleButton(var_0_5("Р›РµС‚Р°СЋС‰РёРµ С‡Р°СЃС‚РёС†С‹"), var_0_164) then
 		var_0_106.cfg.Particles_show = var_0_164[0]
 
 		save_all()
 	end
 
 	if var_0_164[0] then
-		if var_0_1.Button(var_0_5("Открыть настройки частиц"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.1, 27)) then
-			var_0_1.OpenPopup(var_0_5("[PS] Настройки отображения частиц"))
+		if var_0_1.Button(var_0_5("РћС‚РєСЂС‹С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё С‡Р°СЃС‚РёС†"), var_0_1.ImVec2(var_0_1.GetWindowWidth() / 2.1, 27)) then
+			var_0_1.OpenPopup(var_0_5("[PS] РќР°СЃС‚СЂРѕР№РєРё РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ С‡Р°СЃС‚РёС†"))
 		end
 
 		Particles_settngsFunc()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Стиль переключателей"), var_0_143) then
+	if var_0_1.ToggleButton(var_0_5("РЎС‚РёР»СЊ РїРµСЂРµРєР»СЋС‡Р°С‚РµР»РµР№"), var_0_143) then
 		var_0_106.cfg.button_style = var_0_143[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Включить обводку элементов"), var_0_139) then
+	if var_0_1.ToggleButton(var_0_5("Р’РєР»СЋС‡РёС‚СЊ РѕР±РІРѕРґРєСѓ СЌР»РµРјРµРЅС‚РѕРІ"), var_0_139) then
 		var_0_106.cfg.border_side = var_0_139[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Тип обводки экрана"), var_0_165) then
+	if var_0_1.ToggleButton(var_0_5("РўРёРї РѕР±РІРѕРґРєРё СЌРєСЂР°РЅР°"), var_0_165) then
 		var_0_106.cfg.rgb_window = var_0_165[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Плавные открытия в меню"), var_0_140) then
+	if var_0_1.ToggleButton(var_0_5("РџР»Р°РІРЅС‹Рµ РѕС‚РєСЂС‹С‚РёСЏ РІ РјРµРЅСЋ"), var_0_140) then
 		var_0_106.cfg.alpha_menuS = var_0_140[0]
 
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Снег при открытии меню"), var_0_115.snow_enabled) then
+	if var_0_1.ToggleButton(var_0_5("РЎРЅРµРі РїСЂРё РѕС‚РєСЂС‹С‚РёРё РјРµРЅСЋ"), var_0_115.snow_enabled) then
 		if var_0_115.snow_enabled[0] == false then
 			custom_packet({
 				14,
@@ -15168,7 +15565,7 @@ function menu_settings()
 		save_all()
 	end
 
-	if var_0_1.ToggleButton(var_0_5("Эффект холода при открытии меню"), var_0_115.cold_enabled) then
+	if var_0_1.ToggleButton(var_0_5("Р­С„С„РµРєС‚ С…РѕР»РѕРґР° РїСЂРё РѕС‚РєСЂС‹С‚РёРё РјРµРЅСЋ"), var_0_115.cold_enabled) then
 		if var_0_115.cold_enabled[0] == false then
 			custom_packet({
 				14,
@@ -15189,9 +15586,9 @@ function menu_settings()
 	var_0_1.PushStyleVarVec2(var_0_1.StyleVar.WindowPadding, var_0_1.ImVec2(0, 15))
 
 	local var_279_0 = {
-		var_0_5("Маленький режим."),
-		var_0_5("Средний режим."),
-		var_0_5("Большой режим.")
+		var_0_5("РњР°Р»РµРЅСЊРєРёР№ СЂРµР¶РёРј."),
+		var_0_5("РЎСЂРµРґРЅРёР№ СЂРµР¶РёРј."),
+		var_0_5("Р‘РѕР»СЊС€РѕР№ СЂРµР¶РёРј.")
 	}
 	local var_279_1 = var_0_1.new["const char*"][#var_279_0](var_279_0)
 
@@ -15204,27 +15601,27 @@ function menu_settings()
 			save_all()
 			thisScript():reload()
 		else
-			deAFKMessage(debug.getinfo(1, "l"), "временно не доступно")
-			AFKMessage("Данный режим временно не доступен! Он будет доступен позже!")
+			deAFKMessage(debug.getinfo(1, "l"), "РІСЂРµРјРµРЅРЅРѕ РЅРµ РґРѕСЃС‚СѓРїРЅРѕ")
+			AFKMessage("Р”Р°РЅРЅС‹Р№ СЂРµР¶РёРј РІСЂРµРјРµРЅРЅРѕ РЅРµ РґРѕСЃС‚СѓРїРµРЅ! РћРЅ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРµРЅ РїРѕР·Р¶Рµ!")
 		end
 	end
 
-	var_0_1.Hint("menu_settings", var_0_5("Всего имеется 3 режима для разных мониторов.\nМожете настроить размер меню под себя."), false)
+	var_0_1.Hint("menu_settings", var_0_5("Р’СЃРµРіРѕ РёРјРµРµС‚СЃСЏ 3 СЂРµР¶РёРјР° РґР»СЏ СЂР°Р·РЅС‹С… РјРѕРЅРёС‚РѕСЂРѕРІ.\nРњРѕР¶РµС‚Рµ РЅР°СЃС‚СЂРѕРёС‚СЊ СЂР°Р·РјРµСЂ РјРµРЅСЋ РїРѕРґ СЃРµР±СЏ."), false)
 
 	var_0_1.GetStyle().PopupBorderSize = 1
 
 	var_0_1.PopStyleVar(1)
 
-	if var_0_1.SliderFloat(var_0_5(" Скорость переключения"), var_0_149, 0.01, 10) then
+	if var_0_1.SliderFloat(var_0_5(" РЎРєРѕСЂРѕСЃС‚СЊ РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ"), var_0_149, 0.01, 10) then
 		var_0_106.cfg.button_duration = var_0_149[0]
 
 		save_all()
 	end
 
-	var_0_1.SliderFloat(var_0_5(" Скорость смена цвета [Контур]"), var_0_99, 0, 5)
-	var_0_1.SliderFloat(var_0_5(" Прозрачность [Контур]"), var_0_98, 0, 1)
-	var_0_1.SliderFloat(var_0_5(" Размер полоски [Контур]"), var_0_100, 0, 10)
-	var_0_1.SliderInt(var_0_5(" Степень размытия"), var_0_199, 1, 20)
+	var_0_1.SliderFloat(var_0_5(" РЎРєРѕСЂРѕСЃС‚СЊ СЃРјРµРЅР° С†РІРµС‚Р° [РљРѕРЅС‚СѓСЂ]"), var_0_99, 0, 5)
+	var_0_1.SliderFloat(var_0_5(" РџСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ [РљРѕРЅС‚СѓСЂ]"), var_0_98, 0, 1)
+	var_0_1.SliderFloat(var_0_5(" Р Р°Р·РјРµСЂ РїРѕР»РѕСЃРєРё [РљРѕРЅС‚СѓСЂ]"), var_0_100, 0, 10)
+	var_0_1.SliderInt(var_0_5(" РЎС‚РµРїРµРЅСЊ СЂР°Р·РјС‹С‚РёСЏ"), var_0_199, 1, 20)
 
 	var_0_1.GetStyle().FrameBorderSize = 0
 
@@ -15285,8 +15682,8 @@ function var_0_61.onSendDialogResponse(arg_281_0, arg_281_1, arg_281_2, arg_281_
 		openCrr()
 	end
 
-	if var_0_106.cfg.active_lavka_number ~= -1 and arg_281_3 == "- [ArzMarket] Найти свою лавку. [" .. var_0_106.cfg.active_lavka_number .. "]" and var_0_125 ~= -1 and arg_281_1 == 1 then
-		AFKMessage("Метка вашей лавки отображена на карте.")
+	if var_0_106.cfg.active_lavka_number ~= -1 and arg_281_3 == "- [ArzMarket] РќР°Р№С‚Рё СЃРІРѕСЋ Р»Р°РІРєСѓ. [" .. var_0_106.cfg.active_lavka_number .. "]" and var_0_125 ~= -1 and arg_281_1 == 1 then
+		AFKMessage("РњРµС‚РєР° РІР°С€РµР№ Р»Р°РІРєРё РѕС‚РѕР±СЂР°Р¶РµРЅР° РЅР° РєР°СЂС‚Рµ.")
 		SendToServer("/findilavka " .. var_0_106.cfg.active_lavka_number)
 		sampSendDialogResponsed(last_dialog_id, 0, 0)
 
@@ -15304,7 +15701,7 @@ function var_0_61.onSendDialogResponse(arg_281_0, arg_281_1, arg_281_2, arg_281_
 		deAFKMessage(debug.getinfo(1, "l"), "[step 4/2] enable custom SELL_BUY")
 	end
 
-	if arg_281_3:find("Открыть меню ArzMarket") and arg_281_1 == 1 then
+	if arg_281_3:find("РћС‚РєСЂС‹С‚СЊ РјРµРЅСЋ ArzMarket") and arg_281_1 == 1 then
 		openCrr()
 	end
 
@@ -15338,7 +15735,7 @@ function var_0_61.onSendClickTextDraw(arg_283_0)
 	last_textdraw_id = arg_283_0
 
 	if var_0_211[2] and arg_283_0 ~= 65535 then
-		AFKMessage("Отключите очистку товара, тогда инвентарь будет доступен")
+		AFKMessage("РћС‚РєР»СЋС‡РёС‚Рµ РѕС‡РёСЃС‚РєСѓ С‚РѕРІР°СЂР°, С‚РѕРіРґР° РёРЅРІРµРЅС‚Р°СЂСЊ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРµРЅ")
 
 		return false
 	end
@@ -15444,7 +15841,7 @@ function var_0_61.onShowTextDraw(arg_286_0, arg_286_1)
 	end
 
 	if arg_286_1.text == "ON_SALE" or arg_286_1.text == "HA_\x8CPO\x83A\x84E" then
-		deAFKMessage(debug.getinfo(1, "l"), "Открытие инвента")
+		deAFKMessage(debug.getinfo(1, "l"), "РћС‚РєСЂС‹С‚РёРµ РёРЅРІРµРЅС‚Р°")
 
 		is_invent_open = arg_286_0
 	end
@@ -15581,14 +15978,14 @@ function showTraderChat(arg_287_0)
 				local var_287_4 = checkMessageTime("[" .. var_287_2 .. "] " .. var_287_3)
 
 				if var_287_4 ~= false then
-					local var_287_5, var_287_6, var_287_7, var_287_8 = var_0_5:decode(var_287_4):match("([^%s]+)%[(%d+)%]%s+говорит:%s*{([^}]+)}%s+(.*)")
+					local var_287_5, var_287_6, var_287_7, var_287_8 = var_0_5:decode(var_287_4):match("([^%s]+)%[(%d+)%]%s+РіРѕРІРѕСЂРёС‚:%s*{([^}]+)}%s+(.*)")
 
 					if var_287_5 == trader_name and var_287_7 == "B7AFAF" and var_287_8 ~= nil then
 						local var_287_9 = wrap_text(var_287_8, 30)
 
 						for iter_287_2, iter_287_3 in ipairs(var_287_9) do
 							deAFKMessage(debug.getinfo(1, "l"), " [EVENT] wrap_text " .. iter_287_2 .. " | " .. iter_287_3)
-							table.insert(trade_chatM, iter_287_2 == 1 and var_287_5 .. "[" .. var_287_6 .. "] говорит: {B7AFAF}" .. iter_287_3 or "{B7AFAF}" .. iter_287_3)
+							table.insert(trade_chatM, iter_287_2 == 1 and var_287_5 .. "[" .. var_287_6 .. "] РіРѕРІРѕСЂРёС‚: {B7AFAF}" .. iter_287_3 or "{B7AFAF}" .. iter_287_3)
 
 							if var_0_115.ChatTrade[1] == 1 then
 								var_0_115.ChatTrade[2] = true
@@ -15722,13 +16119,13 @@ function marketplace_search(arg_293_0)
 	local var_293_8 = var_0_1.ImVec2(var_293_7.x + 5, var_293_7.y + 6)
 
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 80, var_0_1.GetCursorPos().y + 5))
-	var_0_1.TextColoredRGB("{cccccc} Последний раз обновляли список лавок: " .. os.time() - var_0_56[16] .. " сек назад.")
+	var_0_1.TextColoredRGB("{cccccc} РџРѕСЃР»РµРґРЅРёР№ СЂР°Р· РѕР±РЅРѕРІР»СЏР»Рё СЃРїРёСЃРѕРє Р»Р°РІРѕРє: " .. os.time() - var_0_56[16] .. " СЃРµРє РЅР°Р·Р°Рґ.")
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 8, var_0_1.GetCursorPos().y))
-	var_0_1.TextColoredRGB("{cccccc}Всего товаров найдено в лавках: " .. var_0_115.Market_ForBuy + var_0_115.Market_ForSell .. " шт.")
+	var_0_1.TextColoredRGB("{cccccc}Р’СЃРµРіРѕ С‚РѕРІР°СЂРѕРІ РЅР°Р№РґРµРЅРѕ РІ Р»Р°РІРєР°С…: " .. var_0_115.Market_ForBuy + var_0_115.Market_ForSell .. " С€С‚.")
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 3)
 	var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 8, var_0_1.GetCursorPos().y))
-	var_0_1.TextColoredRGB("{cccccc}Сортировка отображения предметов: ")
+	var_0_1.TextColoredRGB("{cccccc}РЎРѕСЂС‚РёСЂРѕРІРєР° РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РїСЂРµРґРјРµС‚РѕРІ: ")
 	var_0_1.SameLine()
 	var_0_1.PushFont(fonts[18])
 
@@ -15745,7 +16142,7 @@ function marketplace_search(arg_293_0)
 		var_0_115.searchStorage.marketPlaceSell[2] = ""
 	end
 
-	var_0_1.Hint("sort_mode_Marketplace", var_0_115.sort_mode_Marketplace == 0 and var_0_5("Сейчас включена сортировка по умолчанию.\nЭто означает что товары разбросаны в хаотично.") or var_0_115.sort_mode_Marketplace == 1 and var_0_5("Сейчас включена сортировка по цене. (По возрастанию)\nВ вверху списка будет отображаться наименьшая цена в лавках.") or var_0_5("Сейчас включен режим от большей цены к меньшему. (По убыванию)\nЭто означает что в самом верху самые дорогие товары."), false)
+	var_0_1.Hint("sort_mode_Marketplace", var_0_115.sort_mode_Marketplace == 0 and var_0_5("РЎРµР№С‡Р°СЃ РІРєР»СЋС‡РµРЅР° СЃРѕСЂС‚РёСЂРѕРІРєР° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ.\nР­С‚Рѕ РѕР·РЅР°С‡Р°РµС‚ С‡С‚Рѕ С‚РѕРІР°СЂС‹ СЂР°Р·Р±СЂРѕСЃР°РЅС‹ РІ С…Р°РѕС‚РёС‡РЅРѕ.") or var_0_115.sort_mode_Marketplace == 1 and var_0_5("РЎРµР№С‡Р°СЃ РІРєР»СЋС‡РµРЅР° СЃРѕСЂС‚РёСЂРѕРІРєР° РїРѕ С†РµРЅРµ. (РџРѕ РІРѕР·СЂР°СЃС‚Р°РЅРёСЋ)\nР’ РІРІРµСЂС…Сѓ СЃРїРёСЃРєР° Р±СѓРґРµС‚ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊСЃСЏ РЅР°РёРјРµРЅСЊС€Р°СЏ С†РµРЅР° РІ Р»Р°РІРєР°С….") or var_0_5("РЎРµР№С‡Р°СЃ РІРєР»СЋС‡РµРЅ СЂРµР¶РёРј РѕС‚ Р±РѕР»СЊС€РµР№ С†РµРЅС‹ Рє РјРµРЅСЊС€РµРјСѓ. (РџРѕ СѓР±С‹РІР°РЅРёСЋ)\nР­С‚Рѕ РѕР·РЅР°С‡Р°РµС‚ С‡С‚Рѕ РІ СЃР°РјРѕРј РІРµСЂС…Сѓ СЃР°РјС‹Рµ РґРѕСЂРѕРіРёРµ С‚РѕРІР°СЂС‹."), false)
 
 	var_0_1.GetStyle().FrameBorderSize = var_0_139[0] and 1 or 0
 
@@ -15753,10 +16150,10 @@ function marketplace_search(arg_293_0)
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 2)
 	var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 	var_0_1.SetCursorPos(var_0_1.ImVec2(var_0_1.GetWindowWidth() / 45 + 1, var_0_1.GetCursorPos().y - 25))
-	var_0_1.TextColoredRGB("{cccccc}Предметов на скупке: " .. var_0_115.Market_ForBuy)
+	var_0_1.TextColoredRGB("{cccccc}РџСЂРµРґРјРµС‚РѕРІ РЅР° СЃРєСѓРїРєРµ: " .. var_0_115.Market_ForBuy)
 	var_0_1.SameLine()
 	var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
-	var_0_1.TextColoredRGB("{cccccc}Предметов на Продаже: " .. var_0_115.Market_ForSell)
+	var_0_1.TextColoredRGB("{cccccc}РџСЂРµРґРјРµС‚РѕРІ РЅР° РџСЂРѕРґР°Р¶Рµ: " .. var_0_115.Market_ForSell)
 	var_0_1.GetWindowDrawList():AddRect(var_0_1.ImVec2(var_293_7.x + 1, var_293_7.y), var_0_1.ImVec2(var_293_7.x + var_293_5 / 2, var_293_7.y + var_293_6), var_0_1.GetColorU32Vec4(var_0_1.ImVec4(var_0_114.Border[1], var_0_114.Border[2], var_0_114.Border[3], var_0_114.Border[4])), 5, 0, 1.8)
 	var_0_1.EndCustomInvisibleChild()
 
@@ -15847,7 +16244,7 @@ function searchFunc(arg_294_0)
 				var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 				var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 				var_0_1.TextColoredRGB(ImVec3ToHEX(var_0_114.color_text_market) .. changeExtraSim("[" .. var_294_9[iter_294_4 + 1].LavkaUid .. "] ", 35))
-				var_0_1.Hint("helps" .. iter_294_4, var_0_28[ip] == var_294_9[iter_294_4 + 1].serverId and var_0_5("Товар: ") .. var_0_5(var_294_9[iter_294_4 + 1].name) .. var_0_5("\nЛавка номер ") .. var_294_9[iter_294_4 + 1].LavkaUid .. var_0_5("\nВладелец: ") .. var_0_5(var_294_9[iter_294_4 + 1].username) .. var_0_5("\nНажмите ЛКМ что бы отметить на карте.\nСервер: ") .. var_294_9[iter_294_4 + 1].serverId or var_0_5("Товар: ") .. var_0_5(var_294_9[iter_294_4 + 1].name) .. var_0_5("\nЛавка номер ") .. var_294_9[iter_294_4 + 1].LavkaUid .. var_0_5("\nВладелец: ") .. var_0_5(var_294_9[iter_294_4 + 1].username) .. var_0_5("\nСервер: ") .. var_294_9[iter_294_4 + 1].serverId, false)
+				var_0_1.Hint("helps" .. iter_294_4, var_0_28[ip] == var_294_9[iter_294_4 + 1].serverId and var_0_5("РўРѕРІР°СЂ: ") .. var_0_5(var_294_9[iter_294_4 + 1].name) .. var_0_5("\nР›Р°РІРєР° РЅРѕРјРµСЂ ") .. var_294_9[iter_294_4 + 1].LavkaUid .. var_0_5("\nР’Р»Р°РґРµР»РµС†: ") .. var_0_5(var_294_9[iter_294_4 + 1].username) .. var_0_5("\nРќР°Р¶РјРёС‚Рµ Р›РљРњ С‡С‚Рѕ Р±С‹ РѕС‚РјРµС‚РёС‚СЊ РЅР° РєР°СЂС‚Рµ.\nРЎРµСЂРІРµСЂ: ") .. var_294_9[iter_294_4 + 1].serverId or var_0_5("РўРѕРІР°СЂ: ") .. var_0_5(var_294_9[iter_294_4 + 1].name) .. var_0_5("\nР›Р°РІРєР° РЅРѕРјРµСЂ ") .. var_294_9[iter_294_4 + 1].LavkaUid .. var_0_5("\nР’Р»Р°РґРµР»РµС†: ") .. var_0_5(var_294_9[iter_294_4 + 1].username) .. var_0_5("\nРЎРµСЂРІРµСЂ: ") .. var_294_9[iter_294_4 + 1].serverId, false)
 				var_0_1.SameLine()
 
 				if var_0_1.IsItemClicked() and var_0_28[ip] == var_294_9[iter_294_4 + 1].serverId then
@@ -15865,7 +16262,7 @@ function searchFunc(arg_294_0)
 					var_0_1.TextColoredRGB(ImVec3ToHEX(var_0_114.color_text_market) .. changeExtraSim(var_294_9[iter_294_4 + 1].name, 35))
 				end
 
-				var_0_1.Hint("helps" .. iter_294_4 + 1000, var_0_28[ip] == var_294_9[iter_294_4 + 1].serverId and var_0_5("Товар: ") .. var_0_5(var_294_9[iter_294_4 + 1].name) .. var_0_5("\nЛавка номер ") .. var_294_9[iter_294_4 + 1].LavkaUid .. var_0_5("\nВладелец: ") .. var_0_5(var_294_9[iter_294_4 + 1].username) .. var_0_5("\nНажмите ЛКМ что бы отметить на карте.\nСервер: ") .. var_294_9[iter_294_4 + 1].serverId or var_0_5("Товар: ") .. var_0_5(var_294_9[iter_294_4 + 1].name) .. var_0_5("\nЛавка номер ") .. var_294_9[iter_294_4 + 1].LavkaUid .. var_0_5("\nВладелец: ") .. var_0_5(var_294_9[iter_294_4 + 1].username) .. var_0_5("\nСервер: ") .. var_294_9[iter_294_4 + 1].serverId, false, nil, var_294_11)
+				var_0_1.Hint("helps" .. iter_294_4 + 1000, var_0_28[ip] == var_294_9[iter_294_4 + 1].serverId and var_0_5("РўРѕРІР°СЂ: ") .. var_0_5(var_294_9[iter_294_4 + 1].name) .. var_0_5("\nР›Р°РІРєР° РЅРѕРјРµСЂ ") .. var_294_9[iter_294_4 + 1].LavkaUid .. var_0_5("\nР’Р»Р°РґРµР»РµС†: ") .. var_0_5(var_294_9[iter_294_4 + 1].username) .. var_0_5("\nРќР°Р¶РјРёС‚Рµ Р›РљРњ С‡С‚Рѕ Р±С‹ РѕС‚РјРµС‚РёС‚СЊ РЅР° РєР°СЂС‚Рµ.\nРЎРµСЂРІРµСЂ: ") .. var_294_9[iter_294_4 + 1].serverId or var_0_5("РўРѕРІР°СЂ: ") .. var_0_5(var_294_9[iter_294_4 + 1].name) .. var_0_5("\nР›Р°РІРєР° РЅРѕРјРµСЂ ") .. var_294_9[iter_294_4 + 1].LavkaUid .. var_0_5("\nР’Р»Р°РґРµР»РµС†: ") .. var_0_5(var_294_9[iter_294_4 + 1].username) .. var_0_5("\nРЎРµСЂРІРµСЂ: ") .. var_294_9[iter_294_4 + 1].serverId, false, nil, var_294_11)
 
 				if (var_294_11 or var_0_1.IsItemHovered()) and var_0_1.IsMouseClicked(0) and var_0_28[ip] == var_294_9[iter_294_4 + 1].serverId then
 					deAFKMessage(debug.getinfo(1, "l"), "+ " .. iter_294_4)
@@ -15910,7 +16307,7 @@ function searchFunc(arg_294_0)
 				var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 3)
 				var_0_1.PopFont()
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 4)
-				var_0_1.Text(var_0_5(" шт."))
+				var_0_1.Text(var_0_5(" С€С‚."))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 4)
 
 				var_0_1.GetStyle().FrameBorderSize = 0
@@ -15982,7 +16379,7 @@ function searchFunc(arg_294_0)
 				var_0_1.CustomSeparator(var_0_1.GetWindowWidth())
 				var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x + 10)
 				var_0_1.TextColoredRGB(ImVec3ToHEX(var_0_114.color_text_market) .. changeExtraSim("[" .. var_294_14[iter_294_9 + 1].LavkaUid .. "] ", 35))
-				var_0_1.Hint("help" .. iter_294_9, var_0_28[ip] == var_294_14[iter_294_9 + 1].serverId and var_0_5("Товар: ") .. var_0_5(var_294_14[iter_294_9 + 1].name) .. var_0_5("\nЛавка номер ") .. var_294_14[iter_294_9 + 1].LavkaUid .. var_0_5("\nВладелец: ") .. var_0_5(var_294_14[iter_294_9 + 1].username) .. var_0_5("\nНажмите ЛКМ что бы отметить на карте.\nСервер: ") .. var_294_14[iter_294_9 + 1].serverId or var_0_5("Товар: ") .. var_0_5(var_294_14[iter_294_9 + 1].name) .. var_0_5("\nЛавка номер ") .. var_294_14[iter_294_9 + 1].LavkaUid .. var_0_5("\nВладелец: ") .. var_0_5(var_294_14[iter_294_9 + 1].username) .. var_0_5("\nСервер: ") .. var_294_14[iter_294_9 + 1].serverId, false)
+				var_0_1.Hint("help" .. iter_294_9, var_0_28[ip] == var_294_14[iter_294_9 + 1].serverId and var_0_5("РўРѕРІР°СЂ: ") .. var_0_5(var_294_14[iter_294_9 + 1].name) .. var_0_5("\nР›Р°РІРєР° РЅРѕРјРµСЂ ") .. var_294_14[iter_294_9 + 1].LavkaUid .. var_0_5("\nР’Р»Р°РґРµР»РµС†: ") .. var_0_5(var_294_14[iter_294_9 + 1].username) .. var_0_5("\nРќР°Р¶РјРёС‚Рµ Р›РљРњ С‡С‚Рѕ Р±С‹ РѕС‚РјРµС‚РёС‚СЊ РЅР° РєР°СЂС‚Рµ.\nРЎРµСЂРІРµСЂ: ") .. var_294_14[iter_294_9 + 1].serverId or var_0_5("РўРѕРІР°СЂ: ") .. var_0_5(var_294_14[iter_294_9 + 1].name) .. var_0_5("\nР›Р°РІРєР° РЅРѕРјРµСЂ ") .. var_294_14[iter_294_9 + 1].LavkaUid .. var_0_5("\nР’Р»Р°РґРµР»РµС†: ") .. var_0_5(var_294_14[iter_294_9 + 1].username) .. var_0_5("\nРЎРµСЂРІРµСЂ: ") .. var_294_14[iter_294_9 + 1].serverId, false)
 				var_0_1.SameLine()
 
 				if var_0_1.IsItemClicked() and var_0_28[ip] == var_294_14[iter_294_9 + 1].serverId then
@@ -16001,7 +16398,7 @@ function searchFunc(arg_294_0)
 					var_0_1.TextColoredRGB(ImVec3ToHEX(var_0_114.color_text_market) .. changeExtraSim(var_294_14[iter_294_9 + 1].name, var_294_16 == "" and 35 or 23) .. (var_294_16 or ""))
 				end
 
-				var_0_1.Hint("help" .. iter_294_9 + 1000, var_0_28[ip] == var_294_14[iter_294_9 + 1].serverId and var_0_5("Товар: ") .. var_0_5(var_294_14[iter_294_9 + 1].name) .. var_0_5("\nЛавка номер ") .. var_294_14[iter_294_9 + 1].LavkaUid .. var_0_5("\nВладелец: ") .. var_0_5(var_294_14[iter_294_9 + 1].username) .. var_0_5("\nНажмите ЛКМ что бы отметить на карте.\nСервер: ") .. var_294_14[iter_294_9 + 1].serverId or var_0_5("Товар: ") .. var_0_5(var_294_14[iter_294_9 + 1].name) .. var_0_5("\nЛавка номер ") .. var_294_14[iter_294_9 + 1].LavkaUid .. var_0_5("\nВладелец: ") .. var_0_5(var_294_14[iter_294_9 + 1].username) .. var_0_5("\nСервер: ") .. var_294_14[iter_294_9 + 1].serverId, false, nil, var_294_17)
+				var_0_1.Hint("help" .. iter_294_9 + 1000, var_0_28[ip] == var_294_14[iter_294_9 + 1].serverId and var_0_5("РўРѕРІР°СЂ: ") .. var_0_5(var_294_14[iter_294_9 + 1].name) .. var_0_5("\nР›Р°РІРєР° РЅРѕРјРµСЂ ") .. var_294_14[iter_294_9 + 1].LavkaUid .. var_0_5("\nР’Р»Р°РґРµР»РµС†: ") .. var_0_5(var_294_14[iter_294_9 + 1].username) .. var_0_5("\nРќР°Р¶РјРёС‚Рµ Р›РљРњ С‡С‚Рѕ Р±С‹ РѕС‚РјРµС‚РёС‚СЊ РЅР° РєР°СЂС‚Рµ.\nРЎРµСЂРІРµСЂ: ") .. var_294_14[iter_294_9 + 1].serverId or var_0_5("РўРѕРІР°СЂ: ") .. var_0_5(var_294_14[iter_294_9 + 1].name) .. var_0_5("\nР›Р°РІРєР° РЅРѕРјРµСЂ ") .. var_294_14[iter_294_9 + 1].LavkaUid .. var_0_5("\nР’Р»Р°РґРµР»РµС†: ") .. var_0_5(var_294_14[iter_294_9 + 1].username) .. var_0_5("\nРЎРµСЂРІРµСЂ: ") .. var_294_14[iter_294_9 + 1].serverId, false, nil, var_294_17)
 
 				if (var_294_17 or var_0_1.IsItemHovered()) and var_0_1.IsMouseClicked(0) and var_0_28[ip] == var_294_14[iter_294_9 + 1].serverId then
 					deAFKMessage(debug.getinfo(1, "l"), "+ " .. iter_294_9)
@@ -16046,7 +16443,7 @@ function searchFunc(arg_294_0)
 				var_0_1.SetCursorPosX(var_0_1.GetCursorPos().x - 3)
 				var_0_1.PopFont()
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y - 4)
-				var_0_1.Text(var_0_5(" шт."))
+				var_0_1.Text(var_0_5(" С€С‚."))
 				var_0_1.SetCursorPosY(var_0_1.GetCursorPos().y + 4)
 
 				var_0_1.GetStyle().FrameBorderSize = 0
@@ -16090,7 +16487,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 	end
 
 	if var_0_115.send_adControl.active and var_0_115.send_adControl.uid ~= -1 then
-		if arg_298_5:find("Напишите текст объявление") and arg_298_2:find("Подача объявления") then
+		if arg_298_5:find("РќР°РїРёС€РёС‚Рµ С‚РµРєСЃС‚ РѕР±СЉСЏРІР»РµРЅРёРµ") and arg_298_2:find("РџРѕРґР°С‡Р° РѕР±СЉСЏРІР»РµРЅРёСЏ") then
 			local var_298_0 = var_0_112[var_0_115.send_adControl.uid].isPiarText
 
 			deAFKMessage("input to dialog ad " .. var_298_0)
@@ -16099,15 +16496,15 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 			return false
 		end
 
-		if arg_298_5:find("Ваше объявление еще не рассмотрено сотрудниками СМИ") then
+		if arg_298_5:find("Р’Р°С€Рµ РѕР±СЉСЏРІР»РµРЅРёРµ РµС‰Рµ РЅРµ СЂР°СЃСЃРјРѕС‚СЂРµРЅРѕ СЃРѕС‚СЂСѓРґРЅРёРєР°РјРё РЎРњР") then
 			if var_0_112[var_0_115.send_adControl.uid].settingsAd["1"].isRetry.status then
-				AFKMessage("Переподаю обьявление через " .. var_0_112[var_0_115.send_adControl.uid].settingsAd["1"].isRetry.retryTime .. " секунд.")
+				AFKMessage("РџРµСЂРµРїРѕРґР°СЋ РѕР±СЊСЏРІР»РµРЅРёРµ С‡РµСЂРµР· " .. var_0_112[var_0_115.send_adControl.uid].settingsAd["1"].isRetry.retryTime .. " СЃРµРєСѓРЅРґ.")
 
 				var_0_112[var_0_115.send_adControl.uid].settingsAd["1"].isRetry.osTime = os.time()
 
 				sampSendDialogResponse(arg_298_0, 1, 1, "")
 			else
-				AFKMessage("Наше прошлое сообщение еще не отредактировали. ")
+				AFKMessage("РќР°С€Рµ РїСЂРѕС€Р»РѕРµ СЃРѕРѕР±С‰РµРЅРёРµ РµС‰Рµ РЅРµ РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°Р»Рё. ")
 				sampSendDialogResponse(arg_298_0, 0, 0, "")
 			end
 
@@ -16120,11 +16517,11 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 			return false
 		end
 
-		if arg_298_2:find("Выберите радиостанцию") and arg_298_5:find("Радиостанция") then
+		if arg_298_2:find("Р’С‹Р±РµСЂРёС‚Рµ СЂР°РґРёРѕСЃС‚Р°РЅС†РёСЋ") and arg_298_5:find("Р Р°РґРёРѕСЃС‚Р°РЅС†РёСЏ") then
 			local var_298_1 = {}
 
 			for iter_298_0 in arg_298_5:gmatch("[^\r\n]+") do
-				if not iter_298_0:find("Радиостанция") and iter_298_0:find("%[%d+%]") then
+				if not iter_298_0:find("Р Р°РґРёРѕСЃС‚Р°РЅС†РёСЏ") and iter_298_0:find("%[%d+%]") then
 					table.insert(var_298_1, iter_298_0)
 				end
 			end
@@ -16138,20 +16535,20 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 				local var_298_6 = 0
 				local var_298_7 = 0
 
-				if var_298_4:match("(%d+)%s*час%.?%s*(%d+)%s*мин%.?%s*(%d+)%s*сек%.?") == nil then
-					local var_298_8, var_298_9 = var_298_4:match("(%d+)%s*мин%.?%s*(%d+)%s*сек%.?")
+				if var_298_4:match("(%d+)%s*С‡Р°СЃ%.?%s*(%d+)%s*РјРёРЅ%.?%s*(%d+)%s*СЃРµРє%.?") == nil then
+					local var_298_8, var_298_9 = var_298_4:match("(%d+)%s*РјРёРЅ%.?%s*(%d+)%s*СЃРµРє%.?")
 
 					if var_298_8 and var_298_9 then
 						var_298_6, var_298_7 = tonumber(var_298_8), tonumber(var_298_9)
 					else
-						local var_298_10 = var_298_4:match("(%d+)%s*сек%.?")
+						local var_298_10 = var_298_4:match("(%d+)%s*СЃРµРє%.?")
 
 						if var_298_10 then
 							var_298_7 = tonumber(var_298_10)
 						end
 					end
 				else
-					var_298_5, var_298_6, var_298_7 = var_298_4:match("(%d+)%s*час%.?%s*(%d+)%s*мин%.?%s*(%d+)%s*сек%.?")
+					var_298_5, var_298_6, var_298_7 = var_298_4:match("(%d+)%s*С‡Р°СЃ%.?%s*(%d+)%s*РјРёРЅ%.?%s*(%d+)%s*СЃРµРє%.?")
 					var_298_5, var_298_6, var_298_7 = tonumber(var_298_5) or 0, tonumber(var_298_6) or 0, tonumber(var_298_7) or 0
 				end
 
@@ -16178,19 +16575,19 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 				sampSendDialogResponse(arg_298_0, 1, var_298_12 - 1, "")
 			elseif var_298_2 == 1 then
 				sampSendDialogResponse(arg_298_0, 1, 2, "")
-				deAFKMessage("Подаю /ad в Сан-Фиерро")
+				deAFKMessage("РџРѕРґР°СЋ /ad РІ РЎР°РЅ-Р¤РёРµСЂСЂРѕ")
 			elseif var_298_2 == 2 then
 				sampSendDialogResponse(arg_298_0, 1, 1, "")
-				deAFKMessage("Подаю /ad в Лас-Вентурас")
+				deAFKMessage("РџРѕРґР°СЋ /ad РІ Р›Р°СЃ-Р’РµРЅС‚СѓСЂР°СЃ")
 			elseif var_298_2 == 3 then
 				sampSendDialogResponse(arg_298_0, 1, 0, "")
-				deAFKMessage("Подаю /ad в Лос-Сантос")
+				deAFKMessage("РџРѕРґР°СЋ /ad РІ Р›РѕСЃ-РЎР°РЅС‚РѕСЃ")
 			end
 
 			return false
 		end
 
-		if arg_298_2:find("Выберите тип объявления") then
+		if arg_298_2:find("Р’С‹Р±РµСЂРёС‚Рµ С‚РёРї РѕР±СЉСЏРІР»РµРЅРёСЏ") then
 			local var_298_14 = var_0_112[var_0_115.send_adControl.uid].settingsAd["1"].isVipAd
 
 			if var_298_14 == false then
@@ -16204,7 +16601,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 			return false
 		end
 
-		if arg_298_2:find("Подача объявления %| Подтверждение") then
+		if arg_298_2:find("РџРѕРґР°С‡Р° РѕР±СЉСЏРІР»РµРЅРёСЏ %| РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ") then
 			deAFKMessage("sendAd [confirm]")
 
 			var_0_112[var_0_115.send_adControl.uid].settingsAd["1"].isRetry.osTime = os.time()
@@ -16220,7 +16617,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		end
 	end
 
-	if var_0_56[36][2][1] + 2 >= os.time() and arg_298_5:find("Ваше сообщение является рекламой") and arg_298_5:find("что администрация может наказать") then
+	if var_0_56[36][2][1] + 2 >= os.time() and arg_298_5:find("Р’Р°С€Рµ СЃРѕРѕР±С‰РµРЅРёРµ СЏРІР»СЏРµС‚СЃСЏ СЂРµРєР»Р°РјРѕР№") and arg_298_5:find("С‡С‚Рѕ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёСЏ РјРѕР¶РµС‚ РЅР°РєР°Р·Р°С‚СЊ") then
 		var_0_56[36][2][1] = -1
 
 		sampSendDialogResponse(arg_298_0, var_0_56[36][2][2] and 1 or 0, 0, false)
@@ -16228,7 +16625,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		return false
 	end
 
-	if arg_298_2:find("Снятие с продажи") and arg_298_5:find("Вы действительно хотите снять с продажи выбранный предмет") then
+	if arg_298_2:find("РЎРЅСЏС‚РёРµ СЃ РїСЂРѕРґР°Р¶Рё") and arg_298_5:find("Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ СЃРЅСЏС‚СЊ СЃ РїСЂРѕРґР°Р¶Рё РІС‹Р±СЂР°РЅРЅС‹Р№ РїСЂРµРґРјРµС‚") then
 		var_0_115.SellOrBuyIdRemove = arg_298_0
 		var_0_37 = {}
 		var_0_37[1], _null, var_0_37[2] = getItemInfo(arg_298_5)
@@ -16236,7 +16633,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		deAFKMessage(debug.getinfo(1, "l"), "[sell] [Market] GetItemName = [" .. tostring(var_0_37[1]) .. "] Enchant = [" .. tostring(var_0_37[2]) .. "]")
 	end
 
-	if (arg_298_5:find("Введите цену за товар") or arg_298_5:find("Введите количество и цену за один товар")) and last_textdraw_id ~= nil and var_0_72[0] == false then
+	if (arg_298_5:find("Р’РІРµРґРёС‚Рµ С†РµРЅСѓ Р·Р° С‚РѕРІР°СЂ") or arg_298_5:find("Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ Рё С†РµРЅСѓ Р·Р° РѕРґРёРЅ С‚РѕРІР°СЂ")) and last_textdraw_id ~= nil and var_0_72[0] == false then
 		local var_298_15 = sampTextdrawGetString(last_textdraw_id + 1):match("^%+%d+$") or ""
 		local var_298_16, var_298_17 = sampTextdrawGetPos(last_textdraw_id)
 
@@ -16247,11 +16644,11 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 
 			var_0_115.ItemChar = var_298_15 == "" and "" or "(" .. var_298_15 .. ")"
 			var_0_115.SellOrBuyId = dialogid
-			var_0_115.ItemStyle = arg_298_5:find("Введите цену за товар") and 1 or 0
+			var_0_115.ItemStyle = arg_298_5:find("Р’РІРµРґРёС‚Рµ С†РµРЅСѓ Р·Р° С‚РѕРІР°СЂ") and 1 or 0
 		end
 	end
 
-	if information_id == 0 and arg_298_2:find("Обмен") and arg_298_5:find("Обмен с игроком") then
+	if information_id == 0 and arg_298_2:find("РћР±РјРµРЅ") and arg_298_5:find("РћР±РјРµРЅ СЃ РёРіСЂРѕРєРѕРј") then
 		information_id = nil
 
 		if jsonLog[os.date("%d.%m.%Y")] == nil then
@@ -16300,9 +16697,9 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 
 		deAFKMessage(debug.getinfo(1, "l"), "[TradeLogSystem] +info trade")
 
-		local var_298_18 = arg_298_5:match("игроком (%S+)")
-		local var_298_19 = arg_298_5:gsub("Вам предлагают.+", "")
-		local var_298_20 = arg_298_5:gsub(".+Вам предлагают", "")
+		local var_298_18 = arg_298_5:match("РёРіСЂРѕРєРѕРј (%S+)")
+		local var_298_19 = arg_298_5:gsub("Р’Р°Рј РїСЂРµРґР»Р°РіР°СЋС‚.+", "")
+		local var_298_20 = arg_298_5:gsub(".+Р’Р°Рј РїСЂРµРґР»Р°РіР°СЋС‚", "")
 		local var_298_21 = tostring(parseArizonaMoney(var_298_19))
 		local var_298_22 = tostring(parseArizonaMoney(var_298_20))
 
@@ -16320,7 +16717,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		return false
 	end
 
-	if var_0_54.time ~= 0 and arg_298_2:find("Результат сделки с") and arg_298_5:find("Получено") then
+	if var_0_54.time ~= 0 and arg_298_2:find("Р РµР·СѓР»СЊС‚Р°С‚ СЃРґРµР»РєРё СЃ") and arg_298_5:find("РџРѕР»СѓС‡РµРЅРѕ") then
 		local var_298_23, var_298_24 = sampGetCurrentServerAddress()
 
 		deAFKMessage(debug.getinfo(1, "l"), "[TradeLogSystem] trade saved. " .. var_0_28[var_298_23])
@@ -16329,24 +16726,24 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		table.insert(jsonLog[os.date("%d.%m.%Y")][8], 1, var_0_54.offer_amount)
 		table.insert(jsonLog[os.date("%d.%m.%Y")][9], 1, var_0_54.response_amount)
 		table.insert(jsonLog[os.date("%d.%m.%Y")][10], 1, var_0_54.time)
-		table.insert(jsonLog[os.date("%d.%m.%Y")][11], 1, "[" .. os.date("%H:%M:%S", var_0_54.time) .. "] Трейд с " .. var_0_54.player_name .. " | Вы получили $" .. moneySeparator(tonumber(var_0_54.response_amount)) .. ", потратили $" .. moneySeparator(tonumber(var_0_54.offer_amount)))
+		table.insert(jsonLog[os.date("%d.%m.%Y")][11], 1, "[" .. os.date("%H:%M:%S", var_0_54.time) .. "] РўСЂРµР№Рґ СЃ " .. var_0_54.player_name .. " | Р’С‹ РїРѕР»СѓС‡РёР»Рё $" .. moneySeparator(tonumber(var_0_54.response_amount)) .. ", РїРѕС‚СЂР°С‚РёР»Рё $" .. moneySeparator(tonumber(var_0_54.offer_amount)))
 
 		var_0_54.time = 0
 
 		writeJsonFile(jsonLog, "moonloader\\ArzMarket\\Log.json")
 	end
 
-	if var_0_107.nalog_message[0] and arg_298_2:find("Оплата всех налогов") then
+	if var_0_107.nalog_message[0] and arg_298_2:find("РћРїР»Р°С‚Р° РІСЃРµС… РЅР°Р»РѕРіРѕРІ") then
 		var_0_57[1] = tostring(arg_298_5)
 	end
 
-	if var_0_132[0] and arg_298_5:find("предлагает вам торговлю") and arg_298_5:find("секунд на ответ") then
+	if var_0_132[0] and arg_298_5:find("РїСЂРµРґР»Р°РіР°РµС‚ РІР°Рј С‚РѕСЂРіРѕРІР»СЋ") and arg_298_5:find("СЃРµРєСѓРЅРґ РЅР° РѕС‚РІРµС‚") then
 		sampSendDialogResponsed(arg_298_0, 1, 0)
 
 		return false
 	end
 
-	if arg_298_5:find("Введите название вашей лавки.") and var_0_158[0] and var_0_5:decode(var_0_45.string(var_0_179)):len() > 2 then
+	if arg_298_5:find("Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РІР°С€РµР№ Р»Р°РІРєРё.") and var_0_158[0] and var_0_5:decode(var_0_45.string(var_0_179)):len() > 2 then
 		local var_298_25 = "" .. os.clock()
 
 		lua_thread.create(function(arg_299_0)
@@ -16357,7 +16754,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		return false
 	end
 
-	if var_0_211[2] == true and arg_298_2:find("Снятие с продажи") then
+	if var_0_211[2] == true and arg_298_2:find("РЎРЅСЏС‚РёРµ СЃ РїСЂРѕРґР°Р¶Рё") then
 		var_0_115.SellOrBuyIdRemove = true
 
 		deAFKMessage(debug.getinfo(1, "l"), "[sell] [Market] GetItemName = [" .. var_0_37[1] .. "] Enchant = [" .. var_0_37[2] .. "]")
@@ -16366,14 +16763,14 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		return false
 	end
 
-	if arg_298_2:find("Выберите цвет") and var_0_158[0] and arg_298_5:find("|||||||||||||||||||") then
+	if arg_298_2:find("Р’С‹Р±РµСЂРёС‚Рµ С†РІРµС‚") and var_0_158[0] and arg_298_5:find("|||||||||||||||||||") then
 		sampSendDialogResponsed(arg_298_0, 1, var_0_116)
 
 		return false
 	end
 
-	if (arg_298_2:find("Покупка предмета") or arg_298_2:find("Продажа предмета")) and var_0_115.copyLavkaFunc.status then
-		if arg_298_5:find("Примерить предмет за") and arg_298_5:find("Купить предмет") and arg_298_5:find("15 сек") then
+	if (arg_298_2:find("РџРѕРєСѓРїРєР° РїСЂРµРґРјРµС‚Р°") or arg_298_2:find("РџСЂРѕРґР°Р¶Р° РїСЂРµРґРјРµС‚Р°")) and var_0_115.copyLavkaFunc.status then
+		if arg_298_5:find("РџСЂРёРјРµСЂРёС‚СЊ РїСЂРµРґРјРµС‚ Р·Р°") and arg_298_5:find("РљСѓРїРёС‚СЊ РїСЂРµРґРјРµС‚") and arg_298_5:find("15 СЃРµРє") then
 			sampSendDialogResponsed(arg_298_0, 1, 0)
 		else
 			local var_298_26 = {}
@@ -16440,8 +16837,8 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		return false
 	end
 
-	if arg_298_2:find("Меню поиска") and var_0_106.cfg.active_lavka_number ~= -1 and var_0_125 ~= -1 then
-		local var_298_31 = arg_298_5 .. "\n \n{ffff00}- [ArzMarket] Найти свою лавку. [" .. var_0_106.cfg.active_lavka_number .. "]"
+	if arg_298_2:find("РњРµРЅСЋ РїРѕРёСЃРєР°") and var_0_106.cfg.active_lavka_number ~= -1 and var_0_125 ~= -1 then
+		local var_298_31 = arg_298_5 .. "\n \n{ffff00}- [ArzMarket] РќР°Р№С‚Рё СЃРІРѕСЋ Р»Р°РІРєСѓ. [" .. var_0_106.cfg.active_lavka_number .. "]"
 
 		return {
 			arg_298_0,
@@ -16453,11 +16850,11 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		}
 	end
 
-	if arg_298_5:find("Управление продажей товаров") then
+	if arg_298_5:find("РЈРїСЂР°РІР»РµРЅРёРµ РїСЂРѕРґР°Р¶РµР№ С‚РѕРІР°СЂРѕРІ") then
 		var_0_106.cfg.LastBuySellDialogTitle = arg_298_2
 	end
 
-	if arg_298_5:find("Прекратить аренду прилавка") and arg_298_5:find("Прекратить покупку товара") then
+	if arg_298_5:find("РџСЂРµРєСЂР°С‚РёС‚СЊ Р°СЂРµРЅРґСѓ РїСЂРёР»Р°РІРєР°") and arg_298_5:find("РџСЂРµРєСЂР°С‚РёС‚СЊ РїРѕРєСѓРїРєСѓ С‚РѕРІР°СЂР°") then
 		var_0_106.cfg.LastBuySellDialogTitle = arg_298_2
 		var_0_43.LavkaUid = tonumber(arg_298_2:match("(%d+)"))
 		var_0_106.cfg.active_lavka_number = var_0_43.LavkaUid
@@ -16481,7 +16878,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		elseif var_0_93.score > var_0_93.score_from and var_0_93.buy then
 			var_0_72[0] = false
 
-			AFKMessage("Выставление товаров завершено.")
+			AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ.")
 			sampSendDialogResponsed(arg_298_0, 0, 0)
 
 			var_0_93 = {
@@ -16490,11 +16887,11 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 				score_from = 1
 			}
 
-			saveLog("[dialog event]" .. os.date("[%H:%M:%S]") .. " Выставление товаров завершено. Проверить все товары вы можете ниже!")
+			saveLog("[dialog event]" .. os.date("[%H:%M:%S]") .. " Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ. РџСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІС‹ РјРѕР¶РµС‚Рµ РЅРёР¶Рµ!")
 
 			var_0_43.enabled = true
 
-			table.insert(var_0_34, "{35cf0a}Выставление товаров завершено. Проверить все товары вы можете ниже! ")
+			table.insert(var_0_34, "{35cf0a}Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ. РџСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІС‹ РјРѕР¶РµС‚Рµ РЅРёР¶Рµ! ")
 		elseif var_0_115.buy_dell then
 			sampSendDialogResponsed(arg_298_0, 1, 3)
 		elseif var_0_93.buy then
@@ -16507,8 +16904,8 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 
 			for iter_298_9, iter_298_10 in pairs(var_0_87) do
 				if not var_0_87[var_0_93.score].enabled or var_0_87[var_0_93.score].count_maximum == 0 and var_0_87[var_0_93.score].maximum or var_0_87[var_0_93.score].count == 0 and not var_0_87[var_0_93.score].maximum or var_0_87[var_0_93.score].continue == 0 and var_0_120 == true then
-					saveLog("[dialog event buy]" .. os.date("[%H:%M:%S]") .. " Предмет [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] не выставлен так как отключен или скупается 0 шт. ")
-					table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] не выставлен так как отключен или скупается 0 шт. ")
+					saveLog("[dialog event buy]" .. os.date("[%H:%M:%S]") .. " РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕС‚РєР»СЋС‡РµРЅ РёР»Рё СЃРєСѓРїР°РµС‚СЃСЏ 0 С€С‚. ")
+					table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕС‚РєР»СЋС‡РµРЅ РёР»Рё СЃРєСѓРїР°РµС‚СЃСЏ 0 С€С‚. ")
 
 					var_0_93.score = var_0_93.score + 1
 				end
@@ -16521,9 +16918,9 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 						score_from = 1
 					}
 
-					saveLog("[dialog event buy]" .. os.date("[%H:%M:%S]") .. "{35cf0a}Выставление товаров завершено. Проверить все товары вы можете ниже!")
-					table.insert(var_0_34, "{35cf0a}Выставление товаров завершено. Проверить все товары вы можете ниже! ")
-					AFKMessage("Выставление товаров завершено.")
+					saveLog("[dialog event buy]" .. os.date("[%H:%M:%S]") .. "{35cf0a}Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ. РџСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІС‹ РјРѕР¶РµС‚Рµ РЅРёР¶Рµ!")
+					table.insert(var_0_34, "{35cf0a}Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ. РџСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІС‹ РјРѕР¶РµС‚Рµ РЅРёР¶Рµ! ")
+					AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ.")
 
 					var_0_43.enabled = true
 
@@ -16536,7 +16933,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 			sampSendDialogResponsed(arg_298_0, 1, 2)
 		end
 
-		local var_298_32 = arg_298_5 .. "\n \n{ffff00}- Открыть меню ArzMarket (/crr)"
+		local var_298_32 = arg_298_5 .. "\n \n{ffff00}- РћС‚РєСЂС‹С‚СЊ РјРµРЅСЋ ArzMarket (/crr)"
 
 		return {
 			arg_298_0,
@@ -16548,13 +16945,13 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		}
 	end
 
-	if arg_298_5:find("Начать скупку предмета") and arg_298_2:find("Выберите действие") and var_0_93.buy then
+	if arg_298_5:find("РќР°С‡Р°С‚СЊ СЃРєСѓРїРєСѓ РїСЂРµРґРјРµС‚Р°") and arg_298_2:find("Р’С‹Р±РµСЂРёС‚Рµ РґРµР№СЃС‚РІРёРµ") and var_0_93.buy then
 		sampSendDialogResponsed(arg_298_0, 1, 0, false)
 
 		return false
 	end
 
-	if var_0_115.buy_dell and arg_298_2:find("Страница") then
+	if var_0_115.buy_dell and arg_298_2:find("РЎС‚СЂР°РЅРёС†Р°") then
 		local var_298_33 = 0
 
 		for iter_298_11 in arg_298_5:gmatch("[^\r\n]+") do
@@ -16572,7 +16969,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		end
 	end
 
-	if arg_298_2:find("Поиск товара") and arg_298_5:find("Введите наименование товара") and var_0_93.buy and var_0_93.score <= var_0_93.score_from then
+	if arg_298_2:find("РџРѕРёСЃРє С‚РѕРІР°СЂР°") and arg_298_5:find("Р’РІРµРґРёС‚Рµ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ С‚РѕРІР°СЂР°") and var_0_93.buy and var_0_93.score <= var_0_93.score_from then
 		var_0_56[32] = {
 			true,
 			var_0_56[32][2] + 0.55,
@@ -16585,7 +16982,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		return false
 	end
 
-	if arg_298_2:find("Поиск товара") and not arg_298_5:find("Введите наименование товара") and var_0_93.buy and var_0_93.score <= var_0_93.score_from then
+	if arg_298_2:find("РџРѕРёСЃРє С‚РѕРІР°СЂР°") and not arg_298_5:find("Р’РІРµРґРёС‚Рµ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ С‚РѕРІР°СЂР°") and var_0_93.buy and var_0_93.score <= var_0_93.score_from then
 		local var_298_34 = 0
 		local var_298_35 = true
 
@@ -16609,8 +17006,8 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		end
 
 		if var_298_35 == false then
-			saveLog("[dialog event buy]" .. os.date("[%H:%M:%S]") .. " Предмет [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] не выставлен так как он не был найден. Отключаем товар.")
-			table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] не выставлен так как он не был найден. Отключаем товар.")
+			saveLog("[dialog event buy]" .. os.date("[%H:%M:%S]") .. " РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕРЅ РЅРµ Р±С‹Р» РЅР°Р№РґРµРЅ. РћС‚РєР»СЋС‡Р°РµРј С‚РѕРІР°СЂ.")
+			table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РѕРЅ РЅРµ Р±С‹Р» РЅР°Р№РґРµРЅ. РћС‚РєР»СЋС‡Р°РµРј С‚РѕРІР°СЂ.")
 			deAFKMessage(debug.getinfo(1, "l"), "cant find > isFindAnyItem " .. tostring(var_0_87[var_0_93.score].name))
 
 			var_0_87[var_0_93.score].enabled = false
@@ -16621,12 +17018,12 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		return false
 	end
 
-	if arg_298_2:find("Страница") and arg_298_5:find("Избранное для скупки") and var_0_82 == true then
+	if arg_298_2:find("РЎС‚СЂР°РЅРёС†Р°") and arg_298_5:find("РР·Р±СЂР°РЅРЅРѕРµ РґР»СЏ СЃРєСѓРїРєРё") and var_0_82 == true then
 		local var_298_36 = 0
 		local var_298_37, var_298_38 = arg_298_2:match("(%d+)/(%d+)")
 
 		for iter_298_13 in arg_298_5:gmatch("[^\r\n]+") do
-			if not iter_298_13:find("Название") and not iter_298_13:find("<<<") and not iter_298_13:find(">>>") and not iter_298_13:find("Избранное для скупки") then
+			if not iter_298_13:find("РќР°Р·РІР°РЅРёРµ") and not iter_298_13:find("<<<") and not iter_298_13:find(">>>") and not iter_298_13:find("РР·Р±СЂР°РЅРЅРѕРµ РґР»СЏ СЃРєСѓРїРєРё") then
 				iter_298_13 = iter_298_13:match("{......}(.+)%s%{......}.+{......}")
 
 				table.insert(var_0_86, iter_298_13)
@@ -16653,12 +17050,12 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 			var_0_82 = false
 			var_0_111 = {}
 
-			AFKMessage("Сканирование завершено.")
+			AFKMessage("РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ.")
 			sampSendDialogResponsed(arg_298_0, 0, 0)
 		end
 	end
 
-	if var_0_93.buy and (arg_298_5:find("Введите количество и цену за один товар") or arg_298_5:find("Введите цену за товар")) then
+	if var_0_93.buy and (arg_298_5:find("Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ Рё С†РµРЅСѓ Р·Р° РѕРґРёРЅ С‚РѕРІР°СЂ") or arg_298_5:find("Р’РІРµРґРёС‚Рµ С†РµРЅСѓ Р·Р° С‚РѕРІР°СЂ")) then
 		if var_0_87[var_0_93.score].name ~= arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") then
 			sampSendDialogResponsed(arg_298_0, 0, 0)
 
@@ -16669,22 +17066,22 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 
 		deAFKMessage(debug.getinfo(1, "l"), "[DBUG] dynamic_count == " .. var_298_39 .. " ITEM? " .. var_0_87[var_0_93.score].name .. " item_list[display.score].continue " .. var_0_87[var_0_93.score].continue)
 
-		if arg_298_5:find("Пример") then
+		if arg_298_5:find("РџСЂРёРјРµСЂ") then
 			sampSendDialogResponse(arg_298_0, 1, 0, var_298_39 .. "," .. (var_0_167 and var_0_87[var_0_93.score].price or var_0_87[var_0_93.score].price_vc))
 		else
 			sampSendDialogResponse(arg_298_0, 1, 0, var_0_167 and var_0_87[var_0_93.score].price or var_0_87[var_0_93.score].price_vc)
 		end
 
 		addToMarketBuy(var_0_87[var_0_93.score].name, var_298_39, var_0_167 and var_0_87[var_0_93.score].price or var_0_87[var_0_93.score].price_vc)
-		saveLog("[event dialog (buy)] " .. os.date("[%H:%M:%S]") .. "{ffffff} Вы выставили cкупать {35cf0a}" .. var_0_87[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] с параметрами [{35cf0a}" .. var_298_39 .. "," .. moneySeparator(var_0_167 and var_0_87[var_0_93.score].price or var_0_87[var_0_93.score].price_vc) .. "{ffffff}]")
-		table.insert(var_0_34, "{35cf0a}" .. os.date("[%H:%M:%S]") .. "{ffffff} Вы выставили cкупать {35cf0a}" .. var_0_87[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] с параметрами [{35cf0a}" .. var_298_39 .. "," .. moneySeparator(var_0_167 and var_0_87[var_0_93.score].price or var_0_87[var_0_93.score].price_vc) .. "{ffffff}]")
+		saveLog("[event dialog (buy)] " .. os.date("[%H:%M:%S]") .. "{ffffff} Р’С‹ РІС‹СЃС‚Р°РІРёР»Рё cРєСѓРїР°С‚СЊ {35cf0a}" .. var_0_87[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] СЃ РїР°СЂР°РјРµС‚СЂР°РјРё [{35cf0a}" .. var_298_39 .. "," .. moneySeparator(var_0_167 and var_0_87[var_0_93.score].price or var_0_87[var_0_93.score].price_vc) .. "{ffffff}]")
+		table.insert(var_0_34, "{35cf0a}" .. os.date("[%H:%M:%S]") .. "{ffffff} Р’С‹ РІС‹СЃС‚Р°РІРёР»Рё cРєСѓРїР°С‚СЊ {35cf0a}" .. var_0_87[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] СЃ РїР°СЂР°РјРµС‚СЂР°РјРё [{35cf0a}" .. var_298_39 .. "," .. moneySeparator(var_0_167 and var_0_87[var_0_93.score].price or var_0_87[var_0_93.score].price_vc) .. "{ffffff}]")
 
 		var_0_93.score = var_0_93.score + 1
 
 		return false
 	end
 
-	if (arg_298_5:find("Введите количество и цену за один товар") or arg_298_5:find("Введите цену за товар")) and var_0_93.sell then
+	if (arg_298_5:find("Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ Рё С†РµРЅСѓ Р·Р° РѕРґРёРЅ С‚РѕРІР°СЂ") or arg_298_5:find("Р’РІРµРґРёС‚Рµ С†РµРЅСѓ Р·Р° С‚РѕРІР°СЂ")) and var_0_93.sell then
 		if var_0_93.sell then
 			saveLog("start function (sell)")
 
@@ -16696,7 +17093,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 				1
 			}
 
-			if arg_298_5:find("Пример") then
+			if arg_298_5:find("РџСЂРёРјРµСЂ") then
 				if var_0_137[0] and not arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}"):find(var_0_88[var_0_93.score].name) then
 					local var_298_40 = var_0_88[var_0_93.score].name:gsub("%(%+%d+%)", "")
 
@@ -16705,7 +17102,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 					if calculate_similarity(var_298_40, arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}")) < 80 then
 						saveLog(calculate_similarity(var_298_40, arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}")) .. "off_sell_buy();[1]" .. var_298_40 .. " ?? " .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}"))
 						off_sell_buy()
-						AFKMessage("Проверьте что бы не было одинаковых товаров на продажу.")
+						AFKMessage("РџСЂРѕРІРµСЂСЊС‚Рµ С‡С‚Рѕ Р±С‹ РЅРµ Р±С‹Р»Рѕ РѕРґРёРЅР°РєРѕРІС‹С… С‚РѕРІР°СЂРѕРІ РЅР° РїСЂРѕРґР°Р¶Сѓ.")
 
 						return false
 					end
@@ -16714,16 +17111,16 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 				if tonumber(var_0_88[var_0_93.score].slot_count[need_slot]) < need_to_sell then
 					sampSendDialogResponse(arg_298_0, 1, 0, var_0_88[var_0_93.score].slot_count[need_slot] .. "," .. (var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc))
 					addToMarket(var_0_88[var_0_93.score].name, var_0_88[var_0_93.score].slot_count[need_slot], var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc)
-					saveLog("[event dialog (sell)] " .. os.date("[%H:%M:%S]") .. "{ffffff} Вы выставили продавать {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] с параметрами [{35cf0a}" .. var_0_88[var_0_93.score].slot_count[need_slot] .. "," .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
-					table.insert(var_0_34, "{35cf0a}" .. os.date("[%H:%M:%S]") .. "{ffffff} Вы выставили продавать {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] с параметрами [{35cf0a}" .. var_0_88[var_0_93.score].slot_count[need_slot] .. "," .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
+					saveLog("[event dialog (sell)] " .. os.date("[%H:%M:%S]") .. "{ffffff} Р’С‹ РІС‹СЃС‚Р°РІРёР»Рё РїСЂРѕРґР°РІР°С‚СЊ {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] СЃ РїР°СЂР°РјРµС‚СЂР°РјРё [{35cf0a}" .. var_0_88[var_0_93.score].slot_count[need_slot] .. "," .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
+					table.insert(var_0_34, "{35cf0a}" .. os.date("[%H:%M:%S]") .. "{ffffff} Р’С‹ РІС‹СЃС‚Р°РІРёР»Рё РїСЂРѕРґР°РІР°С‚СЊ {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] СЃ РїР°СЂР°РјРµС‚СЂР°РјРё [{35cf0a}" .. var_0_88[var_0_93.score].slot_count[need_slot] .. "," .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
 
 					need_to_sell = need_to_sell - var_0_88[var_0_93.score].slot_count[need_slot]
 					need_slot = need_slot + 1
 				else
 					sampSendDialogResponse(arg_298_0, 1, 0, need_to_sell .. "," .. (var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc))
 					addToMarket(var_0_88[var_0_93.score].name, need_to_sell, var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc)
-					saveLog("[event dialog (sell)] " .. os.date("[%H:%M:%S]") .. "{ffffff} Вы выставили продавать {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] с параметрами [{35cf0a}" .. need_to_sell .. "," .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
-					table.insert(var_0_34, "{35cf0a}" .. os.date("[%H:%M:%S]") .. "{ffffff} Вы выставили продавать {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] с параметрами [{35cf0a}" .. need_to_sell .. "," .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
+					saveLog("[event dialog (sell)] " .. os.date("[%H:%M:%S]") .. "{ffffff} Р’С‹ РІС‹СЃС‚Р°РІРёР»Рё РїСЂРѕРґР°РІР°С‚СЊ {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] СЃ РїР°СЂР°РјРµС‚СЂР°РјРё [{35cf0a}" .. need_to_sell .. "," .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
+					table.insert(var_0_34, "{35cf0a}" .. os.date("[%H:%M:%S]") .. "{ffffff} Р’С‹ РІС‹СЃС‚Р°РІРёР»Рё РїСЂРѕРґР°РІР°С‚СЊ {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] СЃ РїР°СЂР°РјРµС‚СЂР°РјРё [{35cf0a}" .. need_to_sell .. "," .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
 
 					need_to_sell = 0
 				end
@@ -16736,7 +17133,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 					if calculate_similarity(var_298_41, arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}")) < 80 then
 						saveLog(calculate_similarity(var_298_41, arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}")) .. "off_sell_buy();[2]" .. var_298_41 .. " ?? " .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}"))
 						off_sell_buy()
-						AFKMessage("Проверьте что бы не было одинаковых товаров на продажу.")
+						AFKMessage("РџСЂРѕРІРµСЂСЊС‚Рµ С‡С‚Рѕ Р±С‹ РЅРµ Р±С‹Р»Рѕ РѕРґРёРЅР°РєРѕРІС‹С… С‚РѕРІР°СЂРѕРІ РЅР° РїСЂРѕРґР°Р¶Сѓ.")
 
 						return false
 					end
@@ -16752,8 +17149,8 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 
 				sampSendDialogResponse(arg_298_0, 1, 0, var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc)
 				addToMarket(var_0_88[var_0_93.score].name, 1, var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc)
-				saveLog("[event dialog (sell) without price] " .. os.date("[%H:%M:%S]") .. "{ffffff} Вы выставили продавать {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] с параметрами [{35cf0a}" .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
-				table.insert(var_0_34, "{35cf0a}" .. os.date("[%H:%M:%S]") .. "{ffffff} Вы выставили продавать {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] с параметрами [{35cf0a}" .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
+				saveLog("[event dialog (sell) without price] " .. os.date("[%H:%M:%S]") .. "{ffffff} Р’С‹ РІС‹СЃС‚Р°РІРёР»Рё РїСЂРѕРґР°РІР°С‚СЊ {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] СЃ РїР°СЂР°РјРµС‚СЂР°РјРё [{35cf0a}" .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
+				table.insert(var_0_34, "{35cf0a}" .. os.date("[%H:%M:%S]") .. "{ffffff} Р’С‹ РІС‹СЃС‚Р°РІРёР»Рё РїСЂРѕРґР°РІР°С‚СЊ {35cf0a}" .. var_0_88[var_0_93.score].name .. "{ffffff} [{35cf0a}" .. arg_298_5:match("%{57FF6B%}(.-)%s*%{FFFFFF%}") .. "{ffffff}] СЃ РїР°СЂР°РјРµС‚СЂР°РјРё [{35cf0a}" .. moneySeparator(var_0_167 and var_0_88[var_0_93.score].price or var_0_88[var_0_93.score].price_vc) .. "{ffffff}]")
 			end
 
 			saveLog("end function (sell)")
@@ -16768,16 +17165,16 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		return false
 	end
 
-	if arg_298_5:find("Инвентарь") and arg_298_5:find("Количество") and arg_298_5:find("Название") and var_0_83 then
+	if arg_298_5:find("РРЅРІРµРЅС‚Р°СЂСЊ") and arg_298_5:find("РљРѕР»РёС‡РµСЃС‚РІРѕ") and arg_298_5:find("РќР°Р·РІР°РЅРёРµ") and var_0_83 then
 		local var_298_42 = 0
 		local var_298_43 = 0
 		local var_298_44 = 1
 
 		for iter_298_14 in magiclines(arg_298_5) do
-			if not iter_298_14:find(">>") and not iter_298_14:find("<<") and not iter_298_14:find("Название") and not iter_298_14:find("Инвентарь") and iter_298_14:find("(%d+) шт") then
+			if not iter_298_14:find(">>") and not iter_298_14:find("<<") and not iter_298_14:find("РќР°Р·РІР°РЅРёРµ") and not iter_298_14:find("РРЅРІРµРЅС‚Р°СЂСЊ") and iter_298_14:find("(%d+) С€С‚") then
 				local var_298_45 = iter_298_14:match("%[([^%]]+)%]")
 				local var_298_46 = iter_298_14:match("%]%s+(.-)%s+{")
-				local var_298_47 = iter_298_14:match("{......}%[(%d+)%s+шт%]")
+				local var_298_47 = iter_298_14:match("{......}%[(%d+)%s+С€С‚%]")
 
 				data = {
 					item = var_298_46,
@@ -16855,7 +17252,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 			var_298_42 = var_298_42 + 1
 		end
 
-		if not arg_298_5:find(">> Следующая страница") then
+		if not arg_298_5:find(">> РЎР»РµРґСѓСЋС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р°") then
 			local var_298_54 = 0
 
 			for iter_298_19 = #var_0_89, 1, -1 do
@@ -16868,7 +17265,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 			end
 
 			if var_298_54 > 0 then
-				sendNotify("Скрыто " .. var_298_54 .. " предметов.")
+				sendNotify("РЎРєСЂС‹С‚Рѕ " .. var_298_54 .. " РїСЂРµРґРјРµС‚РѕРІ.")
 			end
 
 			writeJsonFile(var_0_89, var_0_53)
@@ -16876,7 +17273,7 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 
 			var_0_83 = false
 
-			AFKMessage("Сканирование инвентаря завершено.")
+			AFKMessage("РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ РёРЅРІРµРЅС‚Р°СЂСЏ Р·Р°РІРµСЂС€РµРЅРѕ.")
 			sampSendDialogResponsed(arg_298_0, 0, 0)
 
 			var_0_56[2] = os.time() - 55
@@ -16886,9 +17283,9 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 			end
 
 			if sell_check == true and var_0_93.sell then
-				sendNotify("Начинаю выставлять товар.")
-				AFKMessage("Выставляем товары...")
-				AFKMessage("Внимание! Если долго ничего не происходит и товар не выставляется, пропишите /shelp")
+				sendNotify("РќР°С‡РёРЅР°СЋ РІС‹СЃС‚Р°РІР»СЏС‚СЊ С‚РѕРІР°СЂ.")
+				AFKMessage("Р’С‹СЃС‚Р°РІР»СЏРµРј С‚РѕРІР°СЂС‹...")
+				AFKMessage("Р’РЅРёРјР°РЅРёРµ! Р•СЃР»Рё РґРѕР»РіРѕ РЅРёС‡РµРіРѕ РЅРµ РїСЂРѕРёСЃС…РѕРґРёС‚ Рё С‚РѕРІР°СЂ РЅРµ РІС‹СЃС‚Р°РІР»СЏРµС‚СЃСЏ, РїСЂРѕРїРёС€РёС‚Рµ /shelp")
 
 				sell_busy = false
 				next_stage = true
@@ -16905,11 +17302,11 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		return false
 	end
 
-	if arg_298_0 and arg_298_5:find("A%: (%S+) ответил вам%:.*{cccccc}(.*)$") and var_0_107.admin_message[0] then
+	if arg_298_0 and arg_298_5:find("A%: (%S+) РѕС‚РІРµС‚РёР» РІР°Рј%:.*{cccccc}(.*)$") and var_0_107.admin_message[0] then
 		sendTelegramNotification(arg_298_5)
 	end
 
-	if var_0_122[0] and arg_298_0 and (arg_298_2:find("Информация о предмете") or arg_298_2:find("Покупка предмета") or arg_298_2:find("Продажа предмета")) and not arg_298_5:find("Примерить предмет за ") then
+	if var_0_122[0] and arg_298_0 and (arg_298_2:find("РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїСЂРµРґРјРµС‚Рµ") or arg_298_2:find("РџРѕРєСѓРїРєР° РїСЂРµРґРјРµС‚Р°") or arg_298_2:find("РџСЂРѕРґР°Р¶Р° РїСЂРµРґРјРµС‚Р°")) and not arg_298_5:find("РџСЂРёРјРµСЂРёС‚СЊ РїСЂРµРґРјРµС‚ Р·Р° ") then
 		local var_298_55 = {}
 
 		var_298_55[1], var_298_55[2] = getItemInfo(arg_298_5)
@@ -16920,21 +17317,21 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 			var_0_41[4] = arg_298_1
 			var_0_41[5] = arg_298_3
 			var_0_41[6] = arg_298_4
-			var_0_41[7] = arg_298_5:match("Улучшение: {FFC300}(%d+)/") or ""
+			var_0_41[7] = arg_298_5:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
 
 			local var_298_56
 			local var_298_57
 			local var_298_58
 			local var_298_59
 
-			if arg_298_5:match("{.-}Встроена нашивка {.-}(%d+)%-го {.-}уровня {.-}%((.-) к (.-)%)") then
-				var_298_56, var_298_57, var_298_58 = arg_298_5:match("{.-}Встроена нашивка {.-}(%d+)%-го {.-}уровня {.-}%((.-) к (.-)%)")
+			if arg_298_5:match("{.-}Р’СЃС‚СЂРѕРµРЅР° РЅР°С€РёРІРєР° {.-}(%d+)%-РіРѕ {.-}СѓСЂРѕРІРЅСЏ {.-}%((.-) Рє (.-)%)") then
+				var_298_56, var_298_57, var_298_58 = arg_298_5:match("{.-}Р’СЃС‚СЂРѕРµРЅР° РЅР°С€РёРІРєР° {.-}(%d+)%-РіРѕ {.-}СѓСЂРѕРІРЅСЏ {.-}%((.-) Рє (.-)%)")
 
 				deAFKMessage(tostring(var_298_56) .. " | " .. tostring(var_298_57) .. " | " .. tostring(var_298_58))
 			end
 
-			if arg_298_5:match("{.-}%* У данного аксессуара применены характеристики с предмета \"(.-)\"") then
-				var_298_59 = arg_298_5:match("{.-}%* У данного аксессуара применены характеристики с предмета \"(.-)\"")
+			if arg_298_5:match("{.-}%* РЈ РґР°РЅРЅРѕРіРѕ Р°РєСЃРµСЃСЃСѓР°СЂР° РїСЂРёРјРµРЅРµРЅС‹ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё СЃ РїСЂРµРґРјРµС‚Р° \"(.-)\"") then
+				var_298_59 = arg_298_5:match("{.-}%* РЈ РґР°РЅРЅРѕРіРѕ Р°РєСЃРµСЃСЃСѓР°СЂР° РїСЂРёРјРµРЅРµРЅС‹ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё СЃ РїСЂРµРґРјРµС‚Р° \"(.-)\"")
 			end
 
 			var_0_41[8] = var_298_58 or ""
@@ -16960,43 +17357,43 @@ function var_0_61.onShowDialog(arg_298_0, arg_298_1, arg_298_2, arg_298_3, arg_2
 		end
 	end
 
-	if var_0_209 == true and var_0_74[0] and arg_298_5:find("Введите количество, которое хотите") and (arg_298_5:find("забрать") or arg_298_5:find("положить")) and not arg_298_2:find("Шкаф > Положить") then
+	if var_0_209 == true and var_0_74[0] and arg_298_5:find("Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ, РєРѕС‚РѕСЂРѕРµ С…РѕС‚РёС‚Рµ") and (arg_298_5:find("Р·Р°Р±СЂР°С‚СЊ") or arg_298_5:find("РїРѕР»РѕР¶РёС‚СЊ")) and not arg_298_2:find("РЁРєР°С„ > РџРѕР»РѕР¶РёС‚СЊ") then
 		sampSendDialogResponsed(arg_298_0, 1, 0, "999999")
 
 		return false
 	end
 
-	if arg_298_5:find("Перед тем как подтвердить сделку, советуем всё тщательно перепроверить") and arg_298_0 == 0 then
+	if arg_298_5:find("РџРµСЂРµРґ С‚РµРј РєР°Рє РїРѕРґС‚РІРµСЂРґРёС‚СЊ СЃРґРµР»РєСѓ, СЃРѕРІРµС‚СѓРµРј РІСЃС‘ С‚С‰Р°С‚РµР»СЊРЅРѕ РїРµСЂРµРїСЂРѕРІРµСЂРёС‚СЊ") and arg_298_0 == 0 then
 		sampSendDialogResponsed(arg_298_0, 1, 0)
 
 		return false
 	end
 
-	if arg_298_5:find("Введите цену за товар") or arg_298_5:find("Введите количество и цену за один товар") then
+	if arg_298_5:find("Р’РІРµРґРёС‚Рµ С†РµРЅСѓ Р·Р° С‚РѕРІР°СЂ") or arg_298_5:find("Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ Рё С†РµРЅСѓ Р·Р° РѕРґРёРЅ С‚РѕРІР°СЂ") then
 		deAFKMessage(debug.getinfo(1, "l"), "[step 1] custom sell_buy")
 
 		var_0_115.SellOrBuyId = arg_298_0
-		var_0_115.ItemStyle = arg_298_5:find("Введите цену за товар") and 1 or 0
+		var_0_115.ItemStyle = arg_298_5:find("Р’РІРµРґРёС‚Рµ С†РµРЅСѓ Р·Р° С‚РѕРІР°СЂ") and 1 or 0
 	end
 
-	if arg_298_5:find("Забрать предмет") and arg_298_2:find("Хранилище") and var_0_115.getAllItemsFromStorage[1] then
+	if arg_298_5:find("Р—Р°Р±СЂР°С‚СЊ РїСЂРµРґРјРµС‚") and arg_298_2:find("РҐСЂР°РЅРёР»РёС‰Рµ") and var_0_115.getAllItemsFromStorage[1] then
 		local var_298_60 = 0
 		local var_298_61 = false
 
 		for iter_298_22 in magiclines(arg_298_5) do
 			if var_0_115.getAllItemsFromStorage[2] == 0 then
-				if iter_298_22:find("Забрать все предметы за последний час") or iter_298_22:find("Забрать все ларцы") then
+				if iter_298_22:find("Р—Р°Р±СЂР°С‚СЊ РІСЃРµ РїСЂРµРґРјРµС‚С‹ Р·Р° РїРѕСЃР»РµРґРЅРёР№ С‡Р°СЃ") or iter_298_22:find("Р—Р°Р±СЂР°С‚СЊ РІСЃРµ Р»Р°СЂС†С‹") then
 					var_298_61 = true
 
 					break
 				end
 
-				if iter_298_22:find("Забрать предмет") and not arg_298_5:find("Забрать все предметы за последний час") and not arg_298_5:find("Забрать все ларцы") then
+				if iter_298_22:find("Р—Р°Р±СЂР°С‚СЊ РїСЂРµРґРјРµС‚") and not arg_298_5:find("Р—Р°Р±СЂР°С‚СЊ РІСЃРµ РїСЂРµРґРјРµС‚С‹ Р·Р° РїРѕСЃР»РµРґРЅРёР№ С‡Р°СЃ") and not arg_298_5:find("Р—Р°Р±СЂР°С‚СЊ РІСЃРµ Р»Р°СЂС†С‹") then
 					var_298_61 = true
 
 					break
 				end
-			elseif iter_298_22:find("Забрать предмет") then
+			elseif iter_298_22:find("Р—Р°Р±СЂР°С‚СЊ РїСЂРµРґРјРµС‚") then
 				var_298_61 = true
 
 				break
@@ -17026,30 +17423,30 @@ function getItemInfo(arg_300_0)
 		return "", "", ""
 	end
 
-	if arg_300_0:match("{FFFFFF}Предмет: {......}(.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{FFFFFF}Предмет: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
-	elseif arg_300_0:match("{......}Легендарный предмет: {......}(.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Легендарный предмет: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
-	elseif arg_300_0:match("{......}Легендарный аксессуар: {......}(.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Легендарный аксессуар: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
-	elseif arg_300_0:match("{......}Легендарная одежда: {......}(.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Легендарная одежда: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
-	elseif arg_300_0:match("{FFFFFF}Эликсир: {......}(.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{FFFFFF}Эликсир: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
+	if arg_300_0:match("{FFFFFF}РџСЂРµРґРјРµС‚: {......}(.-){......}") then
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{FFFFFF}РџСЂРµРґРјРµС‚: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
+	elseif arg_300_0:match("{......}Р›РµРіРµРЅРґР°СЂРЅС‹Р№ РїСЂРµРґРјРµС‚: {......}(.-){......}") then
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Р›РµРіРµРЅРґР°СЂРЅС‹Р№ РїСЂРµРґРјРµС‚: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
+	elseif arg_300_0:match("{......}Р›РµРіРµРЅРґР°СЂРЅС‹Р№ Р°РєСЃРµСЃСЃСѓР°СЂ: {......}(.-){......}") then
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Р›РµРіРµРЅРґР°СЂРЅС‹Р№ Р°РєСЃРµСЃСЃСѓР°СЂ: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
+	elseif arg_300_0:match("{......}Р›РµРіРµРЅРґР°СЂРЅР°СЏ РѕРґРµР¶РґР°: {......}(.-){......}") then
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Р›РµРіРµРЅРґР°СЂРЅР°СЏ РѕРґРµР¶РґР°: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
+	elseif arg_300_0:match("{FFFFFF}Р­Р»РёРєСЃРёСЂ: {......}(.-){......}") then
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{FFFFFF}Р­Р»РёРєСЃРёСЂ: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
 	elseif arg_300_0:match("{......}{......}(.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}{......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
-	elseif arg_300_0:match("{......}Легендарный аксессуар: (.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Легендарный аксессуар: (.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
-	elseif arg_300_0:match("{......}Коллекционный аксессуар: {......}(.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Коллекционный аксессуар: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}{......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
+	elseif arg_300_0:match("{......}Р›РµРіРµРЅРґР°СЂРЅС‹Р№ Р°РєСЃРµСЃСЃСѓР°СЂ: (.-){......}") then
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Р›РµРіРµРЅРґР°СЂРЅС‹Р№ Р°РєСЃРµСЃСЃСѓР°СЂ: (.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
+	elseif arg_300_0:match("{......}РљРѕР»Р»РµРєС†РёРѕРЅРЅС‹Р№ Р°РєСЃРµСЃСЃСѓР°СЂ: {......}(.-){......}") then
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}РљРѕР»Р»РµРєС†РёРѕРЅРЅС‹Р№ Р°РєСЃРµСЃСЃСѓР°СЂ: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
 	elseif arg_300_0:match("{FF332C}(.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{FF332C}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
-	elseif arg_300_0:match("{......}Аксессуар: {......}(.-){......}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}Аксессуар: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{FF332C}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
+	elseif arg_300_0:match("{......}РђРєСЃРµСЃСЃСѓР°СЂ: {......}(.-){......}") then
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{......}РђРєСЃРµСЃСЃСѓР°СЂ: {......}(.-){......}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
 	elseif arg_300_0:match("{FDCF28}(.-){FFFFFF}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{FDCF28}(.-){FFFFFF}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{FDCF28}(.-){FFFFFF}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
 	elseif arg_300_0:match("{F2DF4E}(.-){FFFFFF}") then
-		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{F2DF4E}(.-){FFFFFF}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("Стоимость: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("Стоимость: :CASHV:(%d+)"), arg_300_0:match("Улучшение: {FFC300}(%d+)/") or ""
+		var_300_0, var_300_1, var_300_2 = arg_300_0:match("{F2DF4E}(.-){FFFFFF}"), var_0_106.cfg.myServerId ~= "201" and arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASH:(%d+)") or arg_300_0:gsub("%.", ""):match("РЎС‚РѕРёРјРѕСЃС‚СЊ: :CASHV:(%d+)"), arg_300_0:match("РЈР»СѓС‡С€РµРЅРёРµ: {FFC300}(%d+)/") or ""
 	end
 
 	return var_300_0, var_300_1, var_300_2
@@ -17230,8 +17627,8 @@ function var_0_61.onSendCommand(arg_307_0)
 	if arg_307_0:match("^/premhost") then
 		var_0_106.cfg.priumUrlChange = not var_0_106.cfg.priumUrlChange
 
-		AFKMessage("Хост таблицы изменен: " .. tostring(var_0_106.cfg.priumUrlChange))
-		AFKMessage("Теперь перезайдите в игру полностью и проблема будет решена!")
+		AFKMessage("РҐРѕСЃС‚ С‚Р°Р±Р»РёС†С‹ РёР·РјРµРЅРµРЅ: " .. tostring(var_0_106.cfg.priumUrlChange))
+		AFKMessage("РўРµРїРµСЂСЊ РїРµСЂРµР·Р°Р№РґРёС‚Рµ РІ РёРіСЂСѓ РїРѕР»РЅРѕСЃС‚СЊСЋ Рё РїСЂРѕР±Р»РµРјР° Р±СѓРґРµС‚ СЂРµС€РµРЅР°!")
 		save_all()
 
 		return false
@@ -17275,11 +17672,11 @@ function IsUseMarket(arg_308_0, arg_308_1)
 					deAFKMessage(debug.getinfo(1, "l"), "result.text 200 / 304 " .. type(arg_309_0.text) .. " " .. arg_309_0.text)
 
 					if arg_309_0.text == "0" then
-						AFKMessage("Игрок " .. arg_308_0 .. " {ff6666}не использует{ffffff} Arizona Market")
+						AFKMessage("РРіСЂРѕРє " .. arg_308_0 .. " {ff6666}РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚{ffffff} Arizona Market")
 					elseif arg_309_0.text == "1" then
-						AFKMessage("Игрок " .. arg_308_0 .. " {33AA33}использует{ffffff} Arizona Market")
+						AFKMessage("РРіСЂРѕРє " .. arg_308_0 .. " {33AA33}РёСЃРїРѕР»СЊР·СѓРµС‚{ffffff} Arizona Market")
 					elseif tonumber(arg_309_0.text) > 1 then
-						AFKMessage("Игрок " .. arg_308_0 .. " {ff6666}не использует{ffffff} Arizona Market. Последний раз был в сети " .. arg_309_0.text .. " минут назад.")
+						AFKMessage("РРіСЂРѕРє " .. arg_308_0 .. " {ff6666}РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚{ffffff} Arizona Market. РџРѕСЃР»РµРґРЅРёР№ СЂР°Р· Р±С‹Р» РІ СЃРµС‚Рё " .. arg_309_0.text .. " РјРёРЅСѓС‚ РЅР°Р·Р°Рґ.")
 					end
 				else
 					deAFKMessage(debug.getinfo(1, "l"), "error1 " .. tostring(arg_309_0.status_code))
@@ -17316,23 +17713,23 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		if var_0_107.messageAfterConnect then
 			var_0_107.messageAfterConnect = false
 
-			sendTelegramNotification("Вы успешно авторизовались и заспавнились на сервере после авторизации.")
+			sendTelegramNotification("Р’С‹ СѓСЃРїРµС€РЅРѕ Р°РІС‚РѕСЂРёР·РѕРІР°Р»РёСЃСЊ Рё Р·Р°СЃРїР°РІРЅРёР»РёСЃСЊ РЅР° СЃРµСЂРІРµСЂРµ РїРѕСЃР»Рµ Р°РІС‚РѕСЂРёР·Р°С†РёРё.")
 		end
 
 		return false
 	end
 
-	if var_0_115.autoLavka and (arg_311_1:find("поскольку он сломан") or arg_311_1:find("вас нет надетого на вас переносного ларька") or arg_311_1:find("У Вас уже установлена лавка")) and arg_311_0 == -10270721 then
+	if var_0_115.autoLavka and (arg_311_1:find("РїРѕСЃРєРѕР»СЊРєСѓ РѕРЅ СЃР»РѕРјР°РЅ") or arg_311_1:find("РІР°СЃ РЅРµС‚ РЅР°РґРµС‚РѕРіРѕ РЅР° РІР°СЃ РїРµСЂРµРЅРѕСЃРЅРѕРіРѕ Р»Р°СЂСЊРєР°") or arg_311_1:find("РЈ Р’Р°СЃ СѓР¶Рµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР° Р»Р°РІРєР°")) and arg_311_0 == -10270721 then
 		var_0_115.autoLavka = false
 
-		sendNotify("Авто установка лавки выключено. Какая-то ошибочка.")
+		sendNotify("РђРІС‚Рѕ СѓСЃС‚Р°РЅРѕРІРєР° Р»Р°РІРєРё РІС‹РєР»СЋС‡РµРЅРѕ. РљР°РєР°СЏ-С‚Рѕ РѕС€РёР±РѕС‡РєР°.")
 	end
 
-	if arg_311_1:find("Достигнут лимит лавок на сервере") and arg_311_0 == -10270721 and not var_0_115.autoLavka then
-		AFKMessage("Лимит лавок на сервере! Доступна функция авто-установки лавки! Команда: /autolavka")
+	if arg_311_1:find("Р”РѕСЃС‚РёРіРЅСѓС‚ Р»РёРјРёС‚ Р»Р°РІРѕРє РЅР° СЃРµСЂРІРµСЂРµ") and arg_311_0 == -10270721 and not var_0_115.autoLavka then
+		AFKMessage("Р›РёРјРёС‚ Р»Р°РІРѕРє РЅР° СЃРµСЂРІРµСЂРµ! Р”РѕСЃС‚СѓРїРЅР° С„СѓРЅРєС†РёСЏ Р°РІС‚Рѕ-СѓСЃС‚Р°РЅРѕРІРєРё Р»Р°РІРєРё! РљРѕРјР°РЅРґР°: /autolavka")
 	end
 
-	if ((arg_311_1:find("Вы сняли лавку") or arg_311_1:find("У Вас закончилось время для настройки товаров!") or arg_311_1:find("Ваша лавка была закрыта") or arg_311_1:find("Вы отказались от аренды лавки!")) and arg_311_0 == -10270721 or arg_311_1:find("удалил вашу лавку") and arg_311_0 == -6723841 or arg_311_1:find("Лавка была удалена") and arg_311_0 == 1941201407 or arg_311_1:find("так как время аренды аксессуара вышло") and arg_311_0 == -10270721) and var_0_125 ~= -1 then
+	if ((arg_311_1:find("Р’С‹ СЃРЅСЏР»Рё Р»Р°РІРєСѓ") or arg_311_1:find("РЈ Р’Р°СЃ Р·Р°РєРѕРЅС‡РёР»РѕСЃСЊ РІСЂРµРјСЏ РґР»СЏ РЅР°СЃС‚СЂРѕР№РєРё С‚РѕРІР°СЂРѕРІ!") or arg_311_1:find("Р’Р°С€Р° Р»Р°РІРєР° Р±С‹Р»Р° Р·Р°РєСЂС‹С‚Р°") or arg_311_1:find("Р’С‹ РѕС‚РєР°Р·Р°Р»РёСЃСЊ РѕС‚ Р°СЂРµРЅРґС‹ Р»Р°РІРєРё!")) and arg_311_0 == -10270721 or arg_311_1:find("СѓРґР°Р»РёР» РІР°С€Сѓ Р»Р°РІРєСѓ") and arg_311_0 == -6723841 or arg_311_1:find("Р›Р°РІРєР° Р±С‹Р»Р° СѓРґР°Р»РµРЅР°") and arg_311_0 == 1941201407 or arg_311_1:find("С‚Р°Рє РєР°Рє РІСЂРµРјСЏ Р°СЂРµРЅРґС‹ Р°РєСЃРµСЃСЃСѓР°СЂР° РІС‹С€Р»Рѕ") and arg_311_0 == -10270721) and var_0_125 ~= -1 then
 		MarketPlace_Clear = true
 		var_0_77[0] = false
 		var_0_125 = -1
@@ -17340,12 +17737,12 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 
 		save_all()
 
-		if var_0_107.lavka_destroypt[0] and arg_311_1:find("удалил вашу лавку") then
-			sendTelegramNotification("[" .. os.date("%H:%M:%S", os.time()) .. "] Вашу лавку удалили!\n" .. tostring(arg_311_1))
+		if var_0_107.lavka_destroypt[0] and arg_311_1:find("СѓРґР°Р»РёР» РІР°С€Сѓ Р»Р°РІРєСѓ") then
+			sendTelegramNotification("[" .. os.date("%H:%M:%S", os.time()) .. "] Р’Р°С€Сѓ Р»Р°РІРєСѓ СѓРґР°Р»РёР»Рё!\n" .. tostring(arg_311_1))
 		end
 	end
 
-	if (arg_311_1:find("Вы успешно выставили лавку для продажи.покупки товара") or arg_311_1:find("Вы успешно арендовали лавку для продажи.покупки товара")) and arg_311_0 == -1347440641 then
+	if (arg_311_1:find("Р’С‹ СѓСЃРїРµС€РЅРѕ РІС‹СЃС‚Р°РІРёР»Рё Р»Р°РІРєСѓ РґР»СЏ РїСЂРѕРґР°Р¶Рё.РїРѕРєСѓРїРєРё С‚РѕРІР°СЂР°") or arg_311_1:find("Р’С‹ СѓСЃРїРµС€РЅРѕ Р°СЂРµРЅРґРѕРІР°Р»Рё Р»Р°РІРєСѓ РґР»СЏ РїСЂРѕРґР°Р¶Рё.РїРѕРєСѓРїРєРё С‚РѕРІР°СЂР°")) and arg_311_0 == -1347440641 then
 		var_0_125 = 1
 		var_0_106.cfg.active_lavka = 1
 		var_0_168[0] = false
@@ -17360,15 +17757,15 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		if var_0_115.autoLavka then
 			var_0_115.autoLavka = false
 
-			sendNotify("Авто установка лавки выключено так как вы успешно установили лавку.")
+			sendNotify("РђРІС‚Рѕ СѓСЃС‚Р°РЅРѕРІРєР° Р»Р°РІРєРё РІС‹РєР»СЋС‡РµРЅРѕ С‚Р°Рє РєР°Рє РІС‹ СѓСЃРїРµС€РЅРѕ СѓСЃС‚Р°РЅРѕРІРёР»Рё Р»Р°РІРєСѓ.")
 		end
 
 		if var_0_107.lavka_build[0] then
-			sendTelegramNotification("[" .. os.date("%H:%M:%S", os.time()) .. "] Вы успешно установили или арендовали лавку!")
+			sendTelegramNotification("[" .. os.date("%H:%M:%S", os.time()) .. "] Р’С‹ СѓСЃРїРµС€РЅРѕ СѓСЃС‚Р°РЅРѕРІРёР»Рё РёР»Рё Р°СЂРµРЅРґРѕРІР°Р»Рё Р»Р°РІРєСѓ!")
 		end
 	end
 
-	if arg_311_1:find("Ваша последняя установленная лавка осталось на прежнем месте") and arg_311_0 == -1347440641 then
+	if arg_311_1:find("Р’Р°С€Р° РїРѕСЃР»РµРґРЅСЏСЏ СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅР°СЏ Р»Р°РІРєР° РѕСЃС‚Р°Р»РѕСЃСЊ РЅР° РїСЂРµР¶РЅРµРј РјРµСЃС‚Рµ") and arg_311_0 == -1347440641 then
 		local var_311_1, var_311_2 = sampGetCurrentServerAddress()
 
 		if var_0_28[var_311_1] then
@@ -17385,7 +17782,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		end
 	end
 
-	if (arg_311_1:find("Вы успешно сдали предмет") or arg_311_1:find("Вы успешно сдали охранника")) and arg_311_0 == 1941201407 then
+	if (arg_311_1:find("Р’С‹ СѓСЃРїРµС€РЅРѕ СЃРґР°Р»Рё РїСЂРµРґРјРµС‚") or arg_311_1:find("Р’С‹ СѓСЃРїРµС€РЅРѕ СЃРґР°Р»Рё РѕС…СЂР°РЅРЅРёРєР°")) and arg_311_0 == 1941201407 then
 		if jsonLog[os.date("%d.%m.%Y")] == nil then
 			jsonLog[os.date("%d.%m.%Y")] = {
 				{},
@@ -17434,15 +17831,15 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		local var_311_5
 		local var_311_6
 		local var_311_7 = false
-		local var_311_8, var_311_9, var_311_10 = arg_311_1:match("Вы успешно сдали предмет (.-) в аренду на (%d+) часов за (.+)")
+		local var_311_8, var_311_9, var_311_10 = arg_311_1:match("Р’С‹ СѓСЃРїРµС€РЅРѕ СЃРґР°Р»Рё РїСЂРµРґРјРµС‚ (.-) РІ Р°СЂРµРЅРґСѓ РЅР° (%d+) С‡Р°СЃРѕРІ Р·Р° (.+)")
 
 		if var_311_8 == nil then
-			var_311_5, var_311_6, var_311_10 = arg_311_1:match("Вы успешно сдали охранника (.-) в аренду на (%d+) часов за (.+)")
+			var_311_5, var_311_6, var_311_10 = arg_311_1:match("Р’С‹ СѓСЃРїРµС€РЅРѕ СЃРґР°Р»Рё РѕС…СЂР°РЅРЅРёРєР° (.-) РІ Р°СЂРµРЅРґСѓ РЅР° (%d+) С‡Р°СЃРѕРІ Р·Р° (.+)")
 		end
 
 		if var_311_8 == nil and var_311_5 == nil then
 			var_311_7 = true
-			var_311_8, var_311_9, var_311_10 = arg_311_1:match("Вы успешно сдали предмет (.-) в аренду на (%d+) минут за (.+)")
+			var_311_8, var_311_9, var_311_10 = arg_311_1:match("Р’С‹ СѓСЃРїРµС€РЅРѕ СЃРґР°Р»Рё РїСЂРµРґРјРµС‚ (.-) РІ Р°СЂРµРЅРґСѓ РЅР° (%d+) РјРёРЅСѓС‚ Р·Р° (.+)")
 		end
 
 		local var_311_11 = var_0_28[var_311_3] == 0
@@ -17459,9 +17856,9 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 			end
 
 			if var_311_8 and var_311_9 and var_311_12 then
-				table.insert(jsonLog[os.date("%d.%m.%Y")][15], 1, var_311_11 and "[" .. os.date("%H:%M:%S", os.time()) .. "] Вы сдали Аксессуар " .. var_311_8 .. " на " .. var_311_9 .. " " .. (var_311_7 and "минут" or "час(-ов)") .. ". За VC$" .. moneySeparator(var_311_12) or "[" .. os.date("%H:%M:%S", os.time()) .. "] Вы сдали Аксессуар " .. var_311_8 .. " на " .. var_311_9 .. " " .. (var_311_7 and "минут" or "час(-ов)") .. ". За $" .. moneySeparator(var_311_12))
+				table.insert(jsonLog[os.date("%d.%m.%Y")][15], 1, var_311_11 and "[" .. os.date("%H:%M:%S", os.time()) .. "] Р’С‹ СЃРґР°Р»Рё РђРєСЃРµСЃСЃСѓР°СЂ " .. var_311_8 .. " РЅР° " .. var_311_9 .. " " .. (var_311_7 and "РјРёРЅСѓС‚" or "С‡Р°СЃ(-РѕРІ)") .. ". Р—Р° VC$" .. moneySeparator(var_311_12) or "[" .. os.date("%H:%M:%S", os.time()) .. "] Р’С‹ СЃРґР°Р»Рё РђРєСЃРµСЃСЃСѓР°СЂ " .. var_311_8 .. " РЅР° " .. var_311_9 .. " " .. (var_311_7 and "РјРёРЅСѓС‚" or "С‡Р°СЃ(-РѕРІ)") .. ". Р—Р° $" .. moneySeparator(var_311_12))
 			elseif var_311_5 and var_311_6 and var_311_12 then
-				table.insert(jsonLog[os.date("%d.%m.%Y")][15], 1, var_311_11 and "[" .. os.date("%H:%M:%S", os.time()) .. "] Вы сдали Охранника " .. var_311_5 .. " на " .. var_311_6 .. " час(-ов). За VC$" .. moneySeparator(var_311_12) or "[" .. os.date("%H:%M:%S", os.time()) .. "] Вы сдали Охранника " .. var_311_5 .. " на " .. var_311_6 .. " час(-ов). За $" .. moneySeparator(var_311_12))
+				table.insert(jsonLog[os.date("%d.%m.%Y")][15], 1, var_311_11 and "[" .. os.date("%H:%M:%S", os.time()) .. "] Р’С‹ СЃРґР°Р»Рё РћС…СЂР°РЅРЅРёРєР° " .. var_311_5 .. " РЅР° " .. var_311_6 .. " С‡Р°СЃ(-РѕРІ). Р—Р° VC$" .. moneySeparator(var_311_12) or "[" .. os.date("%H:%M:%S", os.time()) .. "] Р’С‹ СЃРґР°Р»Рё РћС…СЂР°РЅРЅРёРєР° " .. var_311_5 .. " РЅР° " .. var_311_6 .. " С‡Р°СЃ(-РѕРІ). Р—Р° $" .. moneySeparator(var_311_12))
 			end
 
 			writeJsonFile(jsonLog, "moonloader\\ArzMarket\\Log.json")
@@ -17469,8 +17866,8 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		end
 	end
 
-	if var_0_115.IsArzmarketCheck[0] and var_0_56[17] + 1 >= os.time() and arg_311_1:find("Уровень") and arg_311_1:find("packetloss") and arg_311_0 == -1 then
-		local var_311_13, var_311_14, var_311_15, var_311_16 = arg_311_1:gsub(" | АФК: (%d+) сек", ""):match("%[%d+%] (.-) %| Уровень: (%d+) %| UID: (%d+) %| packetloss: ([%d.]+)")
+	if var_0_115.IsArzmarketCheck[0] and var_0_56[17] + 1 >= os.time() and arg_311_1:find("РЈСЂРѕРІРµРЅСЊ") and arg_311_1:find("packetloss") and arg_311_0 == -1 then
+		local var_311_13, var_311_14, var_311_15, var_311_16 = arg_311_1:gsub(" | РђР¤Рљ: (%d+) СЃРµРє", ""):match("%[%d+%] (.-) %| РЈСЂРѕРІРµРЅСЊ: (%d+) %| UID: (%d+) %| packetloss: ([%d.]+)")
 
 		if var_311_13 then
 			IsUseMarket(var_311_13, var_311_15)
@@ -17482,7 +17879,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		}
 	end
 
-	if arg_311_1:find("Вам поступил перевод на ваш счет в размере") and arg_311_0 == -65281 then
+	if arg_311_1:find("Р’Р°Рј РїРѕСЃС‚СѓРїРёР» РїРµСЂРµРІРѕРґ РЅР° РІР°С€ СЃС‡РµС‚ РІ СЂР°Р·РјРµСЂРµ") and arg_311_0 == -65281 then
 		if jsonLog[os.date("%d.%m.%Y")] == nil then
 			jsonLog[os.date("%d.%m.%Y")] = {
 				{},
@@ -17527,7 +17924,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 			}
 		end
 
-		local var_311_17, var_311_18 = arg_311_1:match("Вам поступил перевод на ваш счет в размере (.+) от жителя (.-)%(.-%)")
+		local var_311_17, var_311_18 = arg_311_1:match("Р’Р°Рј РїРѕСЃС‚СѓРїРёР» РїРµСЂРµРІРѕРґ РЅР° РІР°С€ СЃС‡РµС‚ РІ СЂР°Р·РјРµСЂРµ (.+) РѕС‚ Р¶РёС‚РµР»СЏ (.-)%(.-%)")
 
 		deAFKMessage(debug.getinfo(1, "l"), "amount=" .. tostring(var_311_17) .. "|sender=" .. tostring(var_311_18))
 
@@ -17535,18 +17932,18 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 
 		if var_311_18 and var_0_28[var_311_19] ~= 0 then
 			if var_0_107.bank_Message[0] then
-				sendTelegramNotification("[" .. os.date("%H:%M:%S", os.time()) .. "] Поступление на банк от " .. var_311_18 .. " | Вы получили $" .. moneySeparator(parseArizonaMoney(var_311_17)))
+				sendTelegramNotification("[" .. os.date("%H:%M:%S", os.time()) .. "] РџРѕСЃС‚СѓРїР»РµРЅРёРµ РЅР° Р±Р°РЅРє РѕС‚ " .. var_311_18 .. " | Р’С‹ РїРѕР»СѓС‡РёР»Рё $" .. moneySeparator(parseArizonaMoney(var_311_17)))
 			end
 
 			jsonLog[os.date("%d.%m.%Y")][13] = jsonLog[os.date("%d.%m.%Y")][13] + parseArizonaMoney(var_311_17)
 
-			table.insert(jsonLog[os.date("%d.%m.%Y")][12], 1, "[" .. os.date("%H:%M:%S", os.time()) .. "] Поступление на банк от " .. var_311_18 .. " | Вы получили $" .. moneySeparator(parseArizonaMoney(var_311_17)))
+			table.insert(jsonLog[os.date("%d.%m.%Y")][12], 1, "[" .. os.date("%H:%M:%S", os.time()) .. "] РџРѕСЃС‚СѓРїР»РµРЅРёРµ РЅР° Р±Р°РЅРє РѕС‚ " .. var_311_18 .. " | Р’С‹ РїРѕР»СѓС‡РёР»Рё $" .. moneySeparator(parseArizonaMoney(var_311_17)))
 			writeJsonFile(jsonLog, "moonloader\\ArzMarket\\Log.json")
 			deAFKMessage(debug.getinfo(1, "l"), "save.")
 		end
 	end
 
-	if arg_311_1:find("Вы перевели") and arg_311_1:find("на счет") and arg_311_0 == -65281 then
+	if arg_311_1:find("Р’С‹ РїРµСЂРµРІРµР»Рё") and arg_311_1:find("РЅР° СЃС‡РµС‚") and arg_311_0 == -65281 then
 		if jsonLog[os.date("%d.%m.%Y")] == nil then
 			jsonLog[os.date("%d.%m.%Y")] = {
 				{},
@@ -17591,7 +17988,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 			}
 		end
 
-		local var_311_21, var_311_22 = arg_311_1:match("Вы перевели (.+) игроку (.-)%(.-%) на счет")
+		local var_311_21, var_311_22 = arg_311_1:match("Р’С‹ РїРµСЂРµРІРµР»Рё (.+) РёРіСЂРѕРєСѓ (.-)%(.-%) РЅР° СЃС‡РµС‚")
 
 		deAFKMessage(debug.getinfo(1, "l"), "amount=" .. tostring(var_311_21) .. "|receiver=" .. tostring(var_311_22))
 
@@ -17599,12 +17996,12 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 
 		if var_311_22 and var_0_28[var_311_23] ~= 0 then
 			if var_0_107.bank_Message[0] then
-				sendTelegramNotification("[" .. os.date("%H:%M:%S", os.time()) .. "] Перевод денег на игрока " .. var_311_22 .. " | Вы потратили $" .. moneySeparator(parseArizonaMoney(var_311_21)))
+				sendTelegramNotification("[" .. os.date("%H:%M:%S", os.time()) .. "] РџРµСЂРµРІРѕРґ РґРµРЅРµРі РЅР° РёРіСЂРѕРєР° " .. var_311_22 .. " | Р’С‹ РїРѕС‚СЂР°С‚РёР»Рё $" .. moneySeparator(parseArizonaMoney(var_311_21)))
 			end
 
 			jsonLog[os.date("%d.%m.%Y")][14] = jsonLog[os.date("%d.%m.%Y")][14] + parseArizonaMoney(var_311_21)
 
-			table.insert(jsonLog[os.date("%d.%m.%Y")][12], 1, "[" .. os.date("%H:%M:%S", os.time()) .. "] Перевод денег на игрока " .. var_311_22 .. " | Вы потратили $" .. moneySeparator(parseArizonaMoney(var_311_21)))
+			table.insert(jsonLog[os.date("%d.%m.%Y")][12], 1, "[" .. os.date("%H:%M:%S", os.time()) .. "] РџРµСЂРµРІРѕРґ РґРµРЅРµРі РЅР° РёРіСЂРѕРєР° " .. var_311_22 .. " | Р’С‹ РїРѕС‚СЂР°С‚РёР»Рё $" .. moneySeparator(parseArizonaMoney(var_311_21)))
 			writeJsonFile(jsonLog, "moonloader\\ArzMarket\\Log.json")
 			deAFKMessage(debug.getinfo(1, "l"), "save.")
 		end
@@ -17614,7 +18011,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		var_0_115.PayDayText = var_0_115.PayDayText .. "\n" .. arg_311_1
 
 		deAFKMessage(debug.getinfo(1, "l"), "PayDayText | start send TG")
-		sendTelegramNotification("Прошел пейдей! Вот статистика за пейдей! \n" .. formatArizonaMoneyInText(var_0_115.PayDayText))
+		sendTelegramNotification("РџСЂРѕС€РµР» РїРµР№РґРµР№! Р’РѕС‚ СЃС‚Р°С‚РёСЃС‚РёРєР° Р·Р° РїРµР№РґРµР№! \n" .. formatArizonaMoneyInText(var_0_115.PayDayText))
 
 		var_0_115.PayDayText = ""
 
@@ -17633,7 +18030,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		}
 	end
 
-	if arg_311_1:find("БАНКОВСКИЙ ЧЕК") and arg_311_0 == -2686721 then
+	if arg_311_1:find("Р‘РђРќРљРћР’РЎРљРР™ Р§Р•Рљ") and arg_311_0 == -2686721 then
 		var_0_115.sendPayDayExp = {
 			true,
 			os.time() - math.random(1, 60)
@@ -17669,23 +18066,23 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		end
 	end
 
-	if var_0_115.SellOrBuyIdRemove == true and arg_311_1:find("успешно удален из продажи") and arg_311_0 == 1941201407 then
+	if var_0_115.SellOrBuyIdRemove == true and arg_311_1:find("СѓСЃРїРµС€РЅРѕ СѓРґР°Р»РµРЅ РёР· РїСЂРѕРґР°Р¶Рё") and arg_311_0 == 1941201407 then
 		var_0_115.SellOrBuyIdRemove = nil
 
-		deAFKMessage(debug.getinfo(1, "l"), "[sell] [Market] [removeItemFromMarket] [" .. arg_311_1:match("Товар (.+) успешно") .. "]")
+		deAFKMessage(debug.getinfo(1, "l"), "[sell] [Market] [removeItemFromMarket] [" .. arg_311_1:match("РўРѕРІР°СЂ (.+) СѓСЃРїРµС€РЅРѕ") .. "]")
 		deAFKMessage(debug.getinfo(1, "l"), "[sell] [Market] [removeItemFromMarket] = [" .. var_0_37[1] .. "] Enchant = [" .. var_0_37[2] .. "]")
 		removeFromMarketSell((var_0_37[2] == "" or var_0_37[2] == "0") and var_0_37[1] or var_0_37[1] .. "(+" .. var_0_37[2] .. ")")
 	end
 
-	if var_0_115.custom_Sell_Buy == true and arg_311_1:match("Товар (.+) успешно") and arg_311_1:find("успешно выставлен на продажу") and arg_311_0 == 1941201407 then
+	if var_0_115.custom_Sell_Buy == true and arg_311_1:match("РўРѕРІР°СЂ (.+) СѓСЃРїРµС€РЅРѕ") and arg_311_1:find("СѓСЃРїРµС€РЅРѕ РІС‹СЃС‚Р°РІР»РµРЅ РЅР° РїСЂРѕРґР°Р¶Сѓ") and arg_311_0 == 1941201407 then
 		var_0_115.custom_Sell_Buy = nil
 
-		if var_0_115.ItemChar ~= nil and var_0_106.cfg.LastBuySellDialogTitle:find("Лавка") then
-			deAFKMessage(debug.getinfo(1, "l"), "[sell] [step 3] [" .. arg_311_1:match("Товар (.+) успешно") .. "]")
+		if var_0_115.ItemChar ~= nil and var_0_106.cfg.LastBuySellDialogTitle:find("Р›Р°РІРєР°") then
+			deAFKMessage(debug.getinfo(1, "l"), "[sell] [step 3] [" .. arg_311_1:match("РўРѕРІР°СЂ (.+) СѓСЃРїРµС€РЅРѕ") .. "]")
 			deAFKMessage(debug.getinfo(1, "l"), "[sell] [step 5] send Custom [sell] " .. var_0_115.customParams)
 
 			local var_311_30, var_311_31 = var_0_115.customParams:gsub("%s+", ""):match("(%d+)%s*[%.,;:]*%s*(%d+)")
-			local var_311_32 = arg_311_1:match("Товар (.+) успешно")
+			local var_311_32 = arg_311_1:match("РўРѕРІР°СЂ (.+) СѓСЃРїРµС€РЅРѕ")
 
 			if var_0_115.ItemStyle == 1 then
 				deAFKMessage(debug.getinfo(1, "l"), "[1] params [sell] " .. var_0_115.customParams:gsub("%s+", ""):match("(%d+)") .. " " .. var_311_32 .. var_0_115.ItemChar)
@@ -17704,8 +18101,8 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		var_0_115.ItemChar = nil
 	end
 
-	if var_0_76[0] and arg_311_0 == -1 and arg_311_1:match("([^%s]+)%[(%d+)%]%s+говорит:%s*{([^}]+)}%s+(.*)") then
-		local var_311_33, var_311_34, var_311_35, var_311_36 = arg_311_1:match("([^%s]+)%[(%d+)%]%s+говорит:%s*{([^}]+)}%s+(.*)")
+	if var_0_76[0] and arg_311_0 == -1 and arg_311_1:match("([^%s]+)%[(%d+)%]%s+РіРѕРІРѕСЂРёС‚:%s*{([^}]+)}%s+(.*)") then
+		local var_311_33, var_311_34, var_311_35, var_311_36 = arg_311_1:match("([^%s]+)%[(%d+)%]%s+РіРѕРІРѕСЂРёС‚:%s*{([^}]+)}%s+(.*)")
 
 		deAFKMessage("name: " .. tostring(var_311_33) .. " | id: " .. tostring(var_311_34) .. " | color: " .. tostring(var_311_35) .. " | message: " .. tostring(var_311_36) .. " | trader_name: " .. tostring(trader_name) .. " ")
 
@@ -17716,7 +18113,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 
 			for iter_311_0, iter_311_1 in ipairs(var_311_37) do
 				deAFKMessage(debug.getinfo(1, "l"), "?? " .. iter_311_0 .. " | " .. iter_311_1)
-				table.insert(trade_chatM, iter_311_0 == 1 and var_311_33 .. "[" .. var_311_34 .. "] говорит: {B7AFAF}" .. iter_311_1 or "{B7AFAF}" .. iter_311_1)
+				table.insert(trade_chatM, iter_311_0 == 1 and var_311_33 .. "[" .. var_311_34 .. "] РіРѕРІРѕСЂРёС‚: {B7AFAF}" .. iter_311_1 or "{B7AFAF}" .. iter_311_1)
 
 				if var_0_115.ChatTrade[1] == 1 then
 					var_0_115.ChatTrade[2] = true
@@ -17725,7 +18122,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		end
 	end
 
-	if arg_311_1:find("Вы подтвердили сделку") and arg_311_0 == -1347440641 then
+	if arg_311_1:find("Р’С‹ РїРѕРґС‚РІРµСЂРґРёР»Рё СЃРґРµР»РєСѓ") and arg_311_0 == -1347440641 then
 		if information_id ~= nil then
 			sampSendClickTextdraw(information_id)
 			deAFKMessage(debug.getinfo(1, "l"), "[TradeLogSystem] clickTXD")
@@ -17737,14 +18134,14 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		information_id = 0
 	end
 
-	if var_0_115.custom_Sell_Buy == true and arg_311_1:find("Вы начали скупку товара") and arg_311_0 == 1941201407 then
+	if var_0_115.custom_Sell_Buy == true and arg_311_1:find("Р’С‹ РЅР°С‡Р°Р»Рё СЃРєСѓРїРєСѓ С‚РѕРІР°СЂР°") and arg_311_0 == 1941201407 then
 		var_0_115.custom_Sell_Buy = nil
 
-		if var_0_106.cfg.LastBuySellDialogTitle:find("Лавка") then
+		if var_0_106.cfg.LastBuySellDialogTitle:find("Р›Р°РІРєР°") then
 			deAFKMessage(debug.getinfo(1, "l"), "[step 3] send Custom [buy] " .. var_0_115.customParams)
 
 			local var_311_38, var_311_39 = var_0_115.customParams:gsub("%s+", ""):match("(%d+)%s*[%.,;:]*%s*(%d+)")
-			local var_311_40 = arg_311_1:match("товара%s+(.-)%s+в количестве")
+			local var_311_40 = arg_311_1:match("С‚РѕРІР°СЂР°%s+(.-)%s+РІ РєРѕР»РёС‡РµСЃС‚РІРµ")
 
 			if var_0_115.ItemStyle == 1 then
 				deAFKMessage(debug.getinfo(1, "l"), "[1] params [buy] " .. var_0_115.customParams:gsub("%s+", ""):match("(%d+)") .. " " .. var_311_40)
@@ -17760,12 +18157,12 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		var_0_115.ItemStyle = nil
 	end
 
-	if #var_0_43.items_buy > 0 and arg_311_1:find("который вы скупаете успешно удален") and arg_311_1:match("Товар%s+(.+),") and arg_311_0 == 1941201407 and var_0_106.cfg.LastBuySellDialogTitle:find("Лавка") then
-		deAFKMessage(debug.getinfo(1, "l"), "[Onservermessage] try to delete item [buy] [" .. arg_311_1:match("Товар%s+(.+),") .. "]")
-		removeFromMarketBuy(arg_311_1:match("Товар%s+(.+),"))
+	if #var_0_43.items_buy > 0 and arg_311_1:find("РєРѕС‚РѕСЂС‹Р№ РІС‹ СЃРєСѓРїР°РµС‚Рµ СѓСЃРїРµС€РЅРѕ СѓРґР°Р»РµРЅ") and arg_311_1:match("РўРѕРІР°СЂ%s+(.+),") and arg_311_0 == 1941201407 and var_0_106.cfg.LastBuySellDialogTitle:find("Р›Р°РІРєР°") then
+		deAFKMessage(debug.getinfo(1, "l"), "[Onservermessage] try to delete item [buy] [" .. arg_311_1:match("РўРѕРІР°СЂ%s+(.+),") .. "]")
+		removeFromMarketBuy(arg_311_1:match("РўРѕРІР°СЂ%s+(.+),"))
 	end
 
-	if var_0_211[2] == true and (arg_311_1:find("Здесь пусто") and arg_311_0 == -10270721 or arg_311_1:find("успешно удален из продажи") and arg_311_0 == 1941201407) then
+	if var_0_211[2] == true and (arg_311_1:find("Р—РґРµСЃСЊ РїСѓСЃС‚Рѕ") and arg_311_0 == -10270721 or arg_311_1:find("СѓСЃРїРµС€РЅРѕ СѓРґР°Р»РµРЅ РёР· РїСЂРѕРґР°Р¶Рё") and arg_311_0 == 1941201407) then
 		if var_0_207[1] ~= nil then
 			lets_go = true
 		end
@@ -17776,19 +18173,19 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		return false
 	end
 
-	if var_0_115.buy_dell and arg_311_1:find("У вас нет выставленного товара") then
-		AFKMessage("Все товары сняты. Можете просканировать заново или выставить товар.")
+	if var_0_115.buy_dell and arg_311_1:find("РЈ РІР°СЃ РЅРµС‚ РІС‹СЃС‚Р°РІР»РµРЅРЅРѕРіРѕ С‚РѕРІР°СЂР°") then
+		AFKMessage("Р’СЃРµ С‚РѕРІР°СЂС‹ СЃРЅСЏС‚С‹. РњРѕР¶РµС‚Рµ РїСЂРѕСЃРєР°РЅРёСЂРѕРІР°С‚СЊ Р·Р°РЅРѕРІРѕ РёР»Рё РІС‹СЃС‚Р°РІРёС‚СЊ С‚РѕРІР°СЂ.")
 
 		var_0_115.buy_dell = false
 	end
 
-	if var_0_93.buy and (arg_311_1:find("Поиск доступен раз в 1 секунду!") or arg_311_1:find("Поиск доступен раз в 1 сек!")) and arg_311_0 == -10270721 then
+	if var_0_93.buy and (arg_311_1:find("РџРѕРёСЃРє РґРѕСЃС‚СѓРїРµРЅ СЂР°Р· РІ 1 СЃРµРєСѓРЅРґСѓ!") or arg_311_1:find("РџРѕРёСЃРє РґРѕСЃС‚СѓРїРµРЅ СЂР°Р· РІ 1 СЃРµРє!")) and arg_311_0 == -10270721 then
 		return false
 	end
 
-	if var_0_93.buy and arg_311_1:find("Предметов не найдено!") and arg_311_0 == -10270721 then
-		saveLog("[servermessage event] " .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] не выставлен так как предмет не найден.")
-		table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] не выставлен так как предмет не найден.")
+	if var_0_93.buy and arg_311_1:find("РџСЂРµРґРјРµС‚РѕРІ РЅРµ РЅР°Р№РґРµРЅРѕ!") and arg_311_0 == -10270721 then
+		saveLog("[servermessage event] " .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РїСЂРµРґРјРµС‚ РЅРµ РЅР°Р№РґРµРЅ.")
+		table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ [{ff6666}" .. var_0_87[var_0_93.score].name .. "{ffffff}] РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє РїСЂРµРґРјРµС‚ РЅРµ РЅР°Р№РґРµРЅ.")
 
 		var_0_93.score = var_0_93.score + 1
 
@@ -17801,12 +18198,12 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 					score_from = 1
 				}
 
-				saveLog("[servermessage event] " .. os.date("[%H:%M:%S]") .. "{35cf0a} Выставление товаров завершено. Проверить все товары вы можете ниже! ")
-				table.insert(var_0_34, "{35cf0a}Выставление товаров завершено. Проверить все товары вы можете ниже! ")
+				saveLog("[servermessage event] " .. os.date("[%H:%M:%S]") .. "{35cf0a} Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ. РџСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІС‹ РјРѕР¶РµС‚Рµ РЅРёР¶Рµ! ")
+				table.insert(var_0_34, "{35cf0a}Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ. РџСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ С‚РѕРІР°СЂС‹ РІС‹ РјРѕР¶РµС‚Рµ РЅРёР¶Рµ! ")
 
 				var_0_43.enabled = true
 
-				AFKMessage("Выставление товаров завершено.")
+				AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ.")
 				sampSendDialogResponsed(dialogId, 0, 0)
 
 				return false
@@ -17815,34 +18212,34 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 	end
 
 	if var_0_107.nalog_message[0] then
-		if arg_311_1:find("Вы оплатили все налоги на сумму") and arg_311_0 == 1941201407 then
+		if arg_311_1:find("Р’С‹ РѕРїР»Р°С‚РёР»Рё РІСЃРµ РЅР°Р»РѕРіРё РЅР° СЃСѓРјРјСѓ") and arg_311_0 == 1941201407 then
 			sendTelegramNotification("[SAMP | Oplata_naloga (all_nalogs)] \n" .. sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED))) .. "\n" .. sampGetCurrentServerName() .. "\nLast input: \n \n \n" .. tostring(var_0_57[1]))
 
 			var_0_57[1] = nil
 		end
 
-		if arg_311_1:find("Вы успешно погасили неоплаченные счета за бизнес") and arg_311_0 == 1118842111 then
+		if arg_311_1:find("Р’С‹ СѓСЃРїРµС€РЅРѕ РїРѕРіР°СЃРёР»Рё РЅРµРѕРїР»Р°С‡РµРЅРЅС‹Рµ СЃС‡РµС‚Р° Р·Р° Р±РёР·РЅРµСЃ") and arg_311_0 == 1118842111 then
 			sendTelegramNotification("[SAMP | Oplata_naloga (business)] \n" .. sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED))) .. "\n" .. sampGetCurrentServerName() .. "\nLast input: " .. tostring(var_0_57[2]))
 		end
 
-		if arg_311_1:find("Вы успешно погасили неоплаченные счета за коммунальные услуги") and arg_311_0 == 1118842111 then
+		if arg_311_1:find("Р’С‹ СѓСЃРїРµС€РЅРѕ РїРѕРіР°СЃРёР»Рё РЅРµРѕРїР»Р°С‡РµРЅРЅС‹Рµ СЃС‡РµС‚Р° Р·Р° РєРѕРјРјСѓРЅР°Р»СЊРЅС‹Рµ СѓСЃР»СѓРіРё") and arg_311_0 == 1118842111 then
 			sendTelegramNotification("[SAMP | Oplata_naloga (house)] \n" .. sampGetPlayerNickname(select(2, sampGetPlayerIdByCharHandle(PLAYER_PED))) .. "\n" .. sampGetCurrentServerName() .. "\nLast input: " .. tostring(var_0_57[2]))
 		end
 	end
 
-	if arg_311_1:find("^%s*%(%( Через 30 секунд вы сможете сразу отправиться в больницу или подождать врачей %)%)%s*$") and var_0_107.death_notf[0] then
-		sendTelegramNotification("Проверьте игру! Вы умерли!")
+	if arg_311_1:find("^%s*%(%( Р§РµСЂРµР· 30 СЃРµРєСѓРЅРґ РІС‹ СЃРјРѕР¶РµС‚Рµ СЃСЂР°Р·Сѓ РѕС‚РїСЂР°РІРёС‚СЊСЃСЏ РІ Р±РѕР»СЊРЅРёС†Сѓ РёР»Рё РїРѕРґРѕР¶РґР°С‚СЊ РІСЂР°С‡РµР№ %)%)%s*$") and var_0_107.death_notf[0] then
+		sendTelegramNotification("РџСЂРѕРІРµСЂСЊС‚Рµ РёРіСЂСѓ! Р’С‹ СѓРјРµСЂР»Рё!")
 	end
 
-	if arg_311_1:find("Разработчик") and not arg_311_1:match("{......}") and arg_311_0 == -2686721 then
+	if arg_311_1:find("Р Р°Р·СЂР°Р±РѕС‚С‡РёРє") and not arg_311_1:match("{......}") and arg_311_0 == -2686721 then
 		deAFKMessage("root message!")
 
 		if var_0_107.ao_message[0] then
-			sendTelegramNotification("Уведомление от администрации:\n" .. arg_311_1)
+			sendTelegramNotification("РЈРІРµРґРѕРјР»РµРЅРёРµ РѕС‚ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё:\n" .. arg_311_1)
 		end
 	end
 
-	if arg_311_1:find("A%: (%S+) ответил вам%:.*} (.*)$") and var_0_107.admin_message[0] then
+	if arg_311_1:find("A%: (%S+) РѕС‚РІРµС‚РёР» РІР°Рј%:.*} (.*)$") and var_0_107.admin_message[0] then
 		sendTelegramNotification(arg_311_1)
 	end
 
@@ -17854,25 +18251,25 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 
 	for iter_311_6, iter_311_7 in ipairs(var_0_36) do
 		if string.find(arg_311_1, iter_311_7.text) and iter_311_7.color == arg_311_0 then
-			if arg_311_1:find("Вы купили") then
+			if arg_311_1:find("Р’С‹ РєСѓРїРёР»Рё") then
 				local var_311_41 = splitArguments({
 					arg_311_1:match(iter_311_7.text)
-				}, arg_311_1:find("купил у вас"))
-				local var_311_42 = var_311_41.item:find("%(%d+ шт%.%)$") and var_311_41.item:gsub(".%(%d+ шт%.%)$", "") or var_311_41.item
-				local var_311_43 = var_311_41.item:find("%(%d+ шт%.%)$") and var_311_41.item:match("%((%d+) шт%.%)$") or 1
+				}, arg_311_1:find("РєСѓРїРёР» Сѓ РІР°СЃ"))
+				local var_311_42 = var_311_41.item:find("%(%d+ С€С‚%.%)$") and var_311_41.item:gsub(".%(%d+ С€С‚%.%)$", "") or var_311_41.item
+				local var_311_43 = var_311_41.item:find("%(%d+ С€С‚%.%)$") and var_311_41.item:match("%((%d+) С€С‚%.%)$") or 1
 
-				deAFKMessage(debug.getinfo(1, "l"), "[Вы купили] args [" .. var_311_42 .. "] | [" .. var_311_43 .. "]")
+				deAFKMessage(debug.getinfo(1, "l"), "[Р’С‹ РєСѓРїРёР»Рё] args [" .. var_311_42 .. "] | [" .. var_311_43 .. "]")
 				removeFromMarketBuyCount(var_311_42, var_311_43)
 			end
 
-			if arg_311_1:find("купил у вас") then
+			if arg_311_1:find("РєСѓРїРёР» Сѓ РІР°СЃ") then
 				local var_311_44 = splitArguments({
 					arg_311_1:match(iter_311_7.text)
-				}, arg_311_1:find("купил у вас"))
-				local var_311_45 = var_311_44.item:find("%(%d+ шт%.%)$") and var_311_44.item:gsub(".%(%d+ шт%.%)$", "") or var_311_44.item
-				local var_311_46 = var_311_44.item:find("%(%d+ шт%.%)$") and var_311_44.item:match("%((%d+) шт%.%)$") or 1
+				}, arg_311_1:find("РєСѓРїРёР» Сѓ РІР°СЃ"))
+				local var_311_45 = var_311_44.item:find("%(%d+ С€С‚%.%)$") and var_311_44.item:gsub(".%(%d+ С€С‚%.%)$", "") or var_311_44.item
+				local var_311_46 = var_311_44.item:find("%(%d+ С€С‚%.%)$") and var_311_44.item:match("%((%d+) С€С‚%.%)$") or 1
 
-				deAFKMessage(debug.getinfo(1, "l"), "[купил у вас] args [" .. var_311_45 .. "] | [" .. var_311_46 .. "]")
+				deAFKMessage(debug.getinfo(1, "l"), "[РєСѓРїРёР» Сѓ РІР°СЃ] args [" .. var_311_45 .. "] | [" .. var_311_46 .. "]")
 				removeFromMarketSellCount(var_311_45, var_311_46)
 			end
 		end
@@ -17880,10 +18277,10 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		if string.find(arg_311_1, iter_311_7.text) and iter_311_7.color == arg_311_0 and jsonLog ~= nil then
 			local var_311_47 = splitArguments({
 				arg_311_1:match(iter_311_7.text)
-			}, arg_311_1:find("купил у вас"))
+			}, arg_311_1:find("РєСѓРїРёР» Сѓ РІР°СЃ"))
 
-			if var_311_47.item:gsub("%(%d+ шт%.%)$", "") ~= nil and #var_0_87 ~= 0 then
-				print("[dbug] finding buy item " .. var_311_47.item:gsub("%(%d+ шт%.%)$", ""))
+			if var_311_47.item:gsub("%(%d+ С€С‚%.%)$", "") ~= nil and #var_0_87 ~= 0 then
+				print("[dbug] finding buy item " .. var_311_47.item:gsub("%(%d+ С€С‚%.%)$", ""))
 
 				for iter_311_8, iter_311_9 in pairs(var_0_87) do
 					if tostring(iter_311_9.continue) == "nil" then
@@ -17892,12 +18289,12 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 						deAFKMessage(debug.getinfo(1, "l"), "[con dbug onservermessage] nil in cfg")
 					end
 
-					local var_311_48 = var_311_47.item:find("%(%d+ шт%.%)$") and var_311_47.item:gsub("%(%d+ шт%.%)$", "") or var_311_47.item
+					local var_311_48 = var_311_47.item:find("%(%d+ С€С‚%.%)$") and var_311_47.item:gsub("%(%d+ С€С‚%.%)$", "") or var_311_47.item
 
 					saveLog("[for k, data in pairs(item_list) do] [" .. tostring(var_311_48) .. "] [" .. tostring(iter_311_9.name) .. "]")
 
 					if iter_311_9.name:gsub(" ", "") == var_311_48:gsub(" ", "") then
-						local var_311_49 = var_311_47.item:find("%(%d+ шт%.%)$") and var_311_47.item:match("%((%d+) шт%.%)$") or 1
+						local var_311_49 = var_311_47.item:find("%(%d+ С€С‚%.%)$") and var_311_47.item:match("%((%d+) С€С‚%.%)$") or 1
 
 						deAFKMessage(debug.getinfo(1, "l"), "buy continue: [" .. iter_311_9.continue .. "] [" .. var_311_49 .. "]")
 
@@ -17953,7 +18350,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 
 			if var_0_107.notf_buysell[0] then
 				if var_0_107.stats[0] then
-					var_311_51 = var_311_51 .. "\n\nПродали за день: $" .. moneySeparator(jsonLog[os.date("%d.%m.%Y")][2]) .. "\nСкупили за день: $" .. moneySeparator(jsonLog[os.date("%d.%m.%Y")][3]) .. "\n\n" .. "Продали за день: VC$" .. moneySeparator(jsonLog[os.date("%d.%m.%Y")][4]) .. "\nСкупили за день: VC$" .. moneySeparator(jsonLog[os.date("%d.%m.%Y")][5]) .. "\nОсталось денег на руках: " .. moneySeparator(getPlayerMoney())
+					var_311_51 = var_311_51 .. "\n\nРџСЂРѕРґР°Р»Рё Р·Р° РґРµРЅСЊ: $" .. moneySeparator(jsonLog[os.date("%d.%m.%Y")][2]) .. "\nРЎРєСѓРїРёР»Рё Р·Р° РґРµРЅСЊ: $" .. moneySeparator(jsonLog[os.date("%d.%m.%Y")][3]) .. "\n\n" .. "РџСЂРѕРґР°Р»Рё Р·Р° РґРµРЅСЊ: VC$" .. moneySeparator(jsonLog[os.date("%d.%m.%Y")][4]) .. "\nРЎРєСѓРїРёР»Рё Р·Р° РґРµРЅСЊ: VC$" .. moneySeparator(jsonLog[os.date("%d.%m.%Y")][5]) .. "\nРћСЃС‚Р°Р»РѕСЃСЊ РґРµРЅРµРі РЅР° СЂСѓРєР°С…: " .. moneySeparator(getPlayerMoney())
 				end
 
 				sendTelegramNotification(formatArizonaMoneyInText(var_311_51))
@@ -17963,7 +18360,7 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		end
 	end
 
-	if (arg_311_1:find("Вы должны находиться в Гетто") or arg_311_1:find("Данные товары запрещено продавать не в Центре Гетто") or arg_311_1:find("Разрешено только в интерьере рынка SIM")) and arg_311_0 == -10270721 and var_0_93.sell and sell_busy == true then
+	if (arg_311_1:find("Р’С‹ РґРѕР»Р¶РЅС‹ РЅР°С…РѕРґРёС‚СЊСЃСЏ РІ Р“РµС‚С‚Рѕ") or arg_311_1:find("Р”Р°РЅРЅС‹Рµ С‚РѕРІР°СЂС‹ Р·Р°РїСЂРµС‰РµРЅРѕ РїСЂРѕРґР°РІР°С‚СЊ РЅРµ РІ Р¦РµРЅС‚СЂРµ Р“РµС‚С‚Рѕ") or arg_311_1:find("Р Р°Р·СЂРµС€РµРЅРѕ С‚РѕР»СЊРєРѕ РІ РёРЅС‚РµСЂСЊРµСЂРµ СЂС‹РЅРєР° SIM")) and arg_311_0 == -10270721 and var_0_93.sell and sell_busy == true then
 		if var_0_207[1] ~= nil then
 			lets_go = true
 		end
@@ -17971,31 +18368,31 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		sell_busy = false
 		need_to_sell = 0
 
-		saveLog("[1][onServerMessage] выставляю статус sell_busy = false " .. arg_311_1)
+		saveLog("[1][onServerMessage] РІС‹СЃС‚Р°РІР»СЏСЋ СЃС‚Р°С‚СѓСЃ sell_busy = false " .. arg_311_1)
 	end
 
-	if arg_311_1:find("Вы не можете добавить на скупку товар на общую сумму, которой у Вас нет в наличии") and arg_311_0 == -10270721 and var_0_93.buy then
+	if arg_311_1:find("Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РґРѕР±Р°РІРёС‚СЊ РЅР° СЃРєСѓРїРєСѓ С‚РѕРІР°СЂ РЅР° РѕР±С‰СѓСЋ СЃСѓРјРјСѓ, РєРѕС‚РѕСЂРѕР№ Сѓ Р’Р°СЃ РЅРµС‚ РІ РЅР°Р»РёС‡РёРё") and arg_311_0 == -10270721 and var_0_93.buy then
 		saveLog("script buy destroy. money limit. [last item]")
-		AFKMessage("Выставление товаров завершено. У вас больше нет денег")
+		AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ. РЈ РІР°СЃ Р±РѕР»СЊС€Рµ РЅРµС‚ РґРµРЅРµРі")
 
 		var_0_43.enabled = true
 
-		table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} Предмет ниже не выставлен так как у вас не хватило до конца денег.")
+		table.insert(var_0_34, "{ff6666}" .. os.date("[%H:%M:%S]") .. "{ffffff} РџСЂРµРґРјРµС‚ РЅРёР¶Рµ РЅРµ РІС‹СЃС‚Р°РІР»РµРЅ С‚Р°Рє РєР°Рє Сѓ РІР°СЃ РЅРµ С…РІР°С‚РёР»Рѕ РґРѕ РєРѕРЅС†Р° РґРµРЅРµРі.")
 		off_sell_buy()
 	end
 
-	if (arg_311_1:find("успешно выставлен на продажу") or arg_311_1:find("Минимальная стоимость") or arg_311_1:find("У вас недостаточно") or arg_311_1:find("Максимальная стоимость") or arg_311_1:find("Вы слишком далеко от вашей лавки")) and (arg_311_0 == 1941201407 or arg_311_0 == -10270721) and var_0_93.sell and sell_busy == true then
+	if (arg_311_1:find("СѓСЃРїРµС€РЅРѕ РІС‹СЃС‚Р°РІР»РµРЅ РЅР° РїСЂРѕРґР°Р¶Сѓ") or arg_311_1:find("РњРёРЅРёРјР°Р»СЊРЅР°СЏ СЃС‚РѕРёРјРѕСЃС‚СЊ") or arg_311_1:find("РЈ РІР°СЃ РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ") or arg_311_1:find("РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ СЃС‚РѕРёРјРѕСЃС‚СЊ") or arg_311_1:find("Р’С‹ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°С€РµР№ Р»Р°РІРєРё")) and (arg_311_0 == 1941201407 or arg_311_0 == -10270721) and var_0_93.sell and sell_busy == true then
 		sell_busy = false
 
-		saveLog("[2][onServerMessage] выставляю статус sell_busy = false " .. arg_311_1)
+		saveLog("[2][onServerMessage] РІС‹СЃС‚Р°РІР»СЏСЋ СЃС‚Р°С‚СѓСЃ sell_busy = false " .. arg_311_1)
 
-		if arg_311_1:find("Вы слишком далеко от вашей лавки") then
+		if arg_311_1:find("Р’С‹ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°С€РµР№ Р»Р°РІРєРё") then
 			saveLog("ofaem script. daleko ot lavki")
 
 			var_0_58 = 1
 			var_0_72[0] = false
 
-			AFKMessage("Выставление товаров завершено.")
+			AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р·Р°РІРµСЂС€РµРЅРѕ.")
 
 			var_0_43.enabled = true
 			var_0_93 = {
@@ -18014,17 +18411,17 @@ function var_0_61.onServerMessage(arg_311_0, arg_311_1)
 		end
 	end
 
-	if var_0_115.getAllItemsFromStorage[1] and (arg_311_1:find("В Вашем хранилище нет предметов") or arg_311_1:find("У Вас недостаточно наличных средств.")) and arg_311_0 == -10270721 then
+	if var_0_115.getAllItemsFromStorage[1] and (arg_311_1:find("Р’ Р’Р°С€РµРј С…СЂР°РЅРёР»РёС‰Рµ РЅРµС‚ РїСЂРµРґРјРµС‚РѕРІ") or arg_311_1:find("РЈ Р’Р°СЃ РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РЅР°Р»РёС‡РЅС‹С… СЃСЂРµРґСЃС‚РІ.")) and arg_311_0 == -10270721 then
 		var_0_115.getAllItemsFromStorage[1] = false
 
-		sendNotify("Вы забрали все предметы.")
+		sendNotify("Р’С‹ Р·Р°Р±СЂР°Р»Рё РІСЃРµ РїСЂРµРґРјРµС‚С‹.")
 	end
 
-	if var_0_115.getAllItemsFromStorage[1] and arg_311_1:find("У Вас нет свободных мест в инвентаре") and arg_311_0 == -10270721 then
+	if var_0_115.getAllItemsFromStorage[1] and arg_311_1:find("РЈ Р’Р°СЃ РЅРµС‚ СЃРІРѕР±РѕРґРЅС‹С… РјРµСЃС‚ РІ РёРЅРІРµРЅС‚Р°СЂРµ") and arg_311_0 == -10270721 then
 		var_0_115.getAllItemsFromStorage[2] = 1
 	end
 
-	if (arg_311_1:find("Вы успешно авто.авторизовались как") or arg_311_1:find("Вы успешно авторизовались как")) and arg_311_0 == -1 then
+	if (arg_311_1:find("Р’С‹ СѓСЃРїРµС€РЅРѕ Р°РІС‚Рѕ.Р°РІС‚РѕСЂРёР·РѕРІР°Р»РёСЃСЊ РєР°Рє") or arg_311_1:find("Р’С‹ СѓСЃРїРµС€РЅРѕ Р°РІС‚РѕСЂРёР·РѕРІР°Р»РёСЃСЊ РєР°Рє")) and arg_311_0 == -1 then
 		deAFKMessage("admin func detected[2]")
 	end
 end
@@ -18083,24 +18480,24 @@ end
 
 function getTypeMessageMarket(arg_319_0, arg_319_1)
 	local var_319_0 = {
-		["Вы купили"] = "%s %s продал \"%s\" за%s$%s",
-		["купил у вас"] = "%s %s купил \"%s\" за%s$%s",
-		["Вы успешно продали"] = "%s [Чужая Лавка] %s купил \"%s\" за%s$%s",
-		["Вы успешно купили"] = "%s [Чужая Лавка] %s продал \"%s\" за%s$%s"
+		["Р’С‹ РєСѓРїРёР»Рё"] = "%s %s РїСЂРѕРґР°Р» \"%s\" Р·Р°%s$%s",
+		["РєСѓРїРёР» Сѓ РІР°СЃ"] = "%s %s РєСѓРїРёР» \"%s\" Р·Р°%s$%s",
+		["Р’С‹ СѓСЃРїРµС€РЅРѕ РїСЂРѕРґР°Р»Рё"] = "%s [Р§СѓР¶Р°СЏ Р›Р°РІРєР°] %s РєСѓРїРёР» \"%s\" Р·Р°%s$%s",
+		["Р’С‹ СѓСЃРїРµС€РЅРѕ РєСѓРїРёР»Рё"] = "%s [Р§СѓР¶Р°СЏ Р›Р°РІРєР°] %s РїСЂРѕРґР°Р» \"%s\" Р·Р°%s$%s"
 	}
 
 	for iter_319_0, iter_319_1 in pairs(var_319_0) do
 		if arg_319_0:find(iter_319_0) then
-			local var_319_1 = (iter_319_0 == "купил у вас" or iter_319_0 == "Вы успешно купили") and "sell" or (iter_319_0 == "Вы купили" or iter_319_0 == "Вы успешно продали") and "buy" or ""
+			local var_319_1 = (iter_319_0 == "РєСѓРїРёР» Сѓ РІР°СЃ" or iter_319_0 == "Р’С‹ СѓСЃРїРµС€РЅРѕ РєСѓРїРёР»Рё") and "sell" or (iter_319_0 == "Р’С‹ РєСѓРїРёР»Рё" or iter_319_0 == "Р’С‹ СѓСЃРїРµС€РЅРѕ РїСЂРѕРґР°Р»Рё") and "buy" or ""
 
 			if var_319_1 ~= "" and arg_319_1.item then
-				local var_319_2 = type(arg_319_1.item:match(".%((%d+) шт%.%)$")) ~= "nil" and stringToCount(arg_319_1.item:match(".%((%d+) шт%.%)$")) or 1
+				local var_319_2 = type(arg_319_1.item:match(".%((%d+) С€С‚%.%)$")) ~= "nil" and stringToCount(arg_319_1.item:match(".%((%d+) С€С‚%.%)$")) or 1
 
 				if type(var_319_2) == "number" then
 					var_0_56[33] = {
 						true,
 						arg_319_1.money,
-						arg_319_1.item:gsub(".%(%d+ шт%.%)$", ""),
+						arg_319_1.item:gsub(".%(%d+ С€С‚%.%)$", ""),
 						arg_319_1.name,
 						var_319_1,
 						var_319_2
@@ -18165,7 +18562,7 @@ end
 
 function writeKey(arg_323_0, arg_323_1)
 	if not arg_323_0 or type(arg_323_0) ~= "string" then
-		return false, "Ключ должен быть строкой"
+		return false, "РљР»СЋС‡ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ СЃС‚СЂРѕРєРѕР№"
 	end
 
 	local var_323_0 = var_0_45.new("HKEY[1]")
@@ -18175,7 +18572,7 @@ function writeKey(arg_323_0, arg_323_1)
 		local var_323_2 = var_0_55.RegCreateKeyExA(var_0_45.cast("HKEY", 2147483649), "Software\\ArzMarket\\info", 0, nil, 0, 2, nil, var_323_1, nil)
 
 		if var_323_2 ~= 0 then
-			return false, "Ошибка создания ключа реестра: " .. tostring(var_323_2)
+			return false, "РћС€РёР±РєР° СЃРѕР·РґР°РЅРёСЏ РєР»СЋС‡Р° СЂРµРµСЃС‚СЂР°: " .. tostring(var_323_2)
 		end
 
 		var_323_0[0] = var_323_1[0]
@@ -18188,7 +18585,7 @@ function writeKey(arg_323_0, arg_323_1)
 	var_0_55.RegCloseKey(var_323_0[0])
 
 	if var_323_5 ~= 0 then
-		return false, "Ошибка записи в реестр: " .. tostring(var_323_5)
+		return false, "РћС€РёР±РєР° Р·Р°РїРёСЃРё РІ СЂРµРµСЃС‚СЂ: " .. tostring(var_323_5)
 	end
 
 	return true
@@ -18247,7 +18644,7 @@ function auto_load_config()
 			var_0_88 = loadConfig("moonloader/ArzMarket/sell-cfg/" .. var_0_155)
 
 			if type(var_0_88) == "nil" then
-				AFKMessage("К сожалению конфиг был поврежден. Загрузить его не получится.")
+				AFKMessage("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РєРѕРЅС„РёРі Р±С‹Р» РїРѕРІСЂРµР¶РґРµРЅ. Р—Р°РіСЂСѓР·РёС‚СЊ РµРіРѕ РЅРµ РїРѕР»СѓС‡РёС‚СЃСЏ.")
 
 				var_0_88 = {}
 				var_0_106.cfg.load_config_sell = ""
@@ -18265,7 +18662,7 @@ function auto_load_config()
 			var_0_87 = loadConfig("moonloader/ArzMarket/buy-cfg/" .. var_0_156)
 
 			if type(var_0_87) == "nil" then
-				AFKMessage("К сожалению конфиг был поврежден. Загрузить его не получится.")
+				AFKMessage("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ РєРѕРЅС„РёРі Р±С‹Р» РїРѕРІСЂРµР¶РґРµРЅ. Р—Р°РіСЂСѓР·РёС‚СЊ РµРіРѕ РЅРµ РїРѕР»СѓС‡РёС‚СЃСЏ.")
 
 				var_0_87 = {}
 				var_0_106.cfg.load_config_buy = ""
@@ -18307,7 +18704,7 @@ function off_sell_buy()
 		sampSendClickTextdraw(buttons_id + 2)
 	end
 
-	AFKMessage("Выставление товаров было отменено.")
+	AFKMessage("Р’С‹СЃС‚Р°РІР»РµРЅРёРµ С‚РѕРІР°СЂРѕРІ Р±С‹Р»Рѕ РѕС‚РјРµРЅРµРЅРѕ.")
 end
 
 function vc_converter()
@@ -18416,9 +18813,9 @@ function AnsiToUtf8(arg_336_0)
 		if var_336_2 < 128 then
 			var_336_0 = var_336_0 .. string.char(var_336_2)
 		elseif var_336_2 > 239 then
-			var_336_0 = var_336_0 .. "С" .. string.char(var_336_2 - 112)
+			var_336_0 = var_336_0 .. "РЎ" .. string.char(var_336_2 - 112)
 		elseif var_336_2 > 191 then
-			var_336_0 = var_336_0 .. "Р" .. string.char(var_336_2 - 48)
+			var_336_0 = var_336_0 .. "Р " .. string.char(var_336_2 - 48)
 		elseif ansi_decode[var_336_2] then
 			var_336_0 = var_336_0 .. ansi_decode[var_336_2]
 		else
@@ -18534,7 +18931,7 @@ addEventHandler("onSendPacket", function(arg_340_0, arg_340_1, arg_340_2, arg_34
 			if var_0_115.getAllItemsFromStorage[1] then
 				var_0_115.getAllItemsFromStorage[1] = false
 
-				sendNotify("Вы прервали забор всех предметов с хранилища.")
+				sendNotify("Р’С‹ РїСЂРµСЂРІР°Р»Рё Р·Р°Р±РѕСЂ РІСЃРµС… РїСЂРµРґРјРµС‚РѕРІ СЃ С…СЂР°РЅРёР»РёС‰Р°.")
 			end
 
 			deAFKMessage(debug.getinfo(1, "l"), "cursor packet=[isEnableCursor=" .. tostring(var_0_115.isEnableCursor) .. "]")
@@ -18553,7 +18950,7 @@ addEventHandler("onSendPacket", function(arg_340_0, arg_340_1, arg_340_2, arg_34
 						var_0_106.cfg.lavka_helper = var_0_168[0]
 
 						save_all()
-						sendNotify("Радиус лавок " .. (var_0_168[0] and "включён" or "выключен"))
+						sendNotify("Р Р°РґРёСѓСЃ Р»Р°РІРѕРє " .. (var_0_168[0] and "РІРєР»СЋС‡С‘РЅ" or "РІС‹РєР»СЋС‡РµРЅ"))
 					elseif var_340_4 == "copyConfig" then
 						if var_0_115.copyLavkaFunc.sell_buy ~= -1 then
 							if var_0_115.copyLavkaFunc.askServer then
@@ -18580,7 +18977,7 @@ addEventHandler("onSendPacket", function(arg_340_0, arg_340_1, arg_340_2, arg_34
 								var_0_115.copyLavkaFunc.status = true
 							end
 						else
-							AFKMessage("Нужно переоткрыть меню лавки что бы сканировать.")
+							AFKMessage("РќСѓР¶РЅРѕ РїРµСЂРµРѕС‚РєСЂС‹С‚СЊ РјРµРЅСЋ Р»Р°РІРєРё С‡С‚Рѕ Р±С‹ СЃРєР°РЅРёСЂРѕРІР°С‚СЊ.")
 						end
 					end
 				end
@@ -18626,7 +19023,7 @@ addEventHandler("onSendPacket", function(arg_340_0, arg_340_1, arg_340_2, arg_34
 				end
 
 				if var_340_3:find("mountain.testDrive.selectVehicle|%-1") then
-					deAFKMessage("Забор всех предметов.")
+					deAFKMessage("Р—Р°Р±РѕСЂ РІСЃРµС… РїСЂРµРґРјРµС‚РѕРІ.")
 
 					var_0_115.getAllItemsFromStorage = {
 						true,
@@ -18634,7 +19031,7 @@ addEventHandler("onSendPacket", function(arg_340_0, arg_340_1, arg_340_2, arg_34
 					}
 
 					send_cef("mountain.testDrive.selectVehicle|0")
-					sendNotify("Вы начали забирать все предметы.")
+					sendNotify("Р’С‹ РЅР°С‡Р°Р»Рё Р·Р°Р±РёСЂР°С‚СЊ РІСЃРµ РїСЂРµРґРјРµС‚С‹.")
 				end
 
 				if var_340_3:find("radialMenu.useAction|(-%d+)") then
@@ -18659,7 +19056,7 @@ addEventHandler("onSendPacket", function(arg_340_0, arg_340_1, arg_340_2, arg_34
 
 							var_0_115.vr_helper.isClicked = true
 
-							sendNotify("Вы открыли авто-пиар")
+							sendNotify("Р’С‹ РѕС‚РєСЂС‹Р»Рё Р°РІС‚Рѕ-РїРёР°СЂ")
 
 							var_0_115.vr_helper.status[0] = true
 							var_0_106.cfg.vr_helper = var_0_115.vr_helper.status[0]
@@ -18699,7 +19096,7 @@ addEventHandler("onReceivePacket", function(arg_341_0, arg_341_1)
 					end
 				end
 
-				if not var_341_2:find("event.inventory.setLavkaVisible") or not var_341_2:find("true") or (var_0_56[37][1][1]:find("Управление продажей товаров") or var_0_56[37][1][1]:find("Прекратить покупку товара")) and var_0_56[37][1][2] + 1 > os.time() then
+				if not var_341_2:find("event.inventory.setLavkaVisible") or not var_341_2:find("true") or (var_0_56[37][1][1]:find("РЈРїСЂР°РІР»РµРЅРёРµ РїСЂРѕРґР°Р¶РµР№ С‚РѕРІР°СЂРѕРІ") or var_0_56[37][1][1]:find("РџСЂРµРєСЂР°С‚РёС‚СЊ РїРѕРєСѓРїРєСѓ С‚РѕРІР°СЂР°")) and var_0_56[37][1][2] + 1 > os.time() then
 					-- block empty
 				else
 					addButtonCopyConfig()
@@ -18723,6 +19120,7 @@ addEventHandler("onReceivePacket", function(arg_341_0, arg_341_1)
 						var_0_106.cfg.myServerId = tostring(var_341_9)
 
 						save_all()
+						marketplaceBridgeSaveSourceData()
 					end
 				end
 
@@ -18795,7 +19193,7 @@ addEventHandler("onReceivePacket", function(arg_341_0, arg_341_1)
 				end
 
 				if (var_341_2:find("event.inventory.setLavkaVisible") or var_341_2:find("event.inventory.setStoreVisible")) and var_341_2:find("true") then
-					deAFKMessage("открытие лавки продажа custom")
+					deAFKMessage("РѕС‚РєСЂС‹С‚РёРµ Р»Р°РІРєРё РїСЂРѕРґР°Р¶Р° custom")
 
 					var_0_115.custom_is_invent_open[1] = 1
 				end
@@ -18831,11 +19229,11 @@ addEventHandler("onReceivePacket", function(arg_341_0, arg_341_1)
 
 				if var_341_3 == "event.radialMenu.items" then
 					deAFKMessage("arzmarket InteractiveMenu")
-					get_cef("window.executeEvent('event.radialMenu.items.push', `[[{ \"id\": -1, \"title\": \"ArzMarket действия\", \"icon\": \"portable_bench_acs\", \"actions\": [{ \"id\": -1, \"title\": \"Помощник установки лавок\", \"icon\": \"my_animation_menu\" }, { \"id\": 1, \"title\": \"Установить лавку\", \"icon\": \"portable_bench_acs\" }, { \"id\": -2, \"title\": \"Открыть Маркет-Плейс\", \"icon\": \"property_type\" }, { \"id\": -3, \"title\": \"Ближайший багажник машины\", \"icon\": \"my_cars_menu\" }, { \"id\": -4, \"title\": \"Открыть авто-пиар\", \"icon\": \"my_time_menu\" }] }] ]`);")
+					get_cef("window.executeEvent('event.radialMenu.items.push', `[[{ \"id\": -1, \"title\": \"ArzMarket РґРµР№СЃС‚РІРёСЏ\", \"icon\": \"portable_bench_acs\", \"actions\": [{ \"id\": -1, \"title\": \"РџРѕРјРѕС‰РЅРёРє СѓСЃС‚Р°РЅРѕРІРєРё Р»Р°РІРѕРє\", \"icon\": \"my_animation_menu\" }, { \"id\": 1, \"title\": \"РЈСЃС‚Р°РЅРѕРІРёС‚СЊ Р»Р°РІРєСѓ\", \"icon\": \"portable_bench_acs\" }, { \"id\": -2, \"title\": \"РћС‚РєСЂС‹С‚СЊ РњР°СЂРєРµС‚-РџР»РµР№СЃ\", \"icon\": \"property_type\" }, { \"id\": -3, \"title\": \"Р‘Р»РёР¶Р°Р№С€РёР№ Р±Р°РіР°Р¶РЅРёРє РјР°С€РёРЅС‹\", \"icon\": \"my_cars_menu\" }, { \"id\": -4, \"title\": \"РћС‚РєСЂС‹С‚СЊ Р°РІС‚Рѕ-РїРёР°СЂ\", \"icon\": \"my_time_menu\" }] }] ]`);")
 				end
 
 				if var_341_2:find("event.setActiveView") and var_341_2:find("null") then
-					deAFKMessage("закрытие лавки продажа custom")
+					deAFKMessage("Р·Р°РєСЂС‹С‚РёРµ Р»Р°РІРєРё РїСЂРѕРґР°Р¶Р° custom")
 
 					var_0_115.custom_is_invent_open[1] = nil
 					var_0_115.available_items_custom = {}
@@ -18852,14 +19250,14 @@ addEventHandler("onReceivePacket", function(arg_341_0, arg_341_1)
 					var_0_76[0] = false
 				end
 
-				if var_341_2:find("event.mountain.testDrive.initializeText") and var_341_2:find("Хранилище") then
+				if var_341_2:find("event.mountain.testDrive.initializeText") and var_341_2:find("РҐСЂР°РЅРёР»РёС‰Рµ") then
 					deAFKMessage("storage interface detect")
 
 					var_0_56[29][2] = os.time()
 				end
 
 				if var_341_2:find("event.mountain.testDrive.addVehicles") and var_0_56[29][2] + 1 >= os.time() then
-					local var_341_15 = var_341_2:gsub("{\"id\":0,", "{\"id\":-1,\"title\":\"ArzMarket\",\"img\":\"8680\",\"color\":-969606913,\"currency\":\"Забрать все предметы.\",\"price\":\" \"},{\"id\":0,")
+					local var_341_15 = var_341_2:gsub("{\"id\":0,", "{\"id\":-1,\"title\":\"ArzMarket\",\"img\":\"8680\",\"color\":-969606913,\"currency\":\"Р—Р°Р±СЂР°С‚СЊ РІСЃРµ РїСЂРµРґРјРµС‚С‹.\",\"price\":\" \"},{\"id\":0,")
 
 					if var_341_15 ~= nil then
 						deAFKMessage("[+] fill storage info")
@@ -18906,11 +19304,11 @@ function send_cef(arg_343_0)
 end
 
 function addButtonCopyConfig()
-	get_cef("(function(){\n  if (window.__arzcc_busy) return; window.__arzcc_busy = true;\n  function findShop(){\n    return document.querySelector('.shop')\n        || document.querySelector('.inventory__shop-wrapper .inventory-window')\n        || document.querySelector('.inventory-window');\n  }\n  function add(){\n    var shop = findShop();\n    if (!shop) return false;\n    if (document.getElementById('arzmarket_copy_config')) return true;\n    var bar = document.createElement('div');\n    bar.id = 'arzmarket_copy_config';\n    bar.style.cssText = 'width:100%;box-sizing:border-box;padding:8px 14px 12px;';\n    var slot = document.createElement('div');\n    slot.className = 'shop__button';\n    var btn = document.createElement('div');\n    btn.className = 'inventory-button inventory-button--default';\n    btn.style.cssText = 'cursor:pointer;';\n    var txt = document.createElement('div');\n    txt.className = 'inventory-button__text';\n    txt.textContent = '[ArzMarket] Скопировать конфиг';\n    btn.appendChild(txt); slot.appendChild(btn); bar.appendChild(slot); shop.appendChild(bar);\n    btn.addEventListener('click', function(){\n      if (window.cef && window.cef.SendMessage)\n        window.cef.SendMessage('arzMarketAction|copyConfig', 0);\n    });\n    return true;\n  }\n  var n = 0, t = setInterval(function(){\n    n++; if (add() || n > 40) { clearInterval(t); window.__arzcc_busy = false; }\n  }, 25);\n})();\n")
+	get_cef("(function(){\n  if (window.__arzcc_busy) return; window.__arzcc_busy = true;\n  function findShop(){\n    return document.querySelector('.shop')\n        || document.querySelector('.inventory__shop-wrapper .inventory-window')\n        || document.querySelector('.inventory-window');\n  }\n  function add(){\n    var shop = findShop();\n    if (!shop) return false;\n    if (document.getElementById('arzmarket_copy_config')) return true;\n    var bar = document.createElement('div');\n    bar.id = 'arzmarket_copy_config';\n    bar.style.cssText = 'width:100%;box-sizing:border-box;padding:8px 14px 12px;';\n    var slot = document.createElement('div');\n    slot.className = 'shop__button';\n    var btn = document.createElement('div');\n    btn.className = 'inventory-button inventory-button--default';\n    btn.style.cssText = 'cursor:pointer;';\n    var txt = document.createElement('div');\n    txt.className = 'inventory-button__text';\n    txt.textContent = '[ArzMarket] РЎРєРѕРїРёСЂРѕРІР°С‚СЊ РєРѕРЅС„РёРі';\n    btn.appendChild(txt); slot.appendChild(btn); bar.appendChild(slot); shop.appendChild(bar);\n    btn.addEventListener('click', function(){\n      if (window.cef && window.cef.SendMessage)\n        window.cef.SendMessage('arzMarketAction|copyConfig', 0);\n    });\n    return true;\n  }\n  var n = 0, t = setInterval(function(){\n    n++; if (add() || n > 40) { clearInterval(t); window.__arzcc_busy = false; }\n  }, 25);\n})();\n")
 end
 
 function addButtonLavkaRadius()
-	get_cef("window.__arzunicwlllr_on = " .. (var_0_106.cfg.lavka_helper and "true" or "false") .. ";\n" .. "(function(){\n  if (window.__arzunicwlllr_busy) return; window.__arzunicwlllr_busy = true;\n  function label(){ return window.__arzunicwlllr_on ? 'Выключить радиус лавок' : 'Включить радиус лавок'; }\n  function add(){\n    var box = document.querySelector('.inventory-item-context-menu-wrapper .inventory-info__buttons');\n    if (!box) return false;\n    var ex = document.getElementById('arzmarket_lavka_radius');\n    if (ex) { var et = ex.querySelector('.inventory-button__text'); if (et) et.textContent = label(); return true; }\n    var slot = document.createElement('div');\n    slot.id = 'arzmarket_lavka_radius';\n    slot.className = 'inventory-info__button';\n    var btn = document.createElement('div');\n    btn.className = 'inventory-button inventory-button--default inventory-button--context';\n    btn.style.cssText = 'cursor:pointer;';\n    var txt = document.createElement('div');\n    txt.className = 'inventory-button__text inventory-button__text--absolute';\n    txt.textContent = label();\n    btn.appendChild(txt); slot.appendChild(btn); box.appendChild(slot);\n    btn.addEventListener('click', function(){\n      window.__arzunicwlllr_on = !window.__arzunicwlllr_on;\n      txt.textContent = label();\n      if (window.cef && window.cef.SendMessage)\n        window.cef.SendMessage('arzMarketAction|lavkaRadius', 0);\n    });\n    return true;\n  }\n  var n = 0, t = setInterval(function(){\n    n++; if (add() || n > 40) { clearInterval(t); window.__arzunicwlllr_busy = false; }\n  }, 25);\n})();\n")
+	get_cef("window.__arzunicwlllr_on = " .. (var_0_106.cfg.lavka_helper and "true" or "false") .. ";\n" .. "(function(){\n  if (window.__arzunicwlllr_busy) return; window.__arzunicwlllr_busy = true;\n  function label(){ return window.__arzunicwlllr_on ? 'Р’С‹РєР»СЋС‡РёС‚СЊ СЂР°РґРёСѓСЃ Р»Р°РІРѕРє' : 'Р’РєР»СЋС‡РёС‚СЊ СЂР°РґРёСѓСЃ Р»Р°РІРѕРє'; }\n  function add(){\n    var box = document.querySelector('.inventory-item-context-menu-wrapper .inventory-info__buttons');\n    if (!box) return false;\n    var ex = document.getElementById('arzmarket_lavka_radius');\n    if (ex) { var et = ex.querySelector('.inventory-button__text'); if (et) et.textContent = label(); return true; }\n    var slot = document.createElement('div');\n    slot.id = 'arzmarket_lavka_radius';\n    slot.className = 'inventory-info__button';\n    var btn = document.createElement('div');\n    btn.className = 'inventory-button inventory-button--default inventory-button--context';\n    btn.style.cssText = 'cursor:pointer;';\n    var txt = document.createElement('div');\n    txt.className = 'inventory-button__text inventory-button__text--absolute';\n    txt.textContent = label();\n    btn.appendChild(txt); slot.appendChild(btn); box.appendChild(slot);\n    btn.addEventListener('click', function(){\n      window.__arzunicwlllr_on = !window.__arzunicwlllr_on;\n      txt.textContent = label();\n      if (window.cef && window.cef.SendMessage)\n        window.cef.SendMessage('arzMarketAction|lavkaRadius', 0);\n    });\n    return true;\n  }\n  var n = 0, t = setInterval(function(){\n    n++; if (add() || n > 40) { clearInterval(t); window.__arzunicwlllr_busy = false; }\n  }, 25);\n})();\n")
 end
 
 function SendToServer(arg_346_0)
@@ -18946,7 +19344,7 @@ function onReceivePacket(arg_348_0, arg_348_1)
 		end
 
 		if var_0_115.autoLavka then
-			sendNotify("Авто лавка отключена.")
+			sendNotify("РђРІС‚Рѕ Р»Р°РІРєР° РѕС‚РєР»СЋС‡РµРЅР°.")
 
 			var_0_115.autoLavka = false
 		end
@@ -18968,16 +19366,16 @@ function onReceivePacket(arg_348_0, arg_348_1)
 	if var_0_107.connect_message[0] then
 		local var_348_0 = {
 			[32] = {
-				"Сервер закрыл соединение."
+				"РЎРµСЂРІРµСЂ Р·Р°РєСЂС‹Р» СЃРѕРµРґРёРЅРµРЅРёРµ."
 			},
 			[33] = {
-				"Подключение разорвано."
+				"РџРѕРґРєР»СЋС‡РµРЅРёРµ СЂР°Р·РѕСЂРІР°РЅРѕ."
 			},
 			[34] = {
-				"Подключились. Входим в игру..."
+				"РџРѕРґРєР»СЋС‡РёР»РёСЃСЊ. Р’С…РѕРґРёРј РІ РёРіСЂСѓ..."
 			},
 			[37] = {
-				"Неверный пароль от сервера"
+				"РќРµРІРµСЂРЅС‹Р№ РїР°СЂРѕР»СЊ РѕС‚ СЃРµСЂРІРµСЂР°"
 			}
 		}
 
@@ -19012,69 +19410,69 @@ end
 
 function decodeText(arg_349_0)
 	local var_349_0 = {
-		p = "р",
-		a = "а",
-		["\x97"] = "б",
-		["$"] = "ц",
-		["\x8D"] = "Ч",
-		["\x9B"] = "ж",
-		o = "о",
-		["\x83"] = "Д",
-		P = "Р",
-		["\x8C"] = "П",
-		["\xA7"] = "Ъ",
-		["\x9A"] = "д",
-		["\x9D"] = "й",
-		["\x8A"] = "Щ",
-		O = "О",
-		C = "С",
-		["\xA6"] = "т",
-		["\x99"] = "г",
-		["\x87"] = "Л",
-		Y = "У",
-		["?"] = "ф",
-		["\x89"] = "Ц",
-		M = "М",
-		k = "к",
-		["\xAF"] = "м",
-		["\x9E"] = "л",
-		["\x88"] = "З",
-		y = "у",
-		["\xAE"] = "н",
-		X = "Х",
-		x = "х",
-		K = "К",
-		["\x8F"] = "Т",
-		["\xA4"] = "ч",
-		["\x95"] = "Я",
-		["\xA3"] = "п",
-		["\x8E"] = "Ш",
-		["\xA5"] = "ш",
-		["\x85"] = "И",
-		["\xA2"] = "в",
-		["\xA1"] = "щ",
-		["\x9C"] = "и",
-		H = "Н",
-		["\x84"] = "Ж",
-		["\xA9"] = "ь",
-		["\x92"] = "Ь",
-		["\x90"] = "ъ",
-		["\x82"] = "Г",
-		e = "е",
-		A = "А",
-		["Ё"] = "ы",
-		["\x91"] = "Ы",
-		["\xAA"] = "э",
-		["\x93"] = "Э",
-		["\xAB"] = "ю",
-		["\x81"] = "Ф",
-		E = "Е",
-		c = "с",
-		["\x94"] = "Ю",
-		["\xAC"] = "я",
-		["\x9F"] = "з",
-		["\x8B"] = "В",
-		["\x80"] = "Б"
+		p = "СЂ",
+		a = "Р°",
+		["\x97"] = "Р±",
+		["$"] = "С†",
+		["\x8D"] = "Р§",
+		["\x9B"] = "Р¶",
+		o = "Рѕ",
+		["\x83"] = "Р”",
+		P = "Р ",
+		["\x8C"] = "Рџ",
+		["\xA7"] = "РЄ",
+		["\x9A"] = "Рґ",
+		["\x9D"] = "Р№",
+		["\x8A"] = "Р©",
+		O = "Рћ",
+		C = "РЎ",
+		["\xA6"] = "С‚",
+		["\x99"] = "Рі",
+		["\x87"] = "Р›",
+		Y = "РЈ",
+		["?"] = "С„",
+		["\x89"] = "Р¦",
+		M = "Рњ",
+		k = "Рє",
+		["\xAF"] = "Рј",
+		["\x9E"] = "Р»",
+		["\x88"] = "Р—",
+		y = "Сѓ",
+		["\xAE"] = "РЅ",
+		X = "РҐ",
+		x = "С…",
+		K = "Рљ",
+		["\x8F"] = "Рў",
+		["\xA4"] = "С‡",
+		["\x95"] = "РЇ",
+		["\xA3"] = "Рї",
+		["\x8E"] = "РЁ",
+		["\xA5"] = "С€",
+		["\x85"] = "Р",
+		["\xA2"] = "РІ",
+		["\xA1"] = "С‰",
+		["\x9C"] = "Рё",
+		H = "Рќ",
+		["\x84"] = "Р–",
+		["\xA9"] = "СЊ",
+		["\x92"] = "Р¬",
+		["\x90"] = "СЉ",
+		["\x82"] = "Р“",
+		e = "Рµ",
+		A = "Рђ",
+		["РЃ"] = "С‹",
+		["\x91"] = "Р«",
+		["\xAA"] = "СЌ",
+		["\x93"] = "Р­",
+		["\xAB"] = "СЋ",
+		["\x81"] = "Р¤",
+		E = "Р•",
+		c = "СЃ",
+		["\x94"] = "Р®",
+		["\xAC"] = "СЏ",
+		["\x9F"] = "Р·",
+		["\x8B"] = "Р’",
+		["\x80"] = "Р‘"
 	}
 	local var_349_1 = ""
 	local var_349_2 = 1
@@ -19323,8 +19721,8 @@ function asyncHttpRequest(arg_358_0, arg_358_1, arg_358_2, arg_358_3, arg_358_4,
 					print("premiumitems error counter > " .. var_0_56[40][2])
 
 					if var_0_56[40][2] > 15 then
-						AFKMessage("К сожалению таблицу цен загрузить не получилось из за ограничения вашего провайдера.")
-						AFKMessage("Для решения вашей проблемы возможно поможет команда /premhost, напишите ее в чат игры")
+						AFKMessage("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ С‚Р°Р±Р»РёС†Сѓ С†РµРЅ Р·Р°РіСЂСѓР·РёС‚СЊ РЅРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ РёР· Р·Р° РѕРіСЂР°РЅРёС‡РµРЅРёСЏ РІР°С€РµРіРѕ РїСЂРѕРІР°Р№РґРµСЂР°.")
+						AFKMessage("Р”Р»СЏ СЂРµС€РµРЅРёСЏ РІР°С€РµР№ РїСЂРѕР±Р»РµРјС‹ РІРѕР·РјРѕР¶РЅРѕ РїРѕРјРѕР¶РµС‚ РєРѕРјР°РЅРґР° /premhost, РЅР°РїРёС€РёС‚Рµ РµРµ РІ С‡Р°С‚ РёРіСЂС‹")
 						arg_358_4(var_362_2)
 
 						return
