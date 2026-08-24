@@ -1,0 +1,12 @@
+{
+  "upstream_manifest_url": "https://raw.githubusercontent.com/FREYM1337/forumnick/main/ArzMarketV3/updateArzMarket.js",
+  "poll_seconds": 600,
+  "staging_directory": "../incoming",
+  "state_file": "state.json",
+  "allowed_update_hosts": [
+    "raw.githubusercontent.com"
+  ],
+  "allowed_update_path_prefixes": [
+    "/FREYM1337/forumnick/"
+  ]
+}
