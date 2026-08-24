@@ -44,6 +44,25 @@ local function market_path(version)
     return working_directory .. "\\#PirojkiArzMarket[" .. normalise_version(version) .. "].lua"
 end
 
+local function version_is_newer(remote, current)
+    local remote_parts, current_parts = {}, {}
+    for value in tostring(remote):gmatch("%d+") do
+        table.insert(remote_parts, tonumber(value))
+    end
+    for value in tostring(current):gmatch("%d+") do
+        table.insert(current_parts, tonumber(value))
+    end
+    local length = math.max(#remote_parts, #current_parts)
+    for index = 1, length do
+        local remote_value = remote_parts[index] or 0
+        local current_value = current_parts[index] or 0
+        if remote_value ~= current_value then
+            return remote_value > current_value
+        end
+    end
+    return false
+end
+
 local function unload_and_remove_old_markets(keep_path)
     for _, entry in pairs(script.list()) do
         if entry.filename and entry.filename:match("^#PirojkiArzMarket%[") then
@@ -185,7 +204,7 @@ local function process_manifest()
         log("Invalid update manifest")
         return
     end
-    if manifest.loaderLatest and manifest.loaderUpdateUrl and tostring(manifest.loaderLatest) ~= LOADER_VERSION then
+    if manifest.loaderLatest and manifest.loaderUpdateUrl and version_is_newer(manifest.loaderLatest, LOADER_VERSION) then
         update_loader(manifest.loaderUpdateUrl)
         return
     end
